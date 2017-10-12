@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC  
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"  
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+<include file="struts-default.xml"/>
+<package name="CloudPaper" namespace="/" extends="struts-default" >
+		
+</package>
+
+
+<package name="resultJson" namespace="/" extends="json-default">
+    
+	
+ </package>
+</struts>
