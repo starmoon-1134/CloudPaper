@@ -1,0 +1,23 @@
+[ 
+{ 
+"path": "a/b/c/d*dddd.pdf"
+},
+{ 
+"path": "a/y/c/d*dddd.pdf"
+},
+{ 
+"path": "a/b/c/e*eeee.pdf"
+}, 
+{ 
+"path": "a/b/c*cccc.pdf"
+}, 
+{ 
+"path": "a/b*bbbb.pdf"
+},
+{ 
+"path": "j*jjjj.pdf"
+},
+{ 
+"path": "j/b*bbbb.pdf"
+}
+] 
