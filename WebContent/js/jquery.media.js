@@ -422,7 +422,6 @@ function generate(el, opts, player) {
 	var $el = $(el);
 	var o = $.fn.media.defaults.players[player];
 	var a, key, v;
-
 	if (player == 'iframe') {
 		o = $('<iframe' + ' width="' + opts.width + '" height="' + opts.height + '" >');
 		o.attr('src', opts.src);

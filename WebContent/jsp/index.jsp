@@ -1,21 +1,24 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+<!DOCTYPE html>
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<title>Online View PDF</title>
-<script type="text/javascript" src="http://sources.ikeepstudying.com/js/jquery-1.8.3.min.js"></script>
-<script type="text/javascript" src="js/jquery.media.js"></script>
-<script type="text/javascript">
-    $(function() {
-        $('a.media').media({width:800, height:600});
-    });
-</script>
+<link rel="stylesheet" href="css/editLayer.css" type="text/css">
+<title>论文云簿</title>
+<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+<script type="text/javascript" src="js/editLayer.js"></script>
 </head>
  
+
 <body>
-
-<a class="media" href="Lab3.pdf">PDF File</a>
-
+<a class="editStartBtn">启用编辑</a>
+<a class="exitEditMode">关闭编辑</a>
+<iframe src="pdfjs/web/viewer.html" frameborder="0" class="pdfFrame"></iframe>
+<iframe src="jsp/editContainer.jsp" frameborder="0" class="editFrame"></iframe>
 </body>
 </html>
