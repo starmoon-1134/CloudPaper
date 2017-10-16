@@ -17,5 +17,11 @@
 		<result type="json" name="error"></result>
 	</action>
 	
+	<action name="menutree_*" class="com.MenuTreeOp" method="{1}">  
+		<result type="json">  
+			<param name="root" >result</param>
+		</result>  
+		<result type="json" name="error"></result>
+	</action>
 </package>
 </struts>

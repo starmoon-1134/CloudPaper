@@ -2,45 +2,67 @@ package com;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuTreeOp {
-	private String result;
+	private String result="";
 	private String userName;
 	private String folderName;
 
-	public String deleteFolder() {
-		 try{  
-            BufferedReader br = new BufferedReader(new FileReader(  
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(  
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\new.json"));// 输出新的json文件  
-            String s = "{\"path\": \"重庆*1111.pdf\"}";
-            //JSONObject dataJson = new JSONObject(s);
-            //rd.write(dataJson.toString());
-            bw.write(s);
-            //bw.write(dataJson.toString());
-//                    while ((s = br.readLine()) != null){
-//                    JSONObject dataJson = new JSONObject(s);
-//                    System.out.println(dataJson);
-//                    System.out.println(dataJson.get("path"));
-//            } 
+	public String initTree() {
+		try{  
+			BufferedReader inJson = new BufferedReader(new FileReader(  
+            		ServletActionContext.getServletContext().getRealPath("") + 
+            		"\\config\\" + getUserName() + ".json"));
+			String curLine = "";
+			while((curLine = inJson.readLine()) != null){
+				result = result + curLine + "\n";
+			 }
+			 inJson.close();
          }catch(JSONException | IOException e) {  
-        	e.printStackTrace();  
+        	e.printStackTrace();
+        }
+		return "success";
+	}
+	
+	public String deleteFolder() {
+		 int index = getFolderName().lastIndexOf("folders");
+		 String desPath = getFolderName().substring(0, index);
+		 System.out.println(desPath);
+		 try{  
+			BufferedReader inJson = new BufferedReader(new FileReader(  
+            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+			String deleteRet = "";
+			String curLine = "";
+			while((curLine = inJson.readLine()) != null){
+				 if(curLine.indexOf("\"path\"") != -1) {
+					 JSONObject curJson=new JSONObject(curLine);
+					 String path=curJson.getString("path");
+					 System.out.println(path);
+					 if(!path.equals(desPath) && path.indexOf(desPath+">") != 0 && path.indexOf(desPath+"*") != 0) {
+						 deleteRet = deleteRet + curLine + "\n";
+						 System.out.println(deleteRet);
+					 }
+					 //System.out.println(path);
+				 }else {
+					 deleteRet = deleteRet + curLine + "\n";
+				 }
+			 }
+			 inJson.close();
+			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+			 outJson.write(deleteRet);
+			 //System.out.println(deleteRet);
+			 outJson.flush();
+			 outJson.close();
+         }catch(JSONException | IOException e) {  
+        	e.printStackTrace();
         }
 		return "success";
 	}
