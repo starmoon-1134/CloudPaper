@@ -18,7 +18,7 @@
 	    <div class="editToolbar"></div>
 	 	<div class="editDiv">
 	 		<div class="editCanvas">
-	 			<div style="width:50px;height:50px;background-color:red"></div>
+<!-- 	 			<div style="width:50px;height:50px;background-color:red"></div> -->
 	 		</div>
 	 	</div>
  	</div>

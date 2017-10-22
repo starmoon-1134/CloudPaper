@@ -35,8 +35,6 @@
 	position:fixed;
 	background-color:rgba(255,53,120,0.3);
 	overflow:auto;
-	left:auto;
-	top:auto;
 }
 
 .editDiv{
@@ -44,18 +42,13 @@
 	padding:0;
 	position:absolute;
 	overflow:auto;
-	left:auto;
-	top:auto;
 	width:100%;
+	text-align:center;
 }
 .editCanvas{
-	margin:0;
+	margin:0 auto;
 	padding:0;
 	position:absolute;
-	background-color:rgba(60,255,120,0.3);
-	overflow:auto;
-	left:auto;
-	top:auto;
 	background-color:rgba(60,255,120,0.3);
 }
 .editCanvas:hover {

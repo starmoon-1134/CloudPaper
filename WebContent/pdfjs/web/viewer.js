@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-/******/ (function(modules) { // webpackBootstrap
+/******/ (function showPDFmmm(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -7694,7 +7694,7 @@ exports.ViewHistory = ViewHistory;
 "use strict";
 
 
-var DEFAULT_URL = '09.pdf';
+var DEFAULT_URL = '';
 ;
 var pdfjsWebApp;
 {
