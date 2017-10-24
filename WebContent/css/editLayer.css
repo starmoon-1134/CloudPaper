@@ -55,6 +55,61 @@
 cursor:crosshair;
 }
 
+.NoteWrap{
+	background-color:rgba(0,0,0,0.4);
+	width:300px;
+	height:150px;
+	position:absolute;
+	display:inline;
+}
+
+
+.labelTitle{
+	background:#00aa55 url("../images/labelTitle.png") no-repeat center !important;
+	background-size:30% 30%;
+	display:inline;
+	width:80px;
+	height:50px;
+	float:left;
+}
+
+.labelTitle:hover{
+	cursor:pointer;
+}
+
+.textAreaContainer{
+	width:220px;
+    height:150px;
+    display:inline;
+    float:left;
+}
+
+.labelText{
+/* 	background-color:rgba(255,255,255,1); */
+	width:100%;
+    height:100%;
+    font-size:26px; 
+    color:#f3340c;
+    line-height:28px;
+    
+}
+
+.cancelBtn{
+	background:url("../images/cancelBtn.png") no-repeat right center !important;
+	position:absolute;
+	right:-10px;
+	top:-10px;
+	width:30px;
+	height:30px;
+	z-index:99;
+}
+
+.cancelBtn:hover{
+	cursor:pointer;
+}
+
+
+
 html{
 	margin:0;
 	paddin:0;

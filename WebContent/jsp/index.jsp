@@ -22,7 +22,7 @@
 <a class="editSaveBtn">保存笔记</a>
 <!-- <a class="export">导出</a> -->
 <iframe src="pdfjs/web/viewer.html?file=../../Lab3.pdf" frameborder="0" class="pdfFrame"></iframe>
-<iframe src="jsp/editContainer.jsp" frameborder="0" class="editFrame"></iframe>
+<iframe src="jsp/editContainer.jsp" frameborder="0" class="editFrame" name="editFrame"></iframe>
 <div class="testDOMTREE"> </div>
 </body>
 </html>

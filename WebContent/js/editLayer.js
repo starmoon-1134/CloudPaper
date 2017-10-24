@@ -7,24 +7,32 @@ $(document).ready(function() {
 
 function StartEditPre() {
     // 读取之前保存的笔记
-    $.ajax({
-	type : "post",
-	url : "loadNoteDOM",
-	data : {// 设置数据源
-	    'userID' : "xhy",
-	    'fileName' : "实验手册.pdf"
-	},
-	dataType : "json",// 设置需要返回的数据类型
-	success : function(resultString) {
-	    var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
-	    editBody.html(resultString);
-	    alert(resultString);
-	},
-	error : function(resultString) {
-	    alert("抱歉,好像出错了...");
-	}
-    });// $.ajax({}) end
-    // 建立蒙板层
+    $.ajax(
+	{
+	    type : "post",
+	    url : "loadNoteDOM",
+	    async : false,
+	    data :
+		{// 设置数据源
+		    'userID' : "xhy",
+		    'fileName' : "实验手册.pdf"
+		},
+	    dataType : "json",// 设置需要返回的数据类型
+	    success : function(resultString) {
+		if (resultString.indexOf("###$$$file lost!###$$$") >= 0) {
+		    return;
+		}
+		var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
+		editBody.html(resultString);
+	    },
+	    error : function(resultString) {
+		alert("抱歉,好像出错了...");
+	    }
+	});// $.ajax({}) end
+
+    // 已做笔记位置适配
+
+    // 蒙板层尺寸适配
     var pdfShowDiv = $(".pdfFrame").contents().find("#viewer");
     var pdfShowViewerContainer = $(".pdfFrame").contents().find("#viewerContainer");
     var pdfShowToolbar = $(".pdfFrame").contents().find("#mainContainer > div.toolbar");
@@ -48,6 +56,7 @@ function StartEditPre() {
     if (pdfShowFirstPage.width() < pdfShowDiv.width()) {
 	editCanvas.css("left", (pdfShowDiv.width() - pdfShowFirstPage.width()) * 0.5);
     }
+    window.frames["editFrame"].addCanvasEventListener();// 为蒙板层添加事件监听
     $(".editFrame").show();
 }
 
@@ -82,10 +91,11 @@ function showPdf() {
 	    var context = canvas.getContext('2d');
 	    canvas.height = viewport.height;
 	    canvas.width = viewport.width;
-	    var renderContext = {
-		canvasContext : context,
-		viewport : viewport
-	    };
+	    var renderContext =
+		{
+		    canvasContext : context,
+		    viewport : viewport
+		};
 	    page.render(renderContext);
 	});
     });
@@ -97,21 +107,23 @@ function exitEditMode() {
 
 function saveNoteDOM() {
     var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
-    alert("saveRuning");
-    $.ajax({
-	type : "post",
-	url : "saveNoteDOM",
-	data : {// 设置数据源
-	    'mDOMString' : editBody.html(),
-	    'userID' : "xhy",
-	    'fileName' : "实验手册.pdf"
-	},
-	dataType : "json",// 设置需要返回的数据类型
-	success : function(resultString) {
-	    alert(resultString);
-	},
-	error : function(resultString) {
-	    alert("抱歉,好像出错了...");
-	}
-    });// $.ajax({}) end
+    alert(editBody.html());
+    $.ajax(
+	{
+	    type : "post",
+	    url : "saveNoteDOM",
+	    data :
+		{// 设置数据源
+		    'mDOMString' : editBody.html(),
+		    'userID' : "xhy",
+		    'fileName' : "实验手册.pdf"
+		},
+	    dataType : "json",// 设置需要返回的数据类型
+	    success : function(resultString) {
+		alert(resultString);
+	    },
+	    error : function(resultString) {
+		alert("抱歉,好像出错了...");
+	    }
+	});// $.ajax({}) end
 }

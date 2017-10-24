@@ -1,10 +1,14 @@
 package CloudPaper;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -17,7 +21,7 @@ public class NoteManager {
   public String saveDOMString() throws IOException {
     fileName = fileName.substring(0, fileName.lastIndexOf("."));
     String dirString = ServletActionContext.getServletContext().getRealPath("")
-        + "userfiles\\NoteDOM\\" + userID + "____" + fileName;
+        + "userfiles\\NoteDOM\\" + userID + "____" + fileName + ".note";
     System.out.println(dirString);
 
     File fileToSave = new File(dirString);
@@ -25,8 +29,10 @@ public class NoteManager {
       fileToSave.createNewFile();
     }
 
-    FileOutputStream fout = new FileOutputStream(fileToSave);
-    fout.write(mDOMString.getBytes());
+    FileOutputStream foutputStream = new FileOutputStream(fileToSave);
+    PrintWriter fout = new PrintWriter(
+        new BufferedWriter(new OutputStreamWriter(foutputStream, "utf-8")));
+    fout.write(mDOMString);
     fout.flush();
     fout.close();
 
@@ -41,19 +47,19 @@ public class NoteManager {
   public String loadDOMString() throws IOException {
     fileName = fileName.substring(0, fileName.lastIndexOf("."));
     String dirString = ServletActionContext.getServletContext().getRealPath("")
-        + "userfiles\\NoteDOM\\" + userID + "____" + fileName;
+        + "userfiles\\NoteDOM\\" + userID + "____" + fileName + ".note";
     // System.out.println(dirString);
 
     File fileToLoad = new File(dirString);
     if (!fileToLoad.exists()) {
-      setResultString("file lost!");
+      setResultString("###$$$file lost!###$$$");
       return "error";
     }
 
     BufferedReader bufread;
     String read;
     StringBuffer tmpBuffer = new StringBuffer();
-    bufread = new BufferedReader(new FileReader(fileToLoad));
+    bufread = new BufferedReader(new InputStreamReader(new FileInputStream(fileToLoad), "utf-8"));
     while ((read = bufread.readLine()) != null) {
       tmpBuffer.append(read);
     }
