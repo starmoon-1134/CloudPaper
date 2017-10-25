@@ -15,6 +15,7 @@
 </head>
 <body>
 	<div class="editOuterContainer">
+	    <div class="NoteScale" style="display:none">ds</div>
 	    <div class="editToolbar"></div>
 	 	<div class="editDiv">
 	 		<div class="editCanvas">

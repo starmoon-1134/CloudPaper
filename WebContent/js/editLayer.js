@@ -20,10 +20,39 @@ function StartEditPre() {
 	    dataType : "json",// 设置需要返回的数据类型
 	    success : function(resultString) {
 		if (resultString.indexOf("###$$$file lost!###$$$") >= 0) {
+		    $(".editFrame").contents().find(".NoteScale").text("1");
 		    return;
 		}
 		var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
 		editBody.html(resultString);
+
+		// 未读取出的笔记添加监听、默认都折叠、设置缩放
+		var NoteWraps = $(".editFrame").contents().find(".editCanvas").children();
+		var originWidth = $(".editFrame").contents().find(".editCanvas").width();
+		var curWidth = $(".pdfFrame").contents().find("#page1").width();
+		var scale = $(".editFrame").contents().find(".NoteScale").text();
+		alert(scale);
+		scale = curWidth / (originWidth/scale);
+		alert(scale);
+		$(".editFrame").contents().find(".NoteScale").text(scale);
+		NoteWraps.each(function() {
+		    // 1
+		    window.frames["editFrame"].addListenerForNote($(this));
+
+		    // 2
+		    $(this).css(
+			{
+			    "zoom" : scale
+			// "top" : originPosY * scale + "px",
+			// "left" : originPosX * scale + "px"
+			});
+
+		    // 3
+		    if ($(this).hasClass("NoteWrap")) {
+			$(this).toggleClass("NoteWrapFold");
+			$(this).toggleClass("NoteWrap");
+		    }
+		})
 	    },
 	    error : function(resultString) {
 		alert("抱歉,好像出错了...");
@@ -55,6 +84,8 @@ function StartEditPre() {
     })
     if (pdfShowFirstPage.width() < pdfShowDiv.width()) {
 	editCanvas.css("left", (pdfShowDiv.width() - pdfShowFirstPage.width()) * 0.5);
+    } else {
+	editCanvas.css("left", 0);
     }
     window.frames["editFrame"].addCanvasEventListener();// 为蒙板层添加事件监听
     $(".editFrame").show();
@@ -103,10 +134,20 @@ function showPdf() {
 
 function exitEditMode() {
     $(".editFrame").hide();
+    $(".editFrame").contents().find(".editCanvas").children().remove();
 }
 
 function saveNoteDOM() {
-    var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
+    // 添加笔记的DOM
+    var editBody = $(".editFrame").contents().find("body");
+
+    // 保留textarea的shadow-dom内部的笔记内容
+    var NoteWraps = $(".editFrame").contents().find(".editCanvas").children();
+    NoteWraps.each(function() {
+	var textarea = this.getElementsByTagName("textarea")[0];
+	$(textarea).text(textarea.value);
+    })
+
     alert(editBody.html());
     $.ajax(
 	{

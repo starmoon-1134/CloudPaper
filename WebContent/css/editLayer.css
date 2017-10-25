@@ -46,7 +46,10 @@
 	text-align:center;
 }
 .editCanvas{
-	margin:0 auto;
+	margin-left:10px auto;
+	margin-right:10px auto;
+	margin-top:0;
+	margin-bottom:0;
 	padding:0;
 	position:absolute;
 	background-color:rgba(60,255,120,0.3);
@@ -55,12 +58,23 @@
 cursor:crosshair;
 }
 
+/* 展开的笔记块 */
 .NoteWrap{
 	background-color:rgba(0,0,0,0.4);
 	width:300px;
 	height:150px;
 	position:absolute;
 	display:inline;
+}
+
+/* 折叠笔记块 */
+.NoteWrapFold{
+	background-color:rgba(0,0,0,0.4);
+    width:80px;
+    height:50px;
+    position:absolute;
+    display:inline;
+    overflow:hidden;
 }
 
 

@@ -12,6 +12,7 @@
 <!-- <link rel="stylesheet" href="pdfjs/web/viewer.css" type="text/css"> -->
 <title>论文云簿</title>
 <script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+<%-- <script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script> --%>
 <script type="text/javascript" src="js/editLayer.js"></script>
 </head>
  
@@ -21,7 +22,7 @@
 <a class="exitEditMode">关闭编辑</a>
 <a class="editSaveBtn">保存笔记</a>
 <!-- <a class="export">导出</a> -->
-<iframe src="pdfjs/web/viewer.html?file=../../Lab3.pdf" frameborder="0" class="pdfFrame"></iframe>
+<iframe src="pdfjs/web/viewer.html?file=../../Lab3.pdf(1)" frameborder="0" class="pdfFrame"></iframe>
 <iframe src="jsp/editContainer.jsp" frameborder="0" class="editFrame" name="editFrame"></iframe>
 <div class="testDOMTREE"> </div>
 </body>
