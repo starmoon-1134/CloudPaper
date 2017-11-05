@@ -1,18 +1,24 @@
+<%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%
+ request.setCharacterEncoding("UTF-8");
+%>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<link rel="stylesheet" href="css/editLayer.css" type="text/css">
+<title>论文云簿</title>
+<script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
+<script type="text/javascript" src="js/editLayer.js"></script>
 </head>
+ 
+
 <body>
-	<h1>Hello World From Struts2</h1>
-   <form action="hello">
-      <label for="name">Please enter your name</label><br/>
-      <input type="text" name="name"/>
-      <input type="submit" value="Say Hello"/>
-   </form>
+<a class="editStartBtn">启用编辑</a>
+<a class="exitEditMode">关闭编辑</a>
+<iframe src="pdfjs/web/viewer.html" frameborder="0" class="pdfFrame"></iframe>
+<iframe src="jsp/editContainer.jsp" frameborder="0" class="editFrame"></iframe>
 </body>
 </html>
