@@ -11,6 +11,7 @@
 <script type = "text/javascript" src=js/jquery.treeview.js></script>
 <script type = "text/javascript" src=js/jquery.contextmenu.r2.js></script>
 <script type = "text/javascript" src=js/menu_tree.js></script>
+<script type = "text/javascript" src=js/jquery.cookie.js></script>
 <link rel="stylesheet" type="text/css" href="css/menu_tree.css"/>
 </head> 
 <body> 
@@ -22,7 +23,7 @@
    <ul>
      <li id="addFolder">添加文件夹</li>
      <li id="deleteFolder">删除文件夹</li>
-     <li id="package">打包</li>
+     <li id=changeFolderName>重命名</li>
      <li id="close">关闭</li>
    </ul>
 </div>

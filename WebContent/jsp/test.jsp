@@ -10,39 +10,45 @@
 	<script type = "text/javascript" src=../js/jquery.treeview.js></script>
 	<script type = "text/javascript" src=../js/jquery.contextmenu.r2.js></script>
  </HEAD>
- <BODY>
- <span class="demo1" style="color:green;">
-    右键点此
- </span>
-    <!--右键菜单的源-->
-     <div class="contextMenu" id="myMenu1">
-      <ul>
-        <li id="open">打开</li>
-        <li id="email">邮件</li>
-        <li id="save">保存</li>
-        <li id="delete">关闭</li>
-      </ul>
-    </div>
- </BODY>
- <script>
-    //所有class为demo1的span标签都会绑定此右键菜单
-     $('span.demo1').contextMenu('myMenu1', 
-     {
-          bindings: 
-          {
-            'open': function(t) {
-              alert('Trigger was '+t.id+'\nAction was Open');
-            },
-            'email': function(t) {
-              alert('Trigger was '+t.id+'\nAction was Email');
-            },
-            'save': function(t) {
-              alert('Trigger was '+t.id+'\nAction was Save');
-            },
-            'delete': function(t) {
-              alert('Trigger was '+t.id+'\nAction was Delete');
-            }
-          }
-    });
- </script>
+ <body>
+	<h2>Basic Tree</h2>
+	<p>Click the arrow on the left to expand or collapse nodes.</p>
+	<div style="margin:20px 0;"></div>
+	<div class="easyui-panel" style="padding:5px">
+		<ul class="easyui-tree">
+			<li>
+				<span>My Documents</span>
+				<ul>
+					<li data-options="state:'closed'">
+						<span>Photos</span>
+						<ul>
+							<li>
+								<span>Friend</span>
+							</li>
+							<li>
+								<span>Wife</span>
+							</li>
+							<li>
+								<span>Company</span>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<span>Program Files</span>
+						<ul>
+							<li>Intel</li>
+							<li>Java</li>
+							<li>Microsoft Office</li>
+							<li>Games</li>
+						</ul>
+					</li>
+					<li>index.html</li>
+					<li>about.html</li>
+					<li>welcome.html</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+ 
+</body>
 </HTML>

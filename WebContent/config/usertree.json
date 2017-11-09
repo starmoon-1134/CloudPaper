@@ -4,6 +4,7 @@
 {"path": "南京*1111.pdf"},
 {"path": "北京*1111.pdf"},
 {"path": "武汉*1111.pdf"},
+{"path": "opop>oldl"},
 {"path": "opop>oldl>lll"},
 {"path": "a>b>c>d*1111.pdf"},
 {"path": "a>b>c>d*2222.pdf"},
@@ -12,6 +13,6 @@
 {"path": "a>b>c>e*eeee.pdf"}, 
 {"path": "a>b>c*cccc.pdf"}, 
 {"path": "a>b*bbbb.pdf"},
-{"path": "j*jjjj.pdf"},
+{"path": "j"},
 {"path": "j>b*bbbb.pdf"}
 ]}
