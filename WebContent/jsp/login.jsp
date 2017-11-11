@@ -51,7 +51,6 @@
     <header class="masthead reversed-nav">
       <div class="with-container">
 
-<!--         <a href="${pageContext.request.contextPath}/jsp/login.jsp" title="CloudPaper" class="logo logo-full">CloudPaper</a> -->
 		<a href="${pageContext.request.contextPath}/jsp/login.jsp" title="CloudPaper" class="button-secondary">论文云薄</a>
         <ul class="navigation-list nav-visible">
           <li class="button-group">
@@ -68,25 +67,13 @@
   <div class="card-wrapper js-toggle-wrapper">
     <h1 style="text-align:center">登  录</h1>
     <div class="card">
-      <form method="post" id="signin-form" action="/sign/in/" class="js-sign-in-form">
-
-        <input type="hidden" name="sso_key" value=""/>
-        <input type="hidden" name="cobranding" value=""/>
-        <input type="hidden" name="routeTo" value="https://www.mendeley.com/newsfeed"/>
-        <input type="hidden" name="email" value=""/>
-        <input type="hidden" name="emailLocked" value=""/>
-
-
-
-
         <div class="row">
           <div class="column d-1-1">
             <div class="input-wrap js-animated-labels">
-
-                <input type="text" id="username" data-pattern="\S" name="username" value="" autofocus="">
-
+              <input type="text" id="username" data-pattern="\S" name="username" value="" autofocus="" onclick="document.getElementById('username_ret').style.display='none'">
               <label for="username" class="focused">账号</label>
             </div>
+            <label id="username_ret" style="display:none">1111</label>
             <div data-for="username" class="error-message" data-error-empty="账号未填写" data-error-invalid="Not a valid email. Take a closer look."></div>
           </div>
         </div>
@@ -94,55 +81,78 @@
         <div class="row">
           <div class="column d-1-1">
             <div class="input-wrap js-animated-labels ">
-              <input type="password" data-pattern=".{5,}" id="password" name="password">
+              <input type="password" data-pattern=".{5,}" id="password" name="password" onclick="document.getElementById('password_ret').style.display='none'">
               <label for="password" class="focused">密码</label>
             </div>
+            <label id="password_ret" style="display:none"></label>
             <div data-for="password" class="error-message" data-error-empty="密码未填写" data-error-invalid="Password must be at least 5 characters.">
-              
             </div>
-<!--              <a href="https://www.mendeley.com/forgot/?routeTo=https%3A%2F%2Fwww.mendeley.com%2Fnewsfeed" id="forgot-password-link" class="basic-link text-right float-right"><span>忘记密码？</span></a> -->
           </div>
         </div>
+
+		 <script type="text/javascript">
+		 	function userSignIn(){
+		 	    var username = $("#username").val();
+		 	    var password = $("#password").val();
+		 	    //alert(username);
+		 	    //alert(password);
+		 	    if(username.length!=0 && password.length>=6){
+			 		$.ajax({
+			 			url : "user_userSignIn",
+			 			data : {
+			 			    "username" : username,
+			 			    "password" : password
+			 			},
+			 			dataType : 'json',
+			 			type : 'post',
+			 			async : false,
+			 			success : function(data) {
+			 			    if(data=="nousername"){
+				 				document.getElementById("username_ret").innerText="用户名不存在";
+					 			$("#username_ret").css("display","block");
+			 			    }else if(data=="passworderror"){
+				 				document.getElementById("password_ret").innerText="密码错误";
+					 			$("#password_ret").css("display","block");
+			 			    }else{
+			 					alert(data);
+			 			    }
+			 			},
+			 			error : function() {
+			 			    alert("error");
+			 			}
+			 		});
+		 	    }else{
+			 		if(username.length==0){
+			 			document.getElementById("username_ret").innerText="用户名不能为空";
+			 			$("#username_ret").css("display","block");
+			 	    }
+			 	    if(password.length==0){
+				 		document.getElementById("password_ret").innerText="密码不能为空";
+			 			$("#password_ret").css("display","block");
+			 	    }else if(password.length<6){
+			 			document.getElementById("password_ret").innerText="密码至少为6位";
+		 				$("#password_ret").css("display","block");
+			 	    }
+		 	    }
+		 	}
+    	 </script>
 
         <div class="row remember-me-row">
           <div class="column d-1-1">
-            <div class="checkbox-wrapper">
-              <input type="checkbox" id="remember_me" name="remember_me" checked/>
-              <label for="remember_me" id="remember_me_label">记住账号</label>
-            </div>
-            <button class="button-primary with-icon-after icon-navigateright float-right submit" id="signin-form-submit">登 录</button>
+<!--             <div class="checkbox-wrapper"> -->
+<!--               <input type="checkbox" id="remember_me" name="remember_me" checked/> -->
+<!--               <label for="remember_me" id="remember_me_label">记住账号</label> -->
+<!--             </div> -->
+            <button class="button-primary with-icon-after icon-navigateright float-right submit" id="signin-form-submit" onclick="userSignIn()">登 录</button>
           </div>
         </div>
-
-      </form>
+      
     </div>
     <p class="text-center footnote"> 没有账号？ <a id="create-free-account" href="${pageContext.request.contextPath}/jsp/register.jsp">注册新用户</a></p>
   </div>
 </div>
         </div>
       </section>
-
-<!--         <footer class="footer-lite"> -->
-<!--           <div class="footer-lite-content"> -->
-<!--             <div class="row"> -->
-
-<!--               <div class="column d-4-6 m-1-1 s-1-1 xs-1-1 text-copyright"> -->
-<!--                 <p> -->
-<!--                 Copyright &copy; 2017 Mendeley Ltd. Cookies are set by this site. To decline them or learn more, visit our <a href="/cookie-policy/" title="cookies">cookies</a> page. -->
-<!--                 </p> -->
-<!--               </div> -->
-
-<!--               <div class="column d-2-6 m-1-1 s-1-1 xs-1-1 links-copyright"> -->
-<!--                 <ul> -->
-<!--                   <li><a href="/copyright/" title="Copyright">Copyright</a></li> -->
-<!--                   <li><a href="/terms/" title="Terms of Use">Terms of Use</a></li> -->
-<!--                   <li><a href="/privacy/" title="Privacy policy">Privacy Policy</a></li> -->
-<!--                 </ul> -->
-<!--               </div> -->
-
-<!--             </div> -->
-<!--           </div> -->
-<!--         </footer> -->
 
         <script src="//static.mendeley.com/lib-js-analytics/live/common-analytics.js" async></script>
     </div>

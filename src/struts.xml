@@ -4,13 +4,37 @@
     "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 <include file="struts-default.xml"/>
-<package name="CloudPaper" namespace="/" extends="struts-default" >
-		
+<package name="default"  extends="struts-default">
+   <action name="upload" class="com.UploadFile">
+       <result name="success">/jsp/menu_tree.jsp</result>
+   </action>
+   
+<!--    <action name="signin" class="com.UserOp" method="userSignIn"> -->
+<!--        <result name="success">/jsp/menu_tree.jsp</result> -->
+<!--        <result name="nousername">/jsp/test.jsp</result> -->
+<!--        <result name="passworderror">/jsp/test.jsp</result> -->
+<!--    </action> -->
+   
+<!--    <action name="register" class="com.UserOp" method="userRegister"> -->
+<!--        <result name="success">/jsp/login.jsp</result> -->
+<!--        <result name="usernameexist">/jsp/test.jsp</result> -->
+<!--        <result name="passwordcomfirmerror">/jsp/test.jsp</result> -->
+<!--    </action> -->
 </package>
 
-
 <package name="resultJson" namespace="/" extends="json-default">
-    
+    <action name="menutree_*" class="com.MenuTreeOp" method="{1}">  
+		<result type="json">
+			<param name="root" >result</param>
+		</result>
+		<result type="json" name="error"></result>
+	</action>
 	
- </package>
+	<action name="user_*" class="com.UserOp" method="{1}">
+       <result type="json">
+			<param name="root" >result</param>
+		</result>
+		<result type="json" name="error"></result>
+    </action>
+</package>
 </struts>

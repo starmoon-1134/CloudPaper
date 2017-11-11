@@ -68,25 +68,14 @@
   <div class="card-wrapper js-toggle-wrapper">
     <h1 style="text-align:center">注  册</h1>
     <div class="card">
-      <form method="post" id="signin-form" action="/sign/in/" class="js-sign-in-form">
-
-        <input type="hidden" name="sso_key" value=""/>
-        <input type="hidden" name="cobranding" value=""/>
-        <input type="hidden" name="routeTo" value="https://www.mendeley.com/newsfeed"/>
-        <input type="hidden" name="email" value=""/>
-        <input type="hidden" name="emailLocked" value=""/>
-
-
-
 
         <div class="row">
           <div class="column d-1-1">
             <div class="input-wrap js-animated-labels">
-
-                <input type="text" id="username" data-pattern="\S" name="username" value="" autofocus="">
-
+              <input type="text" id="username" data-pattern="\S" name="username" value="" autofocus="" onclick="document.getElementById('username_ret').style.display='none'">
               <label for="username" class="focused">账号</label>
             </div>
+            <label id="username_ret" style="display:none"></label>
             <div data-for="username" class="error-message" data-error-empty="账号未填写" data-error-invalid="Not a valid email. Take a closer look."></div>
           </div>
         </div>
@@ -94,35 +83,83 @@
         <div class="row">
           <div class="column d-1-1">
             <div class="input-wrap js-animated-labels ">
-              <input type="password" data-pattern=".{5,}" id="password" name="password">
+              <input type="password" data-pattern=".{5,}" id="password" name="password" onclick="document.getElementById('password_ret').style.display='none'">
               <label for="password" class="focused">密码</label>
             </div>
+            <label id="password_ret" style="display:none"></label>
             <div data-for="password" class="error-message" data-error-empty="密码未填写" data-error-invalid="Password must be at least 5 characters.">
-              
             </div>
-<!--             <a href="https://www.mendeley.com/forgot/?routeTo=https%3A%2F%2Fwww.mendeley.com%2Fnewsfeed" id="forgot-password-link" class="basic-link text-right float-right"><span>忘记密码？</span></a> -->
           </div>
         </div>
 
 		<div class="row">
           <div class="column d-1-1">
             <div class="input-wrap js-animated-labels ">
-              <input type="password" data-pattern=".{5,}" id="password" name="password">
-              <label for="password" class="focused">密码确认</label>
+              <input type="password" data-pattern=".{5,}" id="confirmpassword" name="confirmpassword" onclick="document.getElementById('confirmpassword_ret').style.display='none'">
+              <label for="confirmpassword" class="focused">密码确认</label>
             </div>
+            <label id="confirmpassword_ret" style="display:none"></label>
             <div data-for="password" class="error-message" data-error-empty="密码未填写" data-error-invalid="Password must be at least 5 characters.">
-              
             </div>
-<!--              <a href="https://www.mendeley.com/forgot/?routeTo=https%3A%2F%2Fwww.mendeley.com%2Fnewsfeed" id="forgot-password-link" class="basic-link text-right float-right"><span>忘记密码？</span></a> -->
           <div class="row remember-me-row">
+          
+           <script type="text/javascript">
+		 	function userRegister(){
+		 	    var username = $("#username").val();
+		 	    var password = $("#password").val();
+		 	    var confirmpassword = $("#confirmpassword").val();
+		 	    //alert(username);
+		 	    //alert(password);
+		 	    //alert(confirmpassword);
+			 	if(username.length!=0 && password.length>=6 && password==confirmpassword){
+				 		$.ajax({
+				 			url : "user_userRegister",
+				 			data : {
+				 			    "username" : username,
+				 			    "password" : password,
+				 			    "confirmpassword" : confirmpassword
+				 			},
+				 			dataType : 'json',
+				 			type : 'post',
+				 			async : false,
+				 			success : function(data) {
+				 			    if(data=="usernameexist"){
+					 				document.getElementById("username_ret").innerText="用户名已经存在";
+						 			$("#username_ret").css("display","block");
+				 			    }else{
+				 					alert(data);
+				 			    }
+				 			},
+				 			error : function() {
+				 			    alert("error");
+				 			}
+				 		});
+			 	 }else{
+				 		if(username.length==0){
+				 			document.getElementById("username_ret").innerText="用户名不能为空";
+				 			$("#username_ret").css("display","block");
+				 	    }
+				 	    if(password.length==0){
+					 		document.getElementById("password_ret").innerText="密码不能为空";
+				 			$("#password_ret").css("display","block");
+				 	    }else if(password.length<6){
+				 			document.getElementById("password_ret").innerText="密码至少为6位";
+			 				$("#password_ret").css("display","block");
+				 	    }else if(confirmpassword!=password){
+					 		document.getElementById("confirmpassword_ret").innerText="确认密码不同";
+			 				$("#confirmpassword_ret").css("display","block");
+				 	    }
+			 	    }
+		 	}
+    	 </script>
+          
 	          <div class="column d-1-1">
-	            <button class="button-primary with-icon-after icon-navigateright float-right submit" id="signin-form-submit">注 册</button>
+	            <button class="button-primary with-icon-after icon-navigateright float-right submit" id="signin-form-submit" onclick="userRegister()">注 册</button>
 	          </div>
 	        </div>
-          
           </div>
         </div>
-      </form>
+      
     </div>
   </div>
 </div>
