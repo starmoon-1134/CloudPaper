@@ -169,6 +169,10 @@ function InitMenu() {
 		    }
 		}
 	    });
+	    $("span.file").dblclick(function(){
+		alert(this.innerText);
+		//alert("111");
+	    });
 	},
 	error : function() {
 	    alert("error");

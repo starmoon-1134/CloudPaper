@@ -40,9 +40,8 @@
 </div>
 
 <div id="overlay" class="black_overlay">
-<!-- <div id="upload"> -->
-<!-- </div> -->
-<input type="button" value="返回" onclick="document.getElementById('overlay').style.display='none'">
 </div>
+<!-- <span class="iii" >test</span> -->
+<span ondblclick="alert('222')">（双击此按钮拷贝）</span>
 </body> 
 </html>
