@@ -2,6 +2,7 @@ package com;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,6 +20,11 @@ public class MenuTreeOp {
 	private String addParentName;
 	private String renameNewFolderName;
 	private String renameOldFolderName;
+	private String deleteFileName;
+	private String deleteFilePath;
+	private String renameNewFileName;
+	private String renameOldFileName;
+	private String renameFilePath;
 
  	public String initTree() {
 		try{  
@@ -121,7 +127,7 @@ public class MenuTreeOp {
 		return "success";
 	}
 
-	public String renameFolderName() {
+	public String renameFolder() {
 		result="";
 		//System.out.println(getChangeOldFolderName());
 		//System.out.println(getChangeNewFolderName());
@@ -181,7 +187,134 @@ public class MenuTreeOp {
         }
 		return "success";
 	}
-	
+
+	public String deleteFile() {
+		result="";
+//		System.out.println(getDeleteFileName());
+//		System.out.println(getDeleteFilePath());
+		int index = getDeleteFilePath().lastIndexOf("files");
+		String filePath = getDeleteFilePath().substring(0, index);
+		String desPath = filePath + "*" + getDeleteFileName();
+//		System.out.println(desPath);
+		try{  
+			BufferedReader inJson = new BufferedReader(new FileReader(  
+            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+			String curLine = "";
+			String deleteRet = "";
+			while((curLine = inJson.readLine()) != null){
+				 if(curLine.equals("{\"pathes\" :[")) {
+					 deleteRet = deleteRet + curLine + "\n";
+				 }else if(curLine.indexOf("\"path\"") != -1) {
+					 JSONObject curJson=new JSONObject(curLine);
+					 String path=curJson.getString("path");
+					 if(!path.equals(desPath)) {
+						 deleteRet = deleteRet + curLine + "\n";
+					 }
+				 }else {
+					 if(deleteRet.charAt(deleteRet.lastIndexOf("\n")-1)==',') {
+						 deleteRet=deleteRet.substring(0,deleteRet.length()-2);
+						 deleteRet=deleteRet+"\n";
+					 }
+					 deleteRet = deleteRet + curLine + "\n";
+				 }
+			 }
+			 inJson.close();
+			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+			 outJson.write(deleteRet);
+			 //System.out.println(deleteRet);
+			 outJson.flush();
+			 outJson.close();
+			 result="complete";
+         }catch(JSONException | IOException e) {  
+        	e.printStackTrace();
+        }
+		
+		String fileNameString = ServletActionContext.getServletContext().getRealPath("") + 
+				"\\uploadimages" + File.separator + getDeleteFileName();
+//		System.out.println(fileNameString);
+		File tmpFile = new File(fileNameString);
+		if (tmpFile.exists()) {
+			tmpFile.delete();
+		}
+		return "success";
+	}
+
+	public String renameFile() {
+		result="";
+		//System.out.println(getChangeOldFolderName());
+		//System.out.println(getChangeNewFolderName());
+		int index = getRenameFilePath().lastIndexOf("files");
+		String filePath = getRenameFilePath().substring(0, index);
+		String desPath = filePath + "*" + getRenameOldFileName();
+		String newPath = filePath + "*" + getRenameNewFileName() + ".pdf";
+//		System.out.println(desPath);
+//		System.out.println(newPath);
+		int fileOrderNum = 0;
+		try{
+			BufferedReader inJson = new BufferedReader(new FileReader(
+            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+			String curLine = "";
+			String renameRet = "";
+			while((curLine = inJson.readLine()) != null){
+				 if(curLine.equals("{\"pathes\" :[")) {
+					 renameRet = renameRet + curLine + "\n";
+				 }else if(curLine.indexOf("\"path\"") != -1) {
+					 JSONObject curJson=new JSONObject(curLine);
+					 String path=curJson.getString("path");
+					 if(path.equals(newPath) || path.indexOf(newPath) == 0) {
+						 fileOrderNum++;
+					 }
+					 if(!path.equals(desPath)) {
+						 renameRet = renameRet + curLine + "\n";
+					 }
+				 }else {
+					 JSONObject newJson=new JSONObject();
+					 if(fileOrderNum == 0) {
+						 newJson.put("path", newPath);
+					 }else {
+						 newJson.put("path", newPath + "(" + fileOrderNum + ")");
+					 }
+					 if(renameRet.charAt(renameRet.lastIndexOf("\n")-1) != ',') {
+						 renameRet = renameRet.substring(0,renameRet.length()-1);
+						 renameRet = renameRet + ",\n";
+					 }
+					 renameRet = renameRet + newJson.toString() + "\n";
+					 renameRet = renameRet + curLine + "\n";
+				 }
+			 }
+			 inJson.close();
+			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+			 outJson.write(renameRet);
+			 //System.out.println(deleteRet);
+			 outJson.flush();
+			 outJson.close();
+			 result="complete";
+         }catch(JSONException | IOException e) {
+        	e.printStackTrace();
+        }
+		
+		String oldFileName = ServletActionContext.getServletContext().getRealPath("") + 
+				"\\uploadimages" + File.separator + getRenameOldFileName();
+		String newFileName;
+		if(fileOrderNum == 0) {
+			newFileName = ServletActionContext.getServletContext().getRealPath("") + 
+					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf";
+		}else {
+			newFileName = ServletActionContext.getServletContext().getRealPath("") + 
+					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf" + "(" + fileOrderNum + ")";
+		}
+//		System.out.println(oldFileName);
+//		System.out.println(newFileName);
+		File oldFile = new File(oldFileName);
+		File newFile = new File(newFileName);
+		if (oldFile.exists()) {
+			oldFile.renameTo(newFile);
+		}
+		return "success";
+	}
+
 	public String getResult() {
 		return result;
 	}
@@ -236,5 +369,45 @@ public class MenuTreeOp {
 
 	public void setRenameOldFolderName(String renameOldFolderName) {
 		this.renameOldFolderName = renameOldFolderName;
+	}
+
+	public String getDeleteFileName() {
+		return deleteFileName;
+	}
+
+	public void setDeleteFileName(String deleteFileName) {
+		this.deleteFileName = deleteFileName;
+	}
+
+	public String getDeleteFilePath() {
+		return deleteFilePath;
+	}
+
+	public void setDeleteFilePath(String deleteFilePath) {
+		this.deleteFilePath = deleteFilePath;
+	}
+
+	public String getRenameNewFileName() {
+		return renameNewFileName;
+	}
+
+	public void setRenameNewFileName(String renameNewFileName) {
+		this.renameNewFileName = renameNewFileName;
+	}
+
+	public String getRenameOldFileName() {
+		return renameOldFileName;
+	}
+
+	public void setRenameOldFileName(String renameOldFileName) {
+		this.renameOldFileName = renameOldFileName;
+	}
+
+	public String getRenameFilePath() {
+		return renameFilePath;
+	}
+
+	public void setRenameFilePath(String renameFilePath) {
+		this.renameFilePath = renameFilePath;
 	}
 }
