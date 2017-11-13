@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    $(".editStartBtn").click(StartEditPre);
-    $(".exitEditMode").click(exitEditMode);
-    $(".export").click(exportStandardDoc);
-    $(".editSaveBtn").click(saveNoteDOM);
+//    $(".editStartBtn").click(StartEditPre);
+//    $(".exitEditMode").click(exitEditMode);
+//    $(".export").click(exportStandardDoc);
+//    $(".editSaveBtn").click(saveNoteDOM);
 })
 
 function StartEditPre() {
@@ -41,9 +41,7 @@ function StartEditPre() {
 		var originWidth = $(".editFrame").contents().find(".editCanvas").width();
 		var curWidth = $(".pdfFrame").contents().find("#page1").width();
 		var scale = $(".editFrame").contents().find(".NoteScale").text();
-		alert(scale);
 		scale = curWidth / (originWidth/scale);
-		alert(scale);
 		$(".editFrame").contents().find(".NoteScale").text(scale);
 		NoteWraps.each(function() {
 		    // 1
@@ -175,7 +173,6 @@ function saveNoteDOM() {
 	$(textarea).text(textarea.value);
     })
 
-    alert(editBody.html());
     $.ajax(
 	{
 	    type : "post",
@@ -188,10 +185,12 @@ function saveNoteDOM() {
 		},
 	    dataType : "json",// 设置需要返回的数据类型
 	    success : function(resultString) {
-		alert(resultString);
+//		alert(resultString);
 	    },
 	    error : function(resultString) {
 		alert("抱歉,好像出错了...");
 	    }
 	});// $.ajax({}) end
+    
+    exitEditMode();
 }

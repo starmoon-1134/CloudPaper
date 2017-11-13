@@ -21,14 +21,21 @@
 <script type="text/javascript" src="codebase/GooUploader.js"></script>
 <script type="text/javascript" src="codebase/swfupload/swfupload.js"></script>
 <script type="text/javascript" src="js/editLayer.js"></script>
+<script type="text/javascript">
+var userInfo = {
+	userName: "root123",
+	password: "123123"
+}
+</script>
 </head>
  
 
 <body>
-<a class="editStartBtn">启用编辑</a>
-<a class="exitEditMode">关闭编辑</a>
-<a class="editSaveBtn">保存笔记</a>
+<!-- <a class="editStartBtn">启用编辑</a> -->
+<!-- <a class="exitEditMode">关闭编辑</a> -->
+<!-- <a class="editSaveBtn">保存笔记</a> -->
 <!-- <a class="export">导出</a> -->
+
 <iframe src="pdfjs/web/viewer.html?file=../../Lab3.pdf" frameborder="0" class="pdfFrame" name="pdfFrame"></iframe>
 <iframe src="jsp/editContainer.jsp" frameborder="0" class="editFrame" name="editFrame"></iframe>
 <div class="testDOMTREE"> </div>

@@ -2421,32 +2421,33 @@ function webViewerWheel(evt) {
     return;
   }
   if (evt.ctrlKey || evt.metaKey) {
-    var support = PDFViewerApplication.supportedMouseWheelZoomModifierKeys;
-    if (evt.ctrlKey && !support.ctrlKey || evt.metaKey && !support.metaKey) {
-      return;
-    }
-    evt.preventDefault();
-    if (zoomDisabled) {
-      return;
-    }
-    var previousScale = pdfViewer.currentScale;
-    var delta = normalizeWheelEventDelta(evt);
-    var MOUSE_WHEEL_DELTA_PER_PAGE_SCALE = 3.0;
-    var ticks = delta * MOUSE_WHEEL_DELTA_PER_PAGE_SCALE;
-    if (ticks < 0) {
-      PDFViewerApplication.zoomOut(-ticks);
-    } else {
-      PDFViewerApplication.zoomIn(ticks);
-    }
-    var currentScale = pdfViewer.currentScale;
-    if (previousScale !== currentScale) {
-      var scaleCorrectionFactor = currentScale / previousScale - 1;
-      var rect = pdfViewer.container.getBoundingClientRect();
-      var dx = evt.clientX - rect.left;
-      var dy = evt.clientY - rect.top;
-      pdfViewer.container.scrollLeft += dx * scaleCorrectionFactor;
-      pdfViewer.container.scrollTop += dy * scaleCorrectionFactor;
-    }
+//      alert("evt.ctrlKey || evt.metaKey");
+//    var support = PDFViewerApplication.supportedMouseWheelZoomModifierKeys;
+//    if (evt.ctrlKey && !support.ctrlKey || evt.metaKey && !support.metaKey) {
+//      return;
+//    }
+//    evt.preventDefault();
+//    if (zoomDisabled) {
+//      return;
+//    }
+//    var previousScale = pdfViewer.currentScale;
+//    var delta = normalizeWheelEventDelta(evt);
+//    var MOUSE_WHEEL_DELTA_PER_PAGE_SCALE = 3.0;
+//    var ticks = delta * MOUSE_WHEEL_DELTA_PER_PAGE_SCALE;
+//    if (ticks < 0) {
+//      PDFViewerApplication.zoomOut(-ticks);
+//    } else {
+//      PDFViewerApplication.zoomIn(ticks);
+//    }
+//    var currentScale = pdfViewer.currentScale;
+//    if (previousScale !== currentScale) {
+//      var scaleCorrectionFactor = currentScale / previousScale - 1;
+//      var rect = pdfViewer.container.getBoundingClientRect();
+//      var dx = evt.clientX - rect.left;
+//      var dy = evt.clientY - rect.top;
+//      pdfViewer.container.scrollLeft += dx * scaleCorrectionFactor;
+//      pdfViewer.container.scrollTop += dy * scaleCorrectionFactor;
+//    }
   } else {
     zoomDisabled = true;
     clearTimeout(zoomDisabledTimeout);

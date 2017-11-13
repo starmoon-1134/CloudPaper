@@ -178,7 +178,14 @@ function InitMenu() {
 			    }
 		    });
 		$("span.file").dblclick(function() {
-		     $(".pdfFrame").attr("src","pdfjs/web/viewer.html?file=../../uploadimages/"+this.innerText);
+		    var isInaddNoteMode = $(".pdfFrame").contents().find("#addNote").attr("disabled");
+		    if(!isInaddNoteMode)
+		    	{
+			  $(".pdfFrame").attr("src","pdfjs/web/viewer.html?file=../../uploadimages/"+this.innerText);
+			}
+		    else{
+			alert("请先退出编辑笔记模式");
+		    }
 		});
 	    },
 	    error : function() {
