@@ -40,6 +40,15 @@
             <param name="root">resultString</param>
         </result>
    </action>
+   
+   <action name="LoadLog" class="CloudPaper.logger" method="getLog">
+       <result type="json" name="success">
+            <param name="root">resultString</param>
+        </result>
+        <result type="json" name="error">
+            <param name="root">resultString</param>
+        </result>
+   </action>
 
     <action name="menutree_*" class="com.MenuTreeOp" method="{1}">  
 		<result type="json">

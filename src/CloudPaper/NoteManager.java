@@ -14,14 +14,13 @@ import org.apache.struts2.ServletActionContext;
 
 public class NoteManager {
   private String mDOMString = null;
-  private String userID = null;
+  private String userName = null;
   private String fileName = null;
   private String resultString = null;
 
   public String saveDOMString() throws IOException {
-    fileName = fileName.substring(0, fileName.lastIndexOf("."));
-    String dirString = ServletActionContext.getServletContext().getRealPath("")
-        + "userfiles\\NoteDOM\\" + userID + "____" + fileName + ".note";
+    String dirString = ServletActionContext.getServletContext().getRealPath("") + "userfiles\\"
+        + userName + "\\" + "NoteDOM\\" + fileName + ".note";
     System.out.println(dirString);
 
     File fileToSave = new File(dirString);
@@ -39,15 +38,18 @@ public class NoteManager {
     // System.out.println(mDOMString);
     // System.out.println(fileName);
     // System.out.println(userID);
+    logger loggerm = new logger();
+    loggerm.setUserName(userName);
+    loggerm.setFileName(fileName);
+    loggerm.addLog("添加笔记", logType.addNote);
 
     setResultString("success");
     return "success";
   }
 
   public String loadDOMString() throws IOException {
-    fileName = fileName.substring(0, fileName.lastIndexOf("."));
-    String dirString = ServletActionContext.getServletContext().getRealPath("")
-        + "userfiles\\NoteDOM\\" + userID + "____" + fileName + ".note";
+    String dirString = ServletActionContext.getServletContext().getRealPath("") + "userfiles\\"
+        + userName + "\\" + "NoteDOM\\" + fileName + ".note";
     // System.out.println(dirString);
 
     File fileToLoad = new File(dirString);
@@ -81,14 +83,6 @@ public class NoteManager {
     this.mDOMString = mDOMString;
   }
 
-  public String getUserID() {
-    return userID;
-  }
-
-  public void setUserID(String userID) {
-    this.userID = userID;
-  }
-
   public String getFiliName() {
     return fileName;
   }
@@ -103,5 +97,13 @@ public class NoteManager {
 
   public void setResultString(String resultString) {
     this.resultString = resultString;
+  }
+
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 }

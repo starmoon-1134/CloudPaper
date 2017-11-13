@@ -129,7 +129,7 @@ function InitMenu() {
 				    var post_params =
 					{
 					    folder : $($(t).next()).attr("id"),
-					    username : "admin"
+					    username : userInfo.userName
 					};
 				    var upload_property =
 					{
@@ -181,7 +181,10 @@ function InitMenu() {
 		    var isInaddNoteMode = $(".pdfFrame").contents().find("#addNote").attr("disabled");
 		    if(!isInaddNoteMode)
 		    	{
-			  $(".pdfFrame").attr("src","pdfjs/web/viewer.html?file=../../uploadimages/"+this.innerText);
+			  userInfo.currentFile=this.innerText;
+			  $(".pdfFrame").attr("src","pdfjs/web/viewer.html?file=../../userFiles/"
+				  +userInfo.userName+"/pdf/"
+				  +this.innerText);
 			}
 		    else{
 			alert("请先退出编辑笔记模式");

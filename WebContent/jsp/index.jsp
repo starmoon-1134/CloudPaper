@@ -24,13 +24,15 @@
 <script type="text/javascript">
 var userInfo = {
 	userName: "root123",
-	password: "123123"
+	password: "123123",
+	currentFile:""
 }
 </script>
 </head>
  
 
 <body>
+<a class="editStartBtn">log</a>
 <!-- <a class="editStartBtn">启用编辑</a> -->
 <!-- <a class="exitEditMode">关闭编辑</a> -->
 <!-- <a class="editSaveBtn">保存笔记</a> -->
