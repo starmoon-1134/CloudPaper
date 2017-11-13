@@ -51,7 +51,7 @@
     <header class="masthead reversed-nav">
       <div class="with-container">
 
-		<a href="${pageContext.request.contextPath}/jsp/login.jsp" title="CloudPaper" class="button-secondary">论文云薄</a>
+		<a href="${pageContext.request.contextPath}/jsp/home.jsp" title="CloudPaper" class="button-secondary">论文云薄</a>
         <ul class="navigation-list nav-visible">
           <li class="button-group">
             <a href="${pageContext.request.contextPath}/jsp/register.jsp" class="button-secondary">注册新用户</a>

@@ -2163,8 +2163,8 @@ Implemented as silent classes, use them in real classes like:
         float: left;
         margin-right: 1rem; }
         .masthead .logo.logo-full {
-          background-image: url(../images/logo-full.svg);
-          background-size: 128px 25px;
+          background-image: url(../images/paper.png);
+          background-size: 30px 30px;
           width: 8rem; }
       .masthead .mobile-icons {
         display: none; }
@@ -2247,8 +2247,8 @@ Implemented as silent classes, use them in real classes like:
         float: left;
         margin-right: 1rem; }
         .masthead .logo.logo-full {
-          background-image: url(../images/logo-full.svg);
-          background-size: 128px 25px;
+          background-image: url(../images/paper.png);
+          background-size: 30px 30px;
           width: 8rem; }
       .masthead .mobile-icons {
         display: none; }
@@ -2368,7 +2368,7 @@ Implemented as silent classes, use them in real classes like:
 .masthead.reversed-nav {
   background: rgba(0, 0, 0, 0.5); }
   .masthead.reversed-nav .logo {
-    background-image: url(../images/logo-white.svg); }
+    background-image: url(../images/paper.png); }
   .masthead.reversed-nav .icon-button {
     color: #FFF; }
   .masthead.reversed-nav .menu-button .burger-bar {
@@ -2390,8 +2390,8 @@ Implemented as silent classes, use them in real classes like:
         color: #FFF; }
   @media only screen and (min-width: 768px) and (max-width: 979px) {
     .masthead.reversed-nav .logo.logo-full {
-      background-image: url(../images/logo-full-white.svg);
-      background-size: 128px 25px;
+      background-image: url(../images/paper.png);
+      background-size: 30px 30px;
       width: 8rem; }
     .masthead.reversed-nav nav {
       background-color: transparent; }
@@ -2401,8 +2401,8 @@ Implemented as silent classes, use them in real classes like:
           color: #FFF; } }
   @media only screen and (min-width: 980px) {
     .masthead.reversed-nav .logo.logo-full {
-      background-image: url(../images/logo-full-white.svg);
-      background-size: 128px 25px;
+      background-image: url(../images/paper.png);
+      background-size: 30px 30px;
       width: 8rem; }
     .masthead.reversed-nav nav {
       background-color: transparent; }
@@ -2853,8 +2853,8 @@ ul {
  * <a href="/" title="Mendeley" class="logo">Mendeley</a>
  */
 .logo {
-  background: transparent url(../images/logo.svg) center no-repeat;
-  background-size: 44px 25px;
+  background: transparent url(../images/paper.png) center no-repeat;
+  background-size: 30px 30px;
   display: inline-block;
   height: 1.5625rem;
   overflow: hidden;

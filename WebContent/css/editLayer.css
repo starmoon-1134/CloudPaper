@@ -1,9 +1,9 @@
 .pdfFrame{
 	position:absolute;
-	width:1100px;
-	height:500px;
-	left:250px;
-	top:100px;
+	width:100%;
+	height:100%;
+	left:0;
+	top:0;
 	margin:0;
 	padding:0;
 }
@@ -12,10 +12,10 @@
 	margin:0;
 	padding:0;
 	position:absolute;
-	width:1100px;
-	height:500px;
-	left:250px;
-	top:100px;
+	width:100%;
+	height:100% !important;
+	left:0;
+	top:20px !important;
 	text-align:center;
 	display:none;
 }
@@ -53,21 +53,26 @@
 	padding:0;
 	position:absolute;
 	background-color:rgba(60,255,120,0.3);
+	
 }
 .editCanvas:hover {
 cursor:crosshair;
 }
 
-/* 展开的笔记块 */
+/* 灞曞紑鐨勭瑪璁板潡 */
 .NoteWrap{
 	background-color:rgba(0,0,0,0.4);
 	width:300px;
 	height:150px;
 	position:absolute;
 	display:inline;
+	box-shadow: 5px 5px 5px #888888;
+	border:1px;
+	border-color:#333333;
+	border-radius:25px;
 }
 
-/* 折叠笔记块 */
+/* 鎶樺彔绗旇鍧� */
 .NoteWrapFold{
 	background-color:rgba(0,0,0,0.4);
     width:80px;
@@ -75,11 +80,15 @@ cursor:crosshair;
     position:absolute;
     display:inline;
     overflow:hidden;
+    box-shadow: 5px 5px 5px #888888;
+	border:1px;
+	border-color:#333333;
+	border-radius:25px;
 }
 
 
 .labelTitle{
-	background:#00aa55 url("../images/labelTitle.png") no-repeat center !important;
+/* 	background:#00aa55 url("../images/labelTitle.png") no-repeat center !important; */
 	background-size:30% 30%;
 	display:inline;
 	width:80px;
@@ -99,43 +108,29 @@ cursor:crosshair;
 }
 
 .labelText{
-/* 	background-color:rgba(255,255,255,1); */
+	background-color:rgba(255,255,255,0.3);
 	width:100%;
     height:100%;
     font-size:26px; 
     color:#f3340c;
     line-height:28px;
+    resize: none;
+    border-radius: 0 25px 25px 0;
+	padding: 0;
     
 }
 
 .cancelBtn{
-	background:url("../images/cancelBtn.png") no-repeat right center !important;
+	background-image: url("../images/close.png");
+	background-repeat: no-repeat;
 	position:absolute;
-	right:-10px;
-	top:-10px;
-	width:30px;
-	height:30px;
+	right:-1px;
+	top:-1px;
+	width:32px;
+	height:32px;
 	z-index:99;
 }
 
 .cancelBtn:hover{
 	cursor:pointer;
-}
-
-
-
-html{
-	margin:0;
-	paddin:0;
-	text-align:center;
-	width:100%;
-	height:100%;
-}
-
-body{
-	margin:0;
-	paddin:0;
-	text-align:center;
-	width:100%;
-	height:100%;
 }

@@ -34,13 +34,31 @@
             a.appendChild(r);
           })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
         </script>
-        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.8.2.js"></script> 
-		<script type = "text/javascript" src="${pageContext.request.contextPath}/js/jquery.treeview.js"></script>
-		<script type = "text/javascript" src="${pageContext.request.contextPath}/js/jquery.contextmenu.r2.js"></script>
-		<script type = "text/javascript" src="${pageContext.request.contextPath}/js/menu_tree.js"></script>
-		<script type = "text/javascript" src="${pageContext.request.contextPath}/js/jquery.cookie.js"></script>
-		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/menu_tree.css"/>
+        <script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script>
+		<script type = "text/javascript" src=${pageContext.request.contextPath}/js/jquery.treeview.js></script>
+		<script type = "text/javascript" src=${pageContext.request.contextPath}/js/jquery.contextmenu.r2.js></script>
+		<script type = "text/javascript" src=${pageContext.request.contextPath}/js/menu_tree.js></script>
+		<script type = "text/javascript" src=${pageContext.request.contextPath}/js/jquery.cookie.js></script>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/codebase/GooUploader.css"/>
+		<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/editLayer.css"/>
+		<script  type="text/javascript" src="${pageContext.request.contextPath}/codebase/GooUploader.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/codebase/swfupload/swfupload.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/editLayer.js"></script>
 	<style type="text/css">
+		.with-container span {
+			position: absolute;
+			top: 30px;
+			left: 90px;
+			font-size: 100;
+			font-family: NexusSans, Arial, sans-serif;	
+		}
+		#logo_img {
+			position: absolute;
+			top: 20px;
+			left: 30px;
+			height: 45px;
+			weight: 45px;
+		}
 		.menu {
 			margin-top: 30px;
 		}
@@ -84,9 +102,8 @@
 
             <header class="masthead web-library with-library-selected">
               <div class="with-container">
-                <a href="/" title="Mendeley" class="logo">Mendeley</a>
-                <a href="#content" class="accessibility-link">Skip to content</a>
-
+                <img id="logo_img" src="../images/paper.png"  alt="CloudPaper" />
+                <span>论文云簿</span>
                 <nav class="js-menu-slider ">
                   <ul class="navigation-list js-dropdown">
 
@@ -137,16 +154,27 @@
                             
                             <header >目录 <i class="icon icon-caret"></i></header>
 							<div class="menu">
-							<ul id="tree" class="filetree treeview-famfamfam">
-							</ul>
-							</div>
-							<div class="contextMenu" id="folderMenu">
-							   <ul>
-							     <li id="addFolder">添加文件夹</li>
-							     <li id="deleteFolder">删除文件夹</li>
-							     <li id=changeFolderName>重命名</li>
-							     <li id="close">关闭</li>
-							   </ul>
+								<ul id="tree" class="filetree treeview-famfamfam">
+								</ul>
+								</div>
+								<div class="contextMenu" id="folderMenu">
+								   <ul>
+								     <li id="addFolder">添加文件夹</li>
+								     <li id="deleteFolder">删除文件夹</li>
+								     <li id="renameFolder">重命名文件夹</li>
+								     <li id="uploadFile">上传文件</li>
+								   </ul>
+								</div>
+								
+								<div class="contextMenu" id="fileMenu">
+								   <ul>
+								     <li id="deleteFile">删除文件</li>
+								     <li id="renameFile">重命名文件</li>
+								<!--      <li id="exportFile">导出文件</li> -->
+								   </ul>
+								</div>
+							
+							<div id="overlay" class="black_overlay">
 							</div>
                             <div class="accordion-pane" data-content="all-documents my-publications favorites folders">
                                 <div class="accordion-content scrollable">
@@ -189,67 +217,70 @@
                 </section>
 
                 <section id="content-centralarea">
-                    <section class="content-toolbar">
-                        <ul id="message-toolbar" class="toolbar"></ul>
+                	<iframe src="${pageContext.request.contextPath}/pdfjs/web/viewer.html?file=09.pdf" frameborder="0" class="pdfFrame" name="pdfFrame"></iframe>
+					<iframe src="${pageContext.request.contextPath}/jsp/editContainer.jsp" frameborder="0" class="editFrame" name="editFrame"></iframe>
+					<div class="testDOMTREE"> </div>
+<%--                     <section class="content-toolbar"> --%>
+<!--                         <ul id="message-toolbar" class="toolbar"></ul> -->
 
-                        <ul id="selection-toolbar" class="selection-toolbar">
-                            <li class="action select-all notin-none">
-                                <button title="Select All">
-                                    <span class="icon icon-checkbox"></span>
-                                </button>
-                            </li>
-                            <li class="action organize notin-trash">
-                                <button title="Add to">
-                                    <span class="icon icon-organize"></span><span class="actionlabel hide-small">Add to</span>
-                                </button>
-                            </li>
-                            <li class="action remove in-folders">
-                                <button title="Remove from folder">
-                                    <span class="icon icon-remove"></span><span>Remove from folder</span>
-                                </button>
-                            </li>
-                            <li class="action removespecialfolder in-my-publications" data-id="my-publications" >
-                                <button title="Remove from My Publications">
-                                    <span class="icon icon-remove"></span><span>Remove from My Publications</span>
-                                </button>
-                            </li>
-                            <li class="action removespecialfolder in-favorites" data-id="favorites" >
-                                <button title="Remove from Favorites">
-                                    <span class="icon icon-remove"></span><span>Remove from Favorites</span>
-                                </button>
-                            </li>
-                            <li class="action trash notin-trash">
-                                <button title="Delete">
-                                    <span class="icon icon-trash"></span><span class="actionlabel hide-small">Delete</span>
-                                </button>
-                            </li>
-                            <li class="action restore in-trash">
-                                <button title="Restore"><span class="icon icon-restore"></span><label class="hide-small">Restore</label></button>
-                            </li>
-                            <li class="action delete in-trash">
-                                <button title="Delete forever"><span class="icon icon-delete-forever"></span><label class="hide-small">Delete forever</label></button>
-                            </li>
-                            <li class="action ms-word-export notin-trash notin-groups">
-                                <button title="Export to MS Word"><span class="icon ms-word-export"></span><label class="hide-small">Export to MS Word</label></button>
-                            </li>
-                        </ul>
-                        <ul id="document-list-toolbar" class="document-list-toolbar actioncontainer">
-                            <li id="document-sort-order" class="document-sort-order dropdown">
-                                <button title="Sort documents"><span class="icon icon-sort"></span><label class="hide-small">Added (newest)</label><span class="icon icon-caret"></span></button>
-                                <ul class="menu">
-                                </ul>
-                            </li>
-                        </ul>
-                    </section>
+<!--                         <ul id="selection-toolbar" class="selection-toolbar"> -->
+<!--                             <li class="action select-all notin-none"> -->
+<!--                                 <button title="Select All"> -->
+<%--                                     <span class="icon icon-checkbox"></span> --%>
+<!--                                 </button> -->
+<!--                             </li> -->
+<!--                             <li class="action organize notin-trash"> -->
+<!--                                 <button title="Add to"> -->
+<%--                                     <span class="icon icon-organize"></span><span class="actionlabel hide-small">Add to</span> --%>
+<!--                                 </button> -->
+<!--                             </li> -->
+<!--                             <li class="action remove in-folders"> -->
+<!--                                 <button title="Remove from folder"> -->
+<%--                                     <span class="icon icon-remove"></span><span>Remove from folder</span> --%>
+<!--                                 </button> -->
+<!--                             </li> -->
+<!--                             <li class="action removespecialfolder in-my-publications" data-id="my-publications" > -->
+<!--                                 <button title="Remove from My Publications"> -->
+<%--                                     <span class="icon icon-remove"></span><span>Remove from My Publications</span> --%>
+<!--                                 </button> -->
+<!--                             </li> -->
+<!--                             <li class="action removespecialfolder in-favorites" data-id="favorites" > -->
+<!--                                 <button title="Remove from Favorites"> -->
+<%--                                     <span class="icon icon-remove"></span><span>Remove from Favorites</span> --%>
+<!--                                 </button> -->
+<!--                             </li> -->
+<!--                             <li class="action trash notin-trash"> -->
+<!--                                 <button title="Delete"> -->
+<%--                                     <span class="icon icon-trash"></span><span class="actionlabel hide-small">Delete</span> --%>
+<!--                                 </button> -->
+<!--                             </li> -->
+<!--                             <li class="action restore in-trash"> -->
+<%--                                 <button title="Restore"><span class="icon icon-restore"></span><label class="hide-small">Restore</label></button> --%>
+<!--                             </li> -->
+<!--                             <li class="action delete in-trash"> -->
+<%--                                 <button title="Delete forever"><span class="icon icon-delete-forever"></span><label class="hide-small">Delete forever</label></button> --%>
+<!--                             </li> -->
+<!--                             <li class="action ms-word-export notin-trash notin-groups"> -->
+<%--                                 <button title="Export to MS Word"><span class="icon ms-word-export"></span><label class="hide-small">Export to MS Word</label></button> --%>
+<!--                             </li> -->
+<!--                         </ul> -->
+<!--                         <ul id="document-list-toolbar" class="document-list-toolbar actioncontainer"> -->
+<!--                             <li id="document-sort-order" class="document-sort-order dropdown"> -->
+<%--                                 <button title="Sort documents"><span class="icon icon-sort"></span><label class="hide-small">Added (newest)</label><span class="icon icon-caret"></span></button> --%>
+<!--                                 <ul class="menu"> -->
+<!--                                 </ul> -->
+<!--                             </li> -->
+<!--                         </ul> -->
+<%--                     </section> --%>
 
-                    <section class="content">
-                        <div id="document-list" class="document-list loading">
-                            <p>Loading documents&hellip;</p>
-                        </div>
-                    </section>
+<%--                     <section class="content"> --%>
+<!--                         <div id="document-list" class="document-list loading"> -->
+<!--                             <p>Loading documents&hellip;</p> -->
+<!--                         </div> -->
+<%--                     </section> --%>
 
-                    <section id="document-pagination" class="document-pagination">
-                    </section>
+<%--                     <section id="document-pagination" class="document-pagination"> --%>
+<%--                     </section> --%>
 
                 </section>
 
