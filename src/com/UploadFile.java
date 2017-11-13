@@ -75,52 +75,11 @@ public class UploadFile extends ActionSupport
         	HttpServletRequest request = ServletActionContext.getRequest(); // 获得ServletRequest对象
 
     		String userName = request.getParameter("username");
-        	String folderPath = request.getParameter("folder");
-        	int index = folderPath.lastIndexOf("folders");
-   		    folderPath = folderPath.substring(0, index);
     		// 文件真名
     		String fileName = FiledataFileName.get(i);
-    		String desPath = folderPath + "*" + fileName;
     		int fileOrderNum=0;
 //    		System.out.println(folderPath);
 //          System.out.println(fileName);
-    		try{  
-    			BufferedReader inJson = new BufferedReader(new FileReader(  
-                		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
-    			String curLine = "";
-    			String findRet="";
-    			while((curLine = inJson.readLine()) != null){
-    				 if(curLine.equals("{\"pathes\" :[")) {
-    					 findRet = findRet+curLine+"\n";
-    				 }else if(curLine.indexOf("\"path\"") != -1) {
-    					 JSONObject curJson=new JSONObject(curLine);
-    					 String path=curJson.getString("path");
-    					 if(path.equals(desPath) || path.indexOf(desPath) == 0) {
-    						 fileOrderNum++;
-    					 }
-    					 findRet = findRet+curLine+"\n";
-    				 }else {
-    					 findRet = findRet.substring(0, findRet.length()-1);
-    					 findRet = findRet + ",\n";
-    					 JSONObject newJson=new JSONObject();
-    					 if(fileOrderNum == 0) {
-    						 newJson.put("path", desPath);
-    					 }else {
-    						 newJson.put("path", desPath + "(" + fileOrderNum + ")");
-    					 }
-    					 findRet = findRet + newJson.toString() + "\n";
-    					 findRet = findRet + curLine + "\n";
-    				 }
-    			}
-    			inJson.close();
-    			BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-    					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
-    			outJson.write(findRet);
-    			outJson.flush();
-    			outJson.close();
-    		}catch(JSONException | IOException e) {  
-            	e.printStackTrace();
-            }    
   
             long length = Filedata.get(i).length(); // 文件的真实大小  
             long time = System.currentTimeMillis();  
@@ -131,17 +90,17 @@ public class UploadFile extends ActionSupport
             
             //request.getRealPath("/")已不建议使用，改为this.getServletContext().getRealPath("/")  
             System.out.println("path:"+ServletActionContext.getServletContext().getRealPath("/"));
-            String saveFileName;
-            if(fileOrderNum == 0) {
-            	saveFileName = fileName;
-			 }else {
-				saveFileName = fileName + "(" + fileOrderNum + ")";
-			 }
-            File tempFile = new File(ServletActionContext.getServletContext().getRealPath("/uploadimages")+File.separator+saveFileName);  
+            String tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userfiles/username/pdf")+File.separator+fileName;
+            File tmpFile = new File(tmpSaveFileName);
+            while(tmpFile.exists()) {
+            	fileOrderNum++;
+            	tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userfiles/username/pdf")+File.separator+fileName+"("+fileOrderNum+")";
+            	tmpFile = new File(tmpSaveFileName);
+            }
   
-            FileUtils.forceMkdir(tempFile.getParentFile()); // 创建上传文件所在的父目录  
+            FileUtils.forceMkdir(tmpFile.getParentFile()); // 创建上传文件所在的父目录  
   
-            OutputStream os = new BufferedOutputStream( new FileOutputStream(tempFile));  
+            OutputStream os = new BufferedOutputStream( new FileOutputStream(tmpFile));  
   
             int len = 0;  
             byte[] buffer = new byte[500];  
@@ -153,6 +112,44 @@ public class UploadFile extends ActionSupport
             is.close();  
             os.flush();  
             os.close();  
+            
+            String folderPath = request.getParameter("folder");
+        	int index = folderPath.lastIndexOf("folders");
+   		    folderPath = folderPath.substring(0, index);
+            String desPath;
+            if(fileOrderNum==0) {
+            	desPath = folderPath + "*" + fileName;;
+            }else {
+            	desPath = folderPath + "*" + fileName + "(" +fileOrderNum + ")";
+            }
+    		try{  
+				BufferedReader inJson = new BufferedReader(new FileReader(  
+	            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+				String curLine = "";
+				String findRet="";
+				while((curLine = inJson.readLine()) != null){
+					 if(curLine.equals("{\"pathes\" :[")) {
+						 findRet = findRet+curLine+"\n";
+					 }else if(curLine.indexOf("\"path\"") != -1) {
+						 findRet = findRet+curLine+"\n";
+					 }else {
+						 findRet = findRet.substring(0, findRet.length()-1);
+						 findRet = findRet + ",\n";
+						 JSONObject newJson=new JSONObject();
+						 newJson.put("path", desPath);
+						 findRet = findRet + newJson.toString() + "\n";
+						 findRet = findRet + curLine + "\n";
+					 }
+				}
+				inJson.close();
+				BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+						 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+				outJson.write(findRet);
+				outJson.flush();
+				outJson.close();
+			}catch(JSONException | IOException e) {  
+	        	e.printStackTrace();
+	        }    
         }
         return "success";  
     }  
