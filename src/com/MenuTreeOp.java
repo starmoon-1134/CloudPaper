@@ -244,16 +244,40 @@ public class MenuTreeOp {
 		result="";
 		//System.out.println(getChangeOldFolderName());
 		//System.out.println(getChangeNewFolderName());
+		int fileOrderNum = 0;
+		
+		String oldFileName = ServletActionContext.getServletContext().getRealPath("") + 
+				"\\uploadimages" + File.separator + getRenameOldFileName();
+		String newFileName = ServletActionContext.getServletContext().getRealPath("") + 
+					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf";
+		File tmpFile = new File(newFileName);
+		while(tmpFile.exists()) {
+			fileOrderNum++;
+			newFileName = ServletActionContext.getServletContext().getRealPath("") + 
+					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf" + "(" + fileOrderNum + ")";
+			tmpFile = new File(newFileName);
+		}
+		
+//		System.out.println(oldFileName);
+//		System.out.println(newFileName);
+		File oldFile = new File(oldFileName);
+		File newFile = new File(newFileName);
+		if (oldFile.exists()) {
+			oldFile.renameTo(newFile);
+		}
+		
 		int index = getRenameFilePath().lastIndexOf("files");
 		String filePath = getRenameFilePath().substring(0, index);
 		String desPath = filePath + "*" + getRenameOldFileName();
-		String newPath = filePath + "*" + getRenameNewFileName() + ".pdf";
-//		System.out.println(desPath);
-//		System.out.println(newPath);
-		int fileOrderNum = 0;
+		String newPath;
+		if(fileOrderNum==0) {
+			newPath = filePath + "*" + getRenameNewFileName() + ".pdf";
+		}else {
+			newPath = filePath + "*" + getRenameNewFileName() + ".pdf" + "(" + fileOrderNum + ")";
+		}
 		try{
 			BufferedReader inJson = new BufferedReader(new FileReader(
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+	        		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
 			String curLine = "";
 			String renameRet = "";
 			while((curLine = inJson.readLine()) != null){
@@ -262,19 +286,12 @@ public class MenuTreeOp {
 				 }else if(curLine.indexOf("\"path\"") != -1) {
 					 JSONObject curJson=new JSONObject(curLine);
 					 String path=curJson.getString("path");
-					 if(path.equals(newPath) || path.indexOf(newPath) == 0) {
-						 fileOrderNum++;
-					 }
 					 if(!path.equals(desPath)) {
 						 renameRet = renameRet + curLine + "\n";
 					 }
 				 }else {
 					 JSONObject newJson=new JSONObject();
-					 if(fileOrderNum == 0) {
-						 newJson.put("path", newPath);
-					 }else {
-						 newJson.put("path", newPath + "(" + fileOrderNum + ")");
-					 }
+					 newJson.put("path", newPath);
 					 if(renameRet.charAt(renameRet.lastIndexOf("\n")-1) != ',') {
 						 renameRet = renameRet.substring(0,renameRet.length()-1);
 						 renameRet = renameRet + ",\n";
@@ -291,27 +308,9 @@ public class MenuTreeOp {
 			 outJson.flush();
 			 outJson.close();
 			 result="complete";
-         }catch(JSONException | IOException e) {
-        	e.printStackTrace();
-        }
-		
-		String oldFileName = ServletActionContext.getServletContext().getRealPath("") + 
-				"\\uploadimages" + File.separator + getRenameOldFileName();
-		String newFileName;
-		if(fileOrderNum == 0) {
-			newFileName = ServletActionContext.getServletContext().getRealPath("") + 
-					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf";
-		}else {
-			newFileName = ServletActionContext.getServletContext().getRealPath("") + 
-					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf" + "(" + fileOrderNum + ")";
-		}
-//		System.out.println(oldFileName);
-//		System.out.println(newFileName);
-		File oldFile = new File(oldFileName);
-		File newFile = new File(newFileName);
-		if (oldFile.exists()) {
-			oldFile.renameTo(newFile);
-		}
+	     }catch(JSONException | IOException e) {
+	    	e.printStackTrace();
+	     }
 		return "success";
 	}
 
