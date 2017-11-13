@@ -6,6 +6,16 @@ $(document).ready(function() {
 })
 
 function StartEditPre() {
+    //更改按钮状态
+    $(".pdfFrame").contents().find("#sidebarToggle").attr("disabled","true");
+    $(".pdfFrame").contents().find("#zoomOut").attr("disabled","true");
+    $(".pdfFrame").contents().find("#zoomIn").attr("disabled","true");
+    $(".pdfFrame").contents().find("#scaleSelect").attr("disabled","true");
+    $(".pdfFrame").contents().find("#secondaryToolbarToggle").attr("disabled","true");
+    $(".pdfFrame").contents().find("#addNote").attr("disabled","true");
+    $(".pdfFrame").contents().find("#saveNote").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#cancelNote").removeAttr("disabled");
+    
     // 读取之前保存的笔记
     $.ajax(
 	{
@@ -70,14 +80,21 @@ function StartEditPre() {
     var editCanvas = $(".editFrame").contents().find(".editCanvas");
     var editDiv = $(".editFrame").contents().find(".editDiv");
     var editMaxContainer = $(".editFrame").contents().find(".editOuterContainer");
-    var editToolbar = $(".editFrame").contents().find(".editToolbar");
+    //var editToolbar = $(".editFrame").contents().find(".editToolbar");
 
+    var posYpdfFrame = $(".pdfFrame").offset().top;
+    $(".editFrame").css({
+	"height":($(".pdfFrame").height()-pdfShowToolbar.height())+"px",
+	"top":(posYpdfFrame+pdfShowToolbar.height())+"px"
+    })
     editCanvas.width(pdfShowFirstPage.width());
     editCanvas.height(pdfShowDiv.height());
-    editToolbar.width(pdfShowToolbar.width());
-    editToolbar.height(pdfShowToolbar.height());
-    editDiv.height($(".editFrame").height() - pdfShowToolbar.height());
-    editDiv.css("top", pdfShowToolbar.height());
+//    editToolbar.width(pdfShowToolbar.width());
+//    editToolbar.height(pdfShowToolbar.height());
+//    editDiv.height($(".editFrame").height() - pdfShowToolbar.height());
+//    editDiv.css("top", pdfShowToolbar.height());
+    editDiv.height($(".editFrame").height());
+    editDiv.css("top", "0px");
     editDiv.scroll(function() {
 	pdfShowViewerContainer.scrollTop(editDiv.scrollTop());
 	pdfShowViewerContainer.scrollLeft(editDiv.scrollLeft());
@@ -135,6 +152,16 @@ function showPdf() {
 function exitEditMode() {
     $(".editFrame").hide();
     $(".editFrame").contents().find(".editCanvas").children().remove();
+    
+    //恢复toolbar
+    $(".pdfFrame").contents().find("#sidebarToggle").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#zoomOut").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#zoomIn").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#scaleSelect").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#secondaryToolbarToggle").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#addNote").removeAttr("disabled");
+    $(".pdfFrame").contents().find("#saveNote").attr("disabled","true");
+    $(".pdfFrame").contents().find("#cancelNote").attr("disabled","true");
 }
 
 function saveNoteDOM() {

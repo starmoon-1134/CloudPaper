@@ -1165,6 +1165,21 @@ html[dir='rtl'] .toolbarButton.pageDown::before {
   content: url(images/toolbarButton-openFile.png);
 }
 
+.toolbarButton.addNote::before,
+.secondaryToolbarButton.addNote::before {
+  content: url(images/toolbarButton-addNote.png);
+}
+
+.toolbarButton.saveNote::before,
+.secondaryToolbarButton.saveNote::before {
+  content: url(images/toolbarButton-saveNote.png);
+}
+
+.toolbarButton.cancelNote::before,
+.secondaryToolbarButton.cancelNote::before {
+  content: url(images/toolbarButton-cancelNote.png);
+}
+
 .toolbarButton.download::before,
 .secondaryToolbarButton.download::before {
   content: url(images/toolbarButton-download.png);
@@ -1953,7 +1968,22 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     content: url(images/toolbarButton-print@2x.png);
   }
 
-  .toolbarButton.openFile::before,
+  .toolbarButton.addNote::before,
+  .secondaryToolbarButton.addNote::before {
+    content: url(images/toolbarButton-addNote@2x.png);
+  }
+  
+   .toolbarButton.saveNote::before,
+  .secondaryToolbarButton.saveNote::before {
+    content: url(images/toolbarButton-saveNote@2x.png);
+  }
+  
+   .toolbarButton.cancelNote::before,
+  .secondaryToolbarButton.cancelNote::before {
+    content: url(images/toolbarButton-cancelNote@2x.png);
+  }
+  
+   .toolbarButton.openFile::before,
   .secondaryToolbarButton.openFile::before {
     content: url(images/toolbarButton-openFile@2x.png);
   }

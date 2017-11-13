@@ -41,7 +41,6 @@
 
 <div id="overlay" class="black_overlay">
 </div>
-<!-- <span class="iii" >test</span> -->
-<span ondblclick="alert('222')">（双击此按钮拷贝）</span>
+
 </body> 
 </html>
