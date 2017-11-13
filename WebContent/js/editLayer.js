@@ -1,5 +1,13 @@
 $(document).ready(function() {
- $(".editStartBtn").click(showTimeLine);
+ $(".getLog").click(showTimeLine);
+ $(".pdfFrame").load(function(){// 等iframe加载完毕
+     if(userInfo.currentFile.length>0){
+         $(".pdfFrame").contents().find("#addNote").removeAttr("disabled");
+     }
+     else{
+         $(".pdfFrame").contents().find("#addNote").attr("disabled","true"); 
+     }
+     }); 
 // $(".exitEditMode").click(exitEditMode);
 // $(".export").click(exportStandardDoc);
 // $(".editSaveBtn").click(saveNoteDOM);
