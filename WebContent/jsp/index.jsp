@@ -21,6 +21,15 @@
 <script type="text/javascript" src="codebase/GooUploader.js"></script>
 <script type="text/javascript" src="codebase/swfupload/swfupload.js"></script>
 <script type="text/javascript" src="js/editLayer.js"></script>
+<script type="text/javascript" src="http://www.w3cschool.cc/try/jeasyui/jquery.easyui.min.js"></script>
+
+<script type="text/javascript">
+var userInfo = {
+	userName: "root123",
+	password: "123123",
+	currentFile:""
+}
+</script>
 </head>
  
 
@@ -36,9 +45,19 @@
 
 <div class="fileManager">
 	<div class="menu">
-	<ul id="tree" class="filetree treeview-famfamfam">
+	<ul id="system_tree" class="filetree treeview-famfamfam">
 	</ul>
 	</div>
+	
+	<div id="addrootfolder" style="top:20px;position:absolute">
+	<button onclick="AddRootFolder()">新增分类</button>
+	</div>
+	
+	<div class="menu">
+	<ul id="user_tree" class="filetree treeview-famfamfam">
+	</ul>
+	</div>
+	
 	<div class="contextMenu" id="folderMenu">
 	   <ul>
 	     <li id="addFolder">添加文件夹</li>

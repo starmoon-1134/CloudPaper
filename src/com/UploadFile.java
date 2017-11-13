@@ -90,11 +90,11 @@ public class UploadFile extends ActionSupport
             
             //request.getRealPath("/")已不建议使用，改为this.getServletContext().getRealPath("/")  
             System.out.println("path:"+ServletActionContext.getServletContext().getRealPath("/"));
-            String tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userfiles/username/pdf")+File.separator+fileName;
+            String tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/pdf" ) + File.separator + fileName;
             File tmpFile = new File(tmpSaveFileName);
             while(tmpFile.exists()) {
             	fileOrderNum++;
-            	tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userfiles/username/pdf")+File.separator+fileName+"("+fileOrderNum+")";
+            	tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/pdf" ) + File.separator + fileName+"("+fileOrderNum+")";
             	tmpFile = new File(tmpSaveFileName);
             }
   
@@ -124,7 +124,8 @@ public class UploadFile extends ActionSupport
             }
     		try{  
 				BufferedReader inJson = new BufferedReader(new FileReader(  
-	            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+	            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/config") 
+	    				+ File.separator + userName + ".json"));
 				String curLine = "";
 				String findRet="";
 				while((curLine = inJson.readLine()) != null){
@@ -143,7 +144,8 @@ public class UploadFile extends ActionSupport
 				}
 				inJson.close();
 				BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-						 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+						 ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/config") 
+		    				+ File.separator + userName + ".json"));
 				outJson.write(findRet);
 				outJson.flush();
 				outJson.close();

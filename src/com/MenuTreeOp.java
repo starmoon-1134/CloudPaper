@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
@@ -25,17 +28,36 @@ public class MenuTreeOp {
 	private String renameNewFileName;
 	private String renameOldFileName;
 	private String renameFilePath;
+	private String rootFolderName;
 
- 	public String initTree() {
+ 	public String initUserTree() {
+ 		//System.out.println(getUserName());
 		try{  
 			BufferedReader inJson = new BufferedReader(new FileReader(  
-            		ServletActionContext.getServletContext().getRealPath("") + 
-            		"\\config\\" + getUserName() + ".json"));
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
 			String curLine = "";
 			while((curLine = inJson.readLine()) != null){
 				result = result + curLine + "\n";
 			 }
 			 inJson.close();
+         }catch(JSONException | IOException e) {  
+        	e.printStackTrace();
+        }
+		return "success";
+	}
+ 	
+ 	public String initSystemTree() {
+ 		//System.out.println(getUserName());
+		try{  
+			BufferedReader inJson = new BufferedReader(new FileReader(  
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + "system.json"));
+			String curLine = "";
+			while((curLine = inJson.readLine()) != null){
+				result = result + curLine + "\n";
+			}
+			inJson.close();
          }catch(JSONException | IOException e) {  
         	e.printStackTrace();
         }
@@ -49,7 +71,8 @@ public class MenuTreeOp {
 		String newFolderPath=parentPath+">"+getAddFolderName();
 		try{  
 			BufferedReader inJson = new BufferedReader(new FileReader(  
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
 			String curLine = "";
 			String addRet="";
 			while((curLine = inJson.readLine()) != null){
@@ -74,7 +97,8 @@ public class MenuTreeOp {
 			}
 			inJson.close();
 			BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+					 ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
 			outJson.write(addRet);
 			outJson.flush();
 			outJson.close();
@@ -89,9 +113,11 @@ public class MenuTreeOp {
 		 int index = getDeleteFolderName().lastIndexOf("folders");
 		 String desPath = getDeleteFolderName().substring(0, index);
 		 System.out.println(desPath);
+		 HashMap<String, Integer> pdfMap = new HashMap<String, Integer>();
 		 try{  
 			BufferedReader inJson = new BufferedReader(new FileReader(  
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
 			String deleteRet = "";
 			String curLine = "";
 			while((curLine = inJson.readLine()) != null){
@@ -104,6 +130,12 @@ public class MenuTreeOp {
 					 if(!path.equals(desPath) && path.indexOf(desPath+">") != 0 && path.indexOf(desPath+"*") != 0) {
 						 deleteRet = deleteRet + curLine + "\n";
 						 //System.out.println(deleteRet);
+					 }else {
+						 int lastIndex = path.lastIndexOf("*");
+						 if(lastIndex>0) {
+							 String pdfName = path.substring(lastIndex + 1, path.length());
+							 pdfMap.put(pdfName, 0);
+						 }
 					 }
 					 //System.out.println(path);
 				 }else {
@@ -116,14 +148,47 @@ public class MenuTreeOp {
 			 }
 			 inJson.close();
 			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+					 ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
 			 outJson.write(deleteRet);
 			 //System.out.println(deleteRet);
 			 outJson.flush();
 			 outJson.close();
+			 
+			 inJson = new BufferedReader(new FileReader(  
+	            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
+			 while((curLine = inJson.readLine()) != null){
+				 if(curLine.indexOf("\"path\"") != -1) {
+					 JSONObject curJson=new JSONObject(curLine);
+					 String path=curJson.getString("path");
+					 //System.out.println(path);
+					 int lastIndex = path.lastIndexOf("*");
+					 if(lastIndex>0) {
+						 String pdfName = path.substring(lastIndex + 1, path.length());
+						 if(pdfMap.containsKey(pdfName)) {
+							 pdfMap.put(pdfName, 1);
+						 }
+					 }
+				 }
+			 }
+			 inJson.close();
          }catch(JSONException | IOException e) {  
         	e.printStackTrace();
         }
+		 
+		Iterator pdfIter = pdfMap.entrySet().iterator();
+		while (pdfIter.hasNext()) {
+			Map.Entry pdfEntry = (Map.Entry) pdfIter.next();
+			if(pdfEntry.getValue().equals(0)) {
+				String fileNameString = ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/pdf" ) + File.separator + pdfEntry.getKey();
+//				System.out.println(fileNameString);
+				File tmpFile = new File(fileNameString);
+				if (tmpFile.exists()) {
+					tmpFile.delete();
+				}
+			}
+	    }
 		return "success";
 	}
 
@@ -144,7 +209,8 @@ public class MenuTreeOp {
 //		System.out.println(newName);
 		try{  
 			BufferedReader inJson = new BufferedReader(new FileReader(  
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
 			String renameRet = "";
 			String curLine = "";
 			while((curLine = inJson.readLine()) != null){
@@ -176,7 +242,8 @@ public class MenuTreeOp {
 			 }
 			 inJson.close();
 			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+					 ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
 			 outJson.write(renameRet);
 			 //System.out.println(deleteRet);
 			 outJson.flush();
@@ -195,10 +262,12 @@ public class MenuTreeOp {
 		int index = getDeleteFilePath().lastIndexOf("files");
 		String filePath = getDeleteFilePath().substring(0, index);
 		String desPath = filePath + "*" + getDeleteFileName();
+		int deleteFlag=0;
 //		System.out.println(desPath);
 		try{  
 			BufferedReader inJson = new BufferedReader(new FileReader(  
-            		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
 			String curLine = "";
 			String deleteRet = "";
 			while((curLine = inJson.readLine()) != null){
@@ -209,6 +278,10 @@ public class MenuTreeOp {
 					 String path=curJson.getString("path");
 					 if(!path.equals(desPath)) {
 						 deleteRet = deleteRet + curLine + "\n";
+						 int lastIndex = path.lastIndexOf("*");
+						 if(lastIndex>0 && path.substring(lastIndex + 1, path.length()).equals(getDeleteFileName())) {
+							 deleteFlag=1;
+						 }
 					 }
 				 }else {
 					 if(deleteRet.charAt(deleteRet.lastIndexOf("\n")-1)==',') {
@@ -220,7 +293,8 @@ public class MenuTreeOp {
 			 }
 			 inJson.close();
 			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+					 ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
 			 outJson.write(deleteRet);
 			 //System.out.println(deleteRet);
 			 outJson.flush();
@@ -230,12 +304,13 @@ public class MenuTreeOp {
         	e.printStackTrace();
         }
 		
-		String fileNameString = ServletActionContext.getServletContext().getRealPath("") + 
-				"\\uploadimages" + File.separator + getDeleteFileName();
-//		System.out.println(fileNameString);
-		File tmpFile = new File(fileNameString);
-		if (tmpFile.exists()) {
-			tmpFile.delete();
+		if(deleteFlag==0) {
+			String fileNameString = ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/pdf" ) + File.separator + getDeleteFileName();
+//			System.out.println(fileNameString);
+			File tmpFile = new File(fileNameString);
+			if (tmpFile.exists()) {
+				tmpFile.delete();
+			}
 		}
 		return "success";
 	}
@@ -246,15 +321,15 @@ public class MenuTreeOp {
 		//System.out.println(getChangeNewFolderName());
 		int fileOrderNum = 0;
 		
-		String oldFileName = ServletActionContext.getServletContext().getRealPath("") + 
-				"\\uploadimages" + File.separator + getRenameOldFileName();
-		String newFileName = ServletActionContext.getServletContext().getRealPath("") + 
-					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf";
+		String oldFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/pdf" ) 
+				+ File.separator + getRenameOldFileName();
+		String newFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/pdf" ) 
+				+ File.separator + getRenameNewFileName() + ".pdf";
 		File tmpFile = new File(newFileName);
 		while(tmpFile.exists()) {
 			fileOrderNum++;
-			newFileName = ServletActionContext.getServletContext().getRealPath("") + 
-					"\\uploadimages" + File.separator + getRenameNewFileName() + ".pdf" + "(" + fileOrderNum + ")";
+			newFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/pdf" ) 
+					+ File.separator + getRenameNewFileName() + ".pdf" + "(" + fileOrderNum + ")";
 			tmpFile = new File(newFileName);
 		}
 		
@@ -277,7 +352,8 @@ public class MenuTreeOp {
 		}
 		try{
 			BufferedReader inJson = new BufferedReader(new FileReader(
-	        		ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+	        		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
 			String curLine = "";
 			String renameRet = "";
 			while((curLine = inJson.readLine()) != null){
@@ -302,7 +378,8 @@ public class MenuTreeOp {
 			 }
 			 inJson.close();
 			 BufferedWriter outJson = new BufferedWriter(new FileWriter(  
-					 ServletActionContext.getServletContext().getRealPath("") + "\\config\\usertree.json"));
+					 ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
 			 outJson.write(renameRet);
 			 //System.out.println(deleteRet);
 			 outJson.flush();
@@ -314,6 +391,49 @@ public class MenuTreeOp {
 		return "success";
 	}
 
+	public String AddRootFolder() {
+		try{  
+			BufferedReader inJson = new BufferedReader(new FileReader(  
+            		ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+    				+ File.separator + getUserName() + ".json"));
+			String curLine = "";
+			String addRet="";
+			while((curLine = inJson.readLine()) != null){
+				 if(curLine.equals("{\"pathes\" :[")) {
+					 addRet=addRet+curLine+"\n";
+				 }else if(curLine.indexOf("\"path\"") != -1) {
+					 JSONObject curJson=new JSONObject(curLine);
+					 String path=curJson.getString("path");
+					 if(path.indexOf(getRootFolderName()) == 0) {
+						 result="exist";
+						 return "success";
+					 }
+					 addRet=addRet+curLine+"\n";
+				 }else {
+					 JSONObject newJson=new JSONObject();
+					 newJson.put("path", getRootFolderName());
+					 if(!addRet.equals("{\"pathes\" :[" + "\n")) {
+						 addRet=addRet.substring(0, addRet.length()-1);
+						 addRet=addRet+",\n";
+					 }
+					 addRet=addRet+newJson.toString()+"\n";
+					 addRet=addRet+curLine+"\n";
+				 }
+			}
+			inJson.close();
+			BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+					 ServletActionContext.getServletContext().getRealPath("/userFiles/" + getUserName()  + "/config") 
+	    				+ File.separator + getUserName() + ".json"));
+			outJson.write(addRet);
+			outJson.flush();
+			outJson.close();
+			result="complete";
+		}catch(JSONException | IOException e) {  
+        	e.printStackTrace();
+        }
+		return "success";
+	}
+	
 	public String getResult() {
 		return result;
 	}
@@ -408,5 +528,13 @@ public class MenuTreeOp {
 
 	public void setRenameFilePath(String renameFilePath) {
 		this.renameFilePath = renameFilePath;
+	}
+
+	public String getRootFolderName() {
+		return rootFolderName;
+	}
+
+	public void setRootFolderName(String rootFolderName) {
+		this.rootFolderName = rootFolderName;
 	}
 }
