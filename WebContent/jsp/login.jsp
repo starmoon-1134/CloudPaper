@@ -114,7 +114,8 @@
 				 				document.getElementById("password_ret").innerText="密码错误";
 					 			$("#password_ret").css("display","block");
 			 			    }else{
-			 					alert(data);
+			 			      
+			 			       window.location.href="index.jsp?userName="+username;
 			 			    }
 			 			},
 			 			error : function() {

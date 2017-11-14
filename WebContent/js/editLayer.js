@@ -8,6 +8,7 @@ $(document).ready(function() {
          $(".pdfFrame").contents().find("#addNote").attr("disabled","true"); 
      }
      }); 
+// alert(userInfo.userName);
 // $(".exitEditMode").click(exitEditMode);
 // $(".export").click(exportStandardDoc);
 // $(".editSaveBtn").click(saveNoteDOM);

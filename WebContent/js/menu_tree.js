@@ -16,13 +16,46 @@ function LiSort(id) {
     }
 }
 
-function InitMenu() {
+function AddRootFolder() {
+    var input = document.createElement("input");
+    $("#addrootfolder").prepend(input);
+    $(input).keydown(function(e) {
+        if (e.keyCode == 13) {
+            var RootFolderName = $(input).val();
+            $.ajax(
+                {
+                    url : "menutree_addRootFolder",
+                    data :
+                        {
+                            "userName" : userInfo.userName,
+                            "rootFolderName" : RootFolderName
+                        },
+                    dataType : 'json',
+                    type : 'post',
+                    async : false,
+                    success : function(data) {
+                        if (data == "complete") {
+                            InitUserTree();
+                            $(input).remove();
+                        } else {
+                            alert(data);
+                        }
+                    },
+                    error : function() {
+                        alert("error");
+                    }
+                });
+        }
+    })
+}
+
+function InitUserTree() {
     $.ajax(
         {
-            url : "menutree_initTree",
+            url : "menutree_initUserTree",
             data :
                 {
-                    "userName" : "usertree"
+                    "userName" : userInfo.userName
                 },
             dataType : 'json',
             type : 'post',
@@ -30,7 +63,7 @@ function InitMenu() {
             success : function(data) {
                 var d = eval("(" + data + ")");
                 var root = document.createElement("ul");
-                $(root).attr("id", "root");
+                $(root).attr("id", "user_root");
                 var container = new Object();
                 var pathes = d["pathes"];
                 $.each(pathes, function(i, record) {
@@ -57,8 +90,9 @@ function InitMenu() {
                             $(container[cur_node_name + "files"]).attr("id", cur_node_name + "files");
                             span.appendChild(text);
                             $(span).attr("class", "folder");
+                            $(span).attr("id", "usertree_folder");
                             li.appendChild(span);
-                            // $(li).attr("class", "closed");
+                            $(li).attr("class", "closed");
                             li.appendChild(container[cur_node_name + "folders"]);
                             li.appendChild(container[cur_node_name + "files"]);
                             $(root).prepend(li);
@@ -73,6 +107,7 @@ function InitMenu() {
                             $(container[cur_node_name + "files"]).attr("id", cur_node_name + "files");
                             span.appendChild(text);
                             $(span).attr("class", "folder");
+                            $(span).attr("id", "usertree_folder");
                             li.appendChild(span);
                             $(li).attr("class", "closed");
                             li.appendChild(container[cur_node_name + "folders"]);
@@ -89,18 +124,19 @@ function InitMenu() {
                         var text = document.createTextNode(pdf_or_url);
                         span.appendChild(text);
                         $(span).attr("class", "file");
+                        $(span).attr("id", "usertree_file");
                         li.appendChild(span);
                         container[pre_node_name + "files"].appendChild(li);
                     }
                 })
-                $("#tree").empty();
-                $(root).appendTo("#tree");
-                LiSort("root");
-                $.cookie('menuState');
-                $("#tree").treeview(
+                $("#user_tree").empty();
+                $(root).appendTo("#user_tree");
+                LiSort("user_root");
+                $.cookie('usertreeState');
+                $("#user_tree").treeview(
                     {
                         persist : "cookie",
-                        cookieId : "menuState",
+                        cookieId : "usertreeState",
                         cookieOptions :
                             {
                                 path : '/'
@@ -108,7 +144,7 @@ function InitMenu() {
                         collapsed : "true",
                         add : root
                     });
-                $("span.folder").contextMenu('folderMenu',
+                $("span#usertree_folder").contextMenu('folderMenu',
                     {
                         bindings :
                             {
@@ -149,7 +185,8 @@ function InitMenu() {
                                             op_fail_text : "上传失败",
                                             op_ok_text : "上传成功",
                                             op_no_text : "取消上传",
-                                            upload_url : "upload"
+                                            upload_url : "upload",
+                                            flash_url : "/CloudPaper/swfupload.swf"
                                         };
                                     var create_ret = $.createGooUploader($("#upload"), upload_property);
 
@@ -158,14 +195,16 @@ function InitMenu() {
                                     $(back_input).attr("value", "返回");
                                     $(back_input).click(function() {
                                         document.getElementById('overlay').style.display = 'none';
-                                        InitMenu();
+                                        InitSystemTree();
+                                        InitUserTree();
                                     })
                                     $(back_input).appendTo("#overlay");
                                     document.getElementById('overlay').style.display = 'block';
                                 }
                             }
                     });
-                $("span.file").contextMenu('fileMenu',
+
+                $("span#usertree_file").contextMenu('fileMenu',
                     {
                         bindings :
                             {
@@ -174,19 +213,144 @@ function InitMenu() {
                                 },
                                 'renameFile' : function(t) {
                                     RenameFile(t)
+                                },
+                                'intensiveRead' : function(t) {
+                                    ChangeFileState(t, "intensive");
+                                },
+                                'roughRead' : function(t) {
+                                    ChangeFileState(t, "rough");
+                                },
+                                'unRead' : function(t) {
+                                    ChangeFileState(t, "un");
                                 }
                             }
                     });
-                $("span.file").dblclick(
+                $("span#usertree_file").dblclick(
                         function() {
                             var isInReadMode = $(".pdfFrame").contents().find("#saveNote").attr("disabled");
+
                             if (isInReadMode) {
                                 userInfo.currentFile = this.innerText;
                                 $(".pdfFrame").attr(
                                         "src",
-                                        "pdfjs/web/viewer.html?file=../../userFiles/" + userInfo.userName
+                                        "../pdfjs/web/viewer.html?file=../../userFiles/" + userInfo.userName
                                                 + "/pdf/" + this.innerText);
-                                // $(".pdfFrame").contents().find("#addNote").removeAttr("disabled");
+                            } else {
+                                alert("请先退出编辑笔记模式");
+                            }
+                        });
+            },
+            error : function() {
+                alert("error");
+            }
+        });
+}
+
+function InitSystemTree() {
+    $.ajax(
+        {
+            url : "menutree_initSystemTree",
+            data :
+                {
+                    "userName" : userInfo.userName
+                },
+            dataType : 'json',
+            type : 'post',
+            async : false,
+            success : function(data) {
+                var d = eval("(" + data + ")");
+                var root = document.createElement("ul");
+                $(root).attr("id", "system_root");
+                var container = new Object();
+                var pathes = d["pathes"];
+                $.each(pathes, function(i, record) {
+                    var path = record["path"];
+                    var nodes = path.split('>');
+                    var last_node = (nodes[nodes.length - 1].split('*'))[0];
+                    var pdf_or_url = (nodes[nodes.length - 1].split('*'))[1];
+                    nodes[nodes.length - 1] = last_node;
+                    var pre_node_name = "";
+                    var cur_node_name = "";
+                    for (var j = 0; j < nodes.length; j++) {
+                        if (j == 0) {
+                            cur_node_name = nodes[j];
+                        } else {
+                            cur_node_name = pre_node_name + ">" + nodes[j];
+                        }
+                        if (container[cur_node_name + "folders"] == undefined && j == 0) {
+                            var li = document.createElement("li");
+                            var span = document.createElement("span");
+                            var text = document.createTextNode(nodes[j]);
+                            container[cur_node_name + "folders"] = document.createElement("ul");
+                            container[cur_node_name + "files"] = document.createElement("ul");
+                            $(container[cur_node_name + "folders"]).attr("id", cur_node_name + "folders");
+                            $(container[cur_node_name + "files"]).attr("id", cur_node_name + "files");
+                            span.appendChild(text);
+                            $(span).attr("class", "folder");
+                            $(span).attr("id", "systemtree_folder");
+                            li.appendChild(span);
+                            $(li).attr("class", "closed");
+                            li.appendChild(container[cur_node_name + "folders"]);
+                            li.appendChild(container[cur_node_name + "files"]);
+                            $(root).prepend(li);
+                            pre_node_name = cur_node_name;
+                        } else if (container[cur_node_name + "folders"] == undefined) {
+                            var li = document.createElement("li");
+                            var span = document.createElement("span");
+                            var text = document.createTextNode(nodes[j]);
+                            container[cur_node_name + "folders"] = document.createElement("ul");
+                            container[cur_node_name + "files"] = document.createElement("ul");
+                            $(container[cur_node_name + "folders"]).attr("id", cur_node_name + "folders");
+                            $(container[cur_node_name + "files"]).attr("id", cur_node_name + "files");
+                            span.appendChild(text);
+                            $(span).attr("class", "folder");
+                            $(span).attr("id", "systemtree_folder");
+                            li.appendChild(span);
+                            $(li).attr("class", "closed");
+                            li.appendChild(container[cur_node_name + "folders"]);
+                            li.appendChild(container[cur_node_name + "files"]);
+                            $(container[pre_node_name + "folders"]).prepend(li);
+                            pre_node_name = cur_node_name;
+                        } else {
+                            pre_node_name = cur_node_name;
+                        }
+                    }
+                    if (pdf_or_url != undefined) {
+                        var li = document.createElement("li");
+                        var span = document.createElement("span");
+                        var text = document.createTextNode(pdf_or_url);
+                        span.appendChild(text);
+                        $(span).attr("class", "file");
+                        $(span).attr("id", "systemtree_file");
+                        li.appendChild(span);
+                        container[pre_node_name + "files"].appendChild(li);
+                    }
+                })
+                $("#system_tree").empty();
+                $(root).appendTo("#system_tree");
+                LiSort("system_root");
+                $.cookie('systemtreeState');
+                $("#system_tree").treeview(
+                    {
+                        persist : "cookie",
+                        cookieId : "systemtreeState",
+                        cookieOptions :
+                            {
+                                path : '/'
+                            },
+                        collapsed : "true",
+                        add : root
+                    });
+                $("span#systemtree_file").dblclick(
+                        function() {
+                            var isInReadMode = $(".pdfFrame").contents().find("#saveNote").attr("disabled");
+
+                            if (isInReadMode) {
+                                userInfo.currentFile = this.innerText;
+                                $(".pdfFrame").attr(
+                                        "src",
+                                        "../pdfjs/web/viewer.html?file=../../userFiles/" + userInfo.userName
+                                                + "/pdf/" + this.innerText);
                             } else {
                                 alert("请先退出编辑笔记模式");
                             }
@@ -210,6 +374,7 @@ function AddFolder(t) {
                     url : "menutree_addFolder",
                     data :
                         {
+                            "userName" : userInfo.userName,
                             "addFolderName" : addFolderName,
                             "addParentName" : $($(t).next()).attr("id")
                         },
@@ -218,7 +383,7 @@ function AddFolder(t) {
                     async : false,
                     success : function(data) {
                         if (data == "complete") {
-                            InitMenu();
+                            InitUserTree();
                         } else if (data == "exist") {
                             alert("exist");
                         }
@@ -237,13 +402,15 @@ function DeleteFolder(deleteFolderName) {
             url : "menutree_deleteFolder",
             data :
                 {
+                    "userName" : userInfo.userName,
                     "deleteFolderName" : deleteFolderName
                 },
             dataType : 'json',
             type : 'post',
             async : false,
             success : function(data) {
-                InitMenu();
+                InitSystemTree();
+                InitUserTree();
             },
             error : function() {
                 alert("error");
@@ -263,6 +430,7 @@ function RenameFolder(t) {
                     url : "menutree_renameFolder",
                     data :
                         {
+                            "userName" : userInfo.userName,
                             "renameNewFolderName" : renameNewFolderName,
                             "renameOldFolderName" : $($(t).next()).attr("id")
                         },
@@ -271,7 +439,7 @@ function RenameFolder(t) {
                     async : false,
                     success : function(data) {
                         if (data == "complete") {
-                            InitMenu();
+                            InitUserTree();
                         } else if (data == "exist") {
                             alert("exist");
                         }
@@ -292,6 +460,7 @@ function DeleteFile(t) {
             url : "menutree_deleteFile",
             data :
                 {
+                    "userName" : userInfo.userName,
                     "deleteFileName" : $(t).text(),
                     "deleteFilePath" : $($($(t).parent()).parent()).attr("id")
                 },
@@ -299,7 +468,8 @@ function DeleteFile(t) {
             type : 'post',
             async : false,
             success : function(data) {
-                InitMenu();
+                InitSystemTree();
+                InitUserTree();
             },
             error : function() {
                 alert("error");
@@ -321,6 +491,7 @@ function RenameFile(t) {
                         url : "menutree_renameFile",
                         data :
                             {
+                                "userName" : userInfo.userName,
                                 "renameNewFileName" : renameNewFileName,
                                 "renameOldFileName" : $(t).text(),
                                 "renameFilePath" : $($($(t).parent()).parent()).attr("id")
@@ -330,7 +501,8 @@ function RenameFile(t) {
                         async : false,
                         success : function(data) {
                             if (data == "complete") {
-                                InitMenu();
+                                InitSystemTree();
+                                InitUserTree();
                             } else if (data == "exist") {
                                 alert("exist");
                             }
@@ -344,6 +516,30 @@ function RenameFile(t) {
     })
 }
 
+function ChangeFileState(t, newFileState) {
+    // alert(newFileState);
+    $.ajax(
+        {
+            url : "menutree_changeFileState",
+            data :
+                {
+                    "userName" : userInfo.userName,
+                    "fileName" : $(t).text(),
+                    "newFileState" : newFileState
+                },
+            dataType : 'json',
+            type : 'post',
+            async : false,
+            success : function(data) {
+                InitSystemTree();
+            },
+            error : function() {
+                alert("error");
+            }
+        });
+}
+
 $(document).ready(function() {
-    InitMenu();
+    InitSystemTree();
+    InitUserTree();
 });
