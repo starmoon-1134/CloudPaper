@@ -5,33 +5,15 @@
 <struts>
 <include file="struts-default.xml"/>
 
-<package name="CloudPaper" namespace="/" extends="struts-default" >
-		 <action name="upload" class="com.UploadFile">
-             <result name="success">/jsp/menu_tree.jsp</result>
-         </action>
-</package>	
-
 <package name="default"  extends="struts-default">
    <action name="upload" class="com.UploadFile">
        <result name="success">/jsp/menu_tree.jsp</result>
    </action>
    
-<!--    <action name="signin" class="com.UserOp" method="userSignIn"> -->
-<!--        <result name="success">/jsp/menu_tree.jsp</result> -->
-<!--        <result name="nousername">/jsp/test.jsp</result> -->
-<!--        <result name="passworderror">/jsp/test.jsp</result> -->
-<!--    </action> -->
-   
-<!--    <action name="register" class="com.UserOp" method="userRegister"> -->
-<!--        <result name="success">/jsp/login.jsp</result> -->
-<!--        <result name="usernameexist">/jsp/test.jsp</result> -->
-<!--        <result name="passwordcomfirmerror">/jsp/test.jsp</result> -->
-<!--    </action> -->
 </package>
 
 <package name="resultJson" namespace="/" extends="json-default">
-
-   <action name="saveNoteDOM" class="CloudPaper.NoteManager" method="saveDOMString">
+	<action name="saveNoteDOM" class="CloudPaper.NoteManager" method="saveDOMString">
        <result type="json" name="success">
             <param name="root">resultString</param>
         </result>
@@ -48,13 +30,15 @@
             <param name="root">resultString</param>
         </result>
    </action>
-	
-	<action name="menutree_*" class="com.MenuTreeOp" method="{1}">  
-        <result type="json">
-            <param name="root" >result</param>
+   
+   <action name="LoadLog" class="CloudPaper.logger" method="getLog">
+       <result type="json" name="success">
+            <param name="root">resultString</param>
         </result>
-        <result type="json" name="error"></result>
-    </action>
+        <result type="json" name="error">
+            <param name="root">resultString</param>
+        </result>
+   </action>
 
     <action name="menutree_*" class="com.MenuTreeOp" method="{1}">  
 		<result type="json">
@@ -69,6 +53,7 @@
 		</result>
 		<result type="json" name="error"></result>
     </action>
+
 </package>
 
 </struts>

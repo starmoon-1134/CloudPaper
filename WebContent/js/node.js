@@ -3,10 +3,10 @@ $(document).ready(function() {
 })
 
 function addCanvasEventListener() {
-    $(".editCanvas").bind("click",
-	{
-	    mousepos : event
-	}, insertLabel);
+    $(".editCanvas").bind("mousedown",
+        {
+            mousepos : event
+        }, insertLabel);
 }
 
 function insertLabel(mousepos) {
@@ -29,10 +29,10 @@ function insertLabel(mousepos) {
     // 设置笔记块的位置
     var scale = $(".NoteScale").text();
     $(wrap).css(
-	{
-	    "top" : (yy + scrollyy) / scale + "px",
-	    "left" : (xx + scrollxx) / scale + "px"
-	});
+        {
+            "top" : (yy + scrollyy) / scale + "px",
+            "left" : (xx + scrollxx) / scale + "px"
+        });
 
     // 加入DOM Tree中
     textAreaContainer.append(labelText);
@@ -49,7 +49,7 @@ function insertLabel(mousepos) {
     // 如果已有笔记块，缩放应该统一
     var Note1 = $(".editCanvas").children()[0];
     if (Note1 != null) {
-	$(wrap).css("zoom", scale);
+        $(wrap).css("zoom", scale);
     }
 
     addListenerForNote($(wrap));
@@ -60,19 +60,31 @@ function insertLabel(mousepos) {
 
 function addListenerForNote(wrap) {
     // 屏蔽editCanvas的点击事件
-    wrap.click(function(e) {
-	e.stopPropagation();
+    wrap.mousedown(function(e) {
+        e.stopPropagation();
+        // $('.drag', parent.document).css("z-index", "9999");
     });
+
+    // $('.drag', parent.document).mouseup(function(e) {
+    // $('.drag', parent.document).css("z-index", "-1");
+    // });
+    //
+    // wrap.mouseup(function(e) {
+    // $('.drag', parent.document).css("z-index", "-1");
+    // });
 
     // 标签添加折叠响应
     wrap.find(".labelTitle").click(function() {
-	wrap.toggleClass("NoteWrap");
-	wrap.toggleClass("NoteWrapFold");
+        wrap.toggleClass("NoteWrap");
+        wrap.toggleClass("NoteWrapFold");
     });
 
     // 删除标签块响应
     wrap.find(".cancelBtn").click(function() {
-	wrap.children().remove();
-	wrap.detach();
+        wrap.children().remove();
+        wrap.detach();
     });
+
+    // // 允许拖拽
+    // wrap.draggable();
 }

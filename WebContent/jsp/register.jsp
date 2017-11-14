@@ -127,7 +127,7 @@
 					 				document.getElementById("username_ret").innerText="用户名已经存在";
 						 			$("#username_ret").css("display","block");
 				 			    }else{
-				 					alert(data);
+				 			       window.location.href="jsp/login.jsp";
 				 			    }
 				 			},
 				 			error : function() {
