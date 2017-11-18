@@ -94,8 +94,8 @@
 		 	function userSignIn(){
 		 	    var username = $("#username").val();
 		 	    var password = $("#password").val();
-		 	    //alert(username);
-		 	    //alert(password);
+// 		 	    alert(username);
+// 		 	    alert(password);
 		 	    if(username.length!=0 && password.length>=6){
 			 		$.ajax({
 			 			url : "user_userSignIn",
@@ -115,7 +115,7 @@
 					 			$("#password_ret").css("display","block");
 			 			    }else{
 			 			      
-			 			       window.location.href="index.jsp?userName="+username;
+			 			       window.location.href="/CloudPaper/jsp/index.jsp";
 			 			    }
 			 			},
 			 			error : function() {

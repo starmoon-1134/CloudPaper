@@ -127,7 +127,7 @@
 					 				document.getElementById("username_ret").innerText="用户名已经存在";
 						 			$("#username_ret").css("display","block");
 				 			    }else{
-				 			       window.location.href="jsp/login.jsp";
+				 			       window.location.href="/CloudPaper/jsp/login.jsp";
 				 			    }
 				 			},
 				 			error : function() {

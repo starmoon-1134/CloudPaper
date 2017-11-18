@@ -18,8 +18,8 @@ public class UserOp {
   private String result;
 
   public String userSignIn() {
-    // System.out.println(getUsername());
-    // System.out.println(getPassword());
+    System.out.println(getUsername());
+    System.out.println(getPassword());
     SqlCon userSql = new SqlCon();
     String queryUsername = "select * from useraccount where username=\'" + getUsername() + "\'";
     ResultSet usernameQueryRet = userSql.executeQuery(queryUsername);
@@ -28,6 +28,8 @@ public class UserOp {
         if (usernameQueryRet.getString("password").equals(getPassword())) {
           userSql.closeCon();
           result = "validatesuccess";
+          ServletActionContext.getRequest().getSession().setAttribute("username", getUsername());
+          ServletActionContext.getRequest().getSession().setAttribute("password", getPassword());
           return "success";
         } else {
           userSql.closeCon();
@@ -65,8 +67,14 @@ public class UserOp {
         userSql.closeCon();
         result = "registersuccess";
 
-        String userFiles = ServletActionContext.getServletContext().getRealPath("")
-            + "\\userFiles\\" + username;
+        String userFiles = ServletActionContext.getServletContext().getRealPath("") + "\\userFiles";
+        File tmpFile = new File(userFiles);
+        if (!tmpFile.exists()) {
+          tmpFile.mkdir();
+        }
+
+        userFiles = ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\"
+            + username;
         File usernameDir = new File(userFiles);
         File configDir = new File(userFiles + "\\config");
         File pdfDir = new File(userFiles + "\\pdf");
@@ -144,4 +152,3 @@ public class UserOp {
     this.result = result;
   }
 }
-

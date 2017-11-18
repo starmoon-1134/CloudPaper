@@ -95,9 +95,10 @@
 
 // var userInfo = '';
 // alert(userInfo.userName);
+
 var userInfo = {
-    userName: 'zy',
-    password: "123123",
+    userName: <%="\""+ (String) session.getAttribute("username")+"\""%>,
+    password: <%="\""+(String) session.getAttribute("password")+"\""%>,
     currentFile:""
 }
 </script>
