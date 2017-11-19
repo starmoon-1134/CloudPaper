@@ -34,6 +34,10 @@ function AddRootFolder() {
                     type : 'post',
                     async : false,
                     success : function(data) {
+                        if (data.indexOf("checkFailed") >= 0) {
+                            window.location.href = "/CloudPaper";
+                            return;
+                        }
                         if (data == "complete") {
                             InitUserTree();
                             $(input).remove();
@@ -42,7 +46,7 @@ function AddRootFolder() {
                         }
                     },
                     error : function() {
-                        alert("error");
+                        alert("addrootfolder error");
                     }
                 });
         }
@@ -50,6 +54,10 @@ function AddRootFolder() {
 }
 
 function InitUserTree() {
+    if (userInfo.userName == "null") {
+        window.location.href = "/CloudPaper";
+        return;
+    }
     $.ajax(
         {
             url : "menutree_initUserTree",
@@ -61,6 +69,10 @@ function InitUserTree() {
             type : 'post',
             async : false,
             success : function(data) {
+                if (data.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
                 var d = eval("(" + data + ")");
                 var root = document.createElement("ul");
                 $(root).attr("id", "user_root");
@@ -241,7 +253,7 @@ function InitUserTree() {
                         });
             },
             error : function() {
-                alert("error");
+                alert("menutree_initUserTree");
             }
         });
 }
@@ -258,6 +270,10 @@ function InitSystemTree() {
             type : 'post',
             async : false,
             success : function(data) {
+                if (data.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
                 var d = eval("(" + data + ")");
                 var root = document.createElement("ul");
                 $(root).attr("id", "system_root");
@@ -382,6 +398,10 @@ function AddFolder(t) {
                     type : 'post',
                     async : false,
                     success : function(data) {
+                        if (data.indexOf("checkFailed") >= 0) {
+                            window.location.href = "/CloudPaper";
+                            return;
+                        }
                         if (data == "complete") {
                             InitUserTree();
                         } else if (data == "exist") {
@@ -409,6 +429,10 @@ function DeleteFolder(deleteFolderName) {
             type : 'post',
             async : false,
             success : function(data) {
+                if (data.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
                 InitSystemTree();
                 InitUserTree();
             },
@@ -438,6 +462,10 @@ function RenameFolder(t) {
                     type : 'post',
                     async : false,
                     success : function(data) {
+                        if (data.indexOf("checkFailed") >= 0) {
+                            window.location.href = "/CloudPaper";
+                            return;
+                        }
                         if (data == "complete") {
                             InitUserTree();
                         } else if (data == "exist") {
@@ -468,6 +496,10 @@ function DeleteFile(t) {
             type : 'post',
             async : false,
             success : function(data) {
+                if (data.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
                 InitSystemTree();
                 InitUserTree();
             },
@@ -500,6 +532,10 @@ function RenameFile(t) {
                         type : 'post',
                         async : false,
                         success : function(data) {
+                            if (data.indexOf("checkFailed") >= 0) {
+                                window.location.href = "/CloudPaper";
+                                return;
+                            }
                             if (data == "complete") {
                                 InitSystemTree();
                                 InitUserTree();
@@ -531,6 +567,10 @@ function ChangeFileState(t, newFileState) {
             type : 'post',
             async : false,
             success : function(data) {
+                if (data.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
                 InitSystemTree();
             },
             error : function() {

@@ -119,7 +119,7 @@
 			 			    }
 			 			},
 			 			error : function() {
-			 			    alert("error");
+			 			    alert("login error");
 			 			}
 			 		});
 		 	    }else{

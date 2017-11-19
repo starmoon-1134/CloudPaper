@@ -16,7 +16,7 @@ public class NoteManager {
   private String mDOMString = null;
   private String userName = null;
   private String fileName = null;
-  private String resultString = null;
+  private String resultString = "checkFailed";
 
   public String saveDOMString() throws IOException {
     String dirString = ServletActionContext.getServletContext().getRealPath("") + "userfiles\\"

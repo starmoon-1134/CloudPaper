@@ -5,14 +5,59 @@
 <struts>
 <include file="struts-default.xml"/>
 
+<package name="resultJson2" namespace="/" extends="json-default">
+    <action name="user_*" class="com.UserOp" method="{1}">
+       <result type="json">
+            <param name="root" >result</param>
+        </result>
+        <result type="json" name="error"></result>
+    </action>
+</package>
+
 <package name="default"  extends="struts-default">
-   <action name="upload" class="com.UploadFile">
-       <result name="success">/jsp/menu_tree.jsp</result>
-   </action>
+     <interceptors>
+      <!-- 定义了一个名为authority的拦截器，注意拦截器的class -->
+         <interceptor name="AuthCheck" class="com.AuthCheck" />
+          <interceptor-stack name="defualtSecurityStackWithAuthentication">
+             <interceptor-ref name="AuthCheck" />
+             <interceptor-ref name="defaultStack" />
+          </interceptor-stack>
+     </interceptors>
+      <default-interceptor-ref name="defualtSecurityStackWithAuthentication" />
+      <!-- 全局Result，让验证不通过的都跳到该result -->
+      <global-results>
+            <result name="tologin" >
+                <param name="root">resultString</param>
+            </result>
+      </global-results>
+
+	  <action name="upload" class="com.UploadFile">
+	      <result name="success">/jsp/menu_tree.jsp</result>
+	  </action>
    
 </package>
 
 <package name="resultJson" namespace="/" extends="json-default">
+    <interceptors>
+      <!-- 定义了一个名为authority的拦截器，注意拦截器的class -->
+         <interceptor name="AuthCheck" class="com.AuthCheck" />
+          <interceptor-stack name="defualtSecurityStackWithAuthentication">
+             <interceptor-ref name="AuthCheck" />
+             <interceptor-ref name="defaultStack" />
+          </interceptor-stack>
+     </interceptors>
+      <default-interceptor-ref name="defualtSecurityStackWithAuthentication" />
+      <!-- 全局Result，让验证不通过的都跳到该result -->
+      <global-results>
+            <result name="tologin" type="json">
+                <param name="root">resultString</param>
+            </result>
+      </global-results>
+<!--       <global-results> -->
+<!--             <result name="tologin">/jsp/login.jsp</result> -->
+<!--       </global-results> -->
+
+
 	<action name="saveNoteDOM" class="CloudPaper.NoteManager" method="saveDOMString">
        <result type="json" name="success">
             <param name="root">resultString</param>
@@ -46,13 +91,6 @@
 		</result>
 		<result type="json" name="error"></result>
 	</action>
-	
-	<action name="user_*" class="com.UserOp" method="{1}">
-       <result type="json">
-			<param name="root" >result</param>
-		</result>
-		<result type="json" name="error"></result>
-    </action>
 
 </package>
 

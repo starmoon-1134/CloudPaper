@@ -21,7 +21,7 @@ enum logType {
 public class logger {
   String userName = null;
   String fileName = null;
-  String resultString = null;
+  String resultString = "checkFailed";
 
   public void addLog(String operate, logType type) throws IOException {
     StringBuffer oneLog = new StringBuffer(this.getFormatDate());

@@ -15,7 +15,7 @@ public class UserOp {
   private String username;
   private String password;
   private String confirmpassword;
-  private String result;
+  private String result = " checkFailed";
 
   public String userSignIn() {
     System.out.println(getUsername());

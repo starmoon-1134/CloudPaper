@@ -38,10 +38,18 @@ function StartEditPre() {
                 },
             dataType : "json",// 设置需要返回的数据类型
             success : function(resultString) {
+                if (resultString.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
                 if (resultString.indexOf("###$$$file lost!###$$$") >= 0) {
                     $(".editFrame").contents().find(".NoteScale").text("1");
                     return;
                 }
+                if(resultString.indexOf("checkFailed") >= 0){
+                    window.location.href="/CloudPaper";
+                }
+                
                 var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
                 editBody.html(resultString);
 
@@ -72,7 +80,9 @@ function StartEditPre() {
                 })
             },
             error : function(resultString) {
-                alert("抱歉,好像出错了...");
+                    alert("抱歉,好像出错了...");
+// var str = JSON.stringify(resultString);
+// alert(str);
             }
         });// $.ajax({}) end
 
@@ -194,7 +204,11 @@ function saveNoteDOM() {
                 },
             dataType : "json",// 设置需要返回的数据类型
             success : function(resultString) {
-// alert(resultString);
+                // alert(resultString);
+                if (resultString.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
             },
             error : function(resultString) {
                 alert("抱歉,好像出错了...");
@@ -217,6 +231,10 @@ function showTimeLine() {
             dataType : "json",// 设置需要返回的数据类型
             success : function(resultString) {
                 alert(resultString);
+                if (resultString.indexOf("checkFailed") >= 0) {
+                    window.location.href = "/CloudPaper";
+                    return;
+                }
             }, 
             error : function(resultString) {
                 alert("抱歉,好像出错了...");
