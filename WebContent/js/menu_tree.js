@@ -251,6 +251,24 @@ function InitUserTree() {
                                 alert("请先退出编辑笔记模式");
                             }
                         });
+                $("span#usertree_file").draggable({
+                    //revert: true, 
+                    helper: "clone",
+                    start: function() {
+                        //alert(this.innerText);
+                      },
+                      drag: function() {
+                        
+                      },
+                      stop: function() {
+                	  $("span#usertree_folder").mouseover(function(){
+                	      DesFolderName=$($(this).next()).attr("id");
+                	      $("span#usertree_folder").unbind("mouseover");
+                	      DragFile(DesFolderName,this.innerText);
+                	  });
+                      }
+                    });
+
             },
             error : function() {
                 alert("menutree_initUserTree");
@@ -376,6 +394,35 @@ function InitSystemTree() {
                 alert("error");
             }
         });
+}
+
+function DragFile(DesFolderName,FileName){
+    $.ajax({
+        url : "menutree_dragFile",
+        data :
+            {
+                "userName" : userInfo.userName,
+                "desFolderName" : DesFolderName,
+                "fileName" : FileName
+            },
+        dataType : 'json',
+        type : 'post',
+        async : false,
+        success : function(data) {
+            if (data.indexOf("checkFailed") >= 0) {
+                window.location.href = "/CloudPaper";
+                return;
+            }
+            if (data == "complete") {
+                InitUserTree();
+            } else if (data == "exist") {
+                alert("exist");
+            }
+        },
+        error : function() {
+            alert("error");
+        }
+    });
 }
 
 function AddFolder(t) {

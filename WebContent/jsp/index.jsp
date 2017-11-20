@@ -46,6 +46,7 @@
 		<script  type="text/javascript" src="/CloudPaper/codebase/GooUploader.js"></script>
 		<script type="text/javascript" src="/CloudPaper/codebase/swfupload/swfupload.js"></script>
 		<script type="text/javascript" src="/CloudPaper/js/editLayer.js"></script>
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 	<style type="text/css">
 		.with-container span {
 			position: absolute;
@@ -181,8 +182,7 @@ var userInfo = {
     </div>
     <br></br>
     <div class="menu">
-    <ul id="user_tree" class="filetree treeview-famfamfam">
-    </ul>
+    <ul id="user_tree" class="filetree treeview-famfamfam"></ul>
     </div>
 								<div class="contextMenu" id="folderMenu">
 								   <ul>

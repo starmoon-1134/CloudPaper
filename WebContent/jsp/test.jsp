@@ -1,29 +1,68 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<body>
-<script type="text/javascript">
-    onload=function(){  
-        setInterval(go, 1000);  
-    };  
-    var x=3; //利用了全局变量来执行  
-    function go(){  
-    x--;  
-        if(x>0){  
-        document.getElementById("sp").innerHTML=x;  //每次设置的x的值都不一样了。  
-        }else{  
-        location.href='jsp/login.jsp';  
-        }  
-    }  
-</script>
-<div>
-<lable>剩余
-<span id="sp">3</span>
-</label>
-<label>
-秒跳转
-</label>
-</div>
-</body>
-</html>
+
+<html> 
+
+
+<head></head> 
+
+
+<body> 
+
+
+<div id="container"> 
+
+
+ <div id="dragsource"> 
+
+
+ <p>拽我!</p> 
+
+
+ </div> 
+
+
+ </div><!-- End container --> 
+
+
+   
+
+
+ <div id="droppalbe" style="width: 300px;height:300px;background-color:gray"> 
+
+
+ <p>Drop here</p> 
+
+
+ </div> 
+
+
+   
+
+
+ <script type="text/javascript" src="js/jquery-1.7.min.js"></script> 
+
+
+ <script type="text/javascript" src="js/jquery-ui-1.8.16.custom.min.js"></script> 
+
+
+ <script> 
+
+
+ $(function() { 
+
+
+ $( "#dragsource" ).draggable(); 
+
+
+ $( "#droppable" ).droppable(); 
+
+
+ }) 
+
+
+ </script> 
+
+
+ </body> 
+
+
+ </html> 

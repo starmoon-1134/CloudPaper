@@ -627,6 +627,11 @@ public class MenuTreeOp {
     return "success";
   }
 
+  public String dragFile() {
+	  
+	  return "success";
+  }
+  
   public String getResult() {
     return result;
   }
