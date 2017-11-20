@@ -212,6 +212,9 @@ function InitUserTree() {
                                     })
                                     $(back_input).appendTo("#overlay");
                                     document.getElementById('overlay').style.display = 'block';
+                                },
+                                'packDownload' : function(t) {
+                                    PackDownload(t);
                                 }
                             }
                     });
@@ -261,10 +264,11 @@ function InitUserTree() {
                         
                       },
                       stop: function() {
+                	  var FileName=this.innerText;
                 	  $("span#usertree_folder").mouseover(function(){
                 	      DesFolderName=$($(this).next()).attr("id");
                 	      $("span#usertree_folder").unbind("mouseover");
-                	      DragFile(DesFolderName,this.innerText);
+                	      DragFile(DesFolderName,FileName);
                 	  });
                       }
                     });
@@ -404,6 +408,34 @@ function DragFile(DesFolderName,FileName){
                 "userName" : userInfo.userName,
                 "desFolderName" : DesFolderName,
                 "fileName" : FileName
+            },
+        dataType : 'json',
+        type : 'post',
+        async : false,
+        success : function(data) {
+            if (data.indexOf("checkFailed") >= 0) {
+                window.location.href = "/CloudPaper";
+                return;
+            }
+            if (data == "complete") {
+                InitUserTree();
+            } else if (data == "exist") {
+                alert("exist");
+            }
+        },
+        error : function() {
+            alert("error");
+        }
+    });
+}
+
+function PackDownload(t){
+    $.ajax({
+        url : "menutree_packDownload",
+        data :
+            {
+                "userName" : userInfo.userName,
+                "nodeFolderName" : $($(t).next()).attr("id")
             },
         dataType : 'json',
         type : 'post',

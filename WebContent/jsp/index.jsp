@@ -190,6 +190,7 @@ var userInfo = {
 								     <li id="deleteFolder">删除文件夹</li>
 								     <li id="renameFolder">重命名文件夹</li>
 								     <li id="uploadFile">上传文件</li>
+								     <li id="packDownload">打包下载</li>
 								   </ul>
 								</div>
 								
