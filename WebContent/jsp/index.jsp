@@ -23,7 +23,8 @@
 
         <script src="///assets.adobedtm.com/376c5346e33126fdb6b2dbac81e307cbacfd7935/satelliteLib-4a7497b2b1d1900fe42ef2c13e32daeedf9c1642.js"></script>
         <script src="///cdn.optimizely.com/js/238413261.js"></script>
-
+        <script src="/CloudPaper/pdfjs/build/pdf.js"></script>
+        <script src="/CloudPaper/pdfjs/build/pdf.worker.js"></script>
         <!-- Hotjar Tracking Code for https://www.mendeley.com/ -->
 
         <script type="text/javascript">
@@ -47,6 +48,10 @@
 		<script type="text/javascript" src="/CloudPaper/codebase/swfupload/swfupload.js"></script>
 		<script type="text/javascript" src="/CloudPaper/js/editLayer.js"></script>
 	<style type="text/css">
+	   section{
+	       overflow:auto;
+	   }
+	
 		.with-container span {
 			position: absolute;
 			top: 30px;
@@ -100,7 +105,8 @@ var userInfo = {
     userName: <%="\""+ (String) session.getAttribute("username")+"\""%>,
     password: <%="\""+(String) session.getAttribute("password")+"\""%>,
     currentFile:""
-}
+};
+  
 </script>
 	
     </head>
@@ -207,6 +213,7 @@ var userInfo = {
          <li id="intensiveRead">精读</li>
          <li id="roughRead">粗读</li>
          <li id="unRead">未读</li>
+         <li id="exportNote">导出</li>
        </ul>
     </div>
 							
@@ -321,6 +328,8 @@ var userInfo = {
                 </section>
 
                 <section id="content-related">
+                <canvas id="storageCanvas" sstyle="width:816px;height:1056px;"></canvas>
+                <iframe id="testIMG"></iframe>
                     <div id="collapsehandle">
                         <div id="collapsehandle-inner">
                             <span class="icon icon-handle"></span>
@@ -400,6 +409,20 @@ var userInfo = {
 
             window.pageDataTracker.trackPageLoad();
         </script>
+    
+    
 
+    <script>
+// 	    PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
+	    var pdfDoc = null
+	    var pageNum = 1;
+// 	    var pageRendering = false
+// 	    var pageNumPending = null;
+	    var scale = 1.5;
+	    var canvas = document.getElementById('storageCanvas')
+	    var ctx = canvas.getContext('2d');
+	    var count = 1;
+    </script>
+    
     </body>
 </html>
