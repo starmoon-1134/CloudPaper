@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta http-equiv="Content-Type" content="application/x-javascript; charset=UTF-8"/>
+<script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script>
+<script src="http://mozilla.github.io/pdf.js/build/pdf.js"></script>
+<!-- <script src="http://mozilla.github.io/pdf.js/build/pdf.worker.js"></script> -->
+<script>
+PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
+$(document).ready(function() {
+  
+  canvas = document.getElementById('Canvas1');
+  ctx = canvas.getContext('2d');
+  
+  $.ajax({
+    async : true,
+    cache : false,
+    timeout: 3000,
+    url : "getExportFile", 
+    type: "post",
+    data: {"fileName" : "readme.pdf"},
+    success: function(resultString){
+      if (resultString.indexOf("checkFailed") >= 0) {
+        window.location.href = "/CloudPaper";
+        return;
+      }
+//       console.log(resultString);
+      $("#pdfCache").text(resultString);
+      createDownload("aa.pdf",resultString);
+    },
+    error:function(XMLHttpRequest, textStatus, errorThrown){
+        alert(XMLHttpRequest.status);
+        alert(XMLHttpRequest.readyState);
+        alert(textStatus);  
+    }
+});
+  
+  exportNote();
+  
+});
+
+var pdfDoc = null
+var pageNum = 1;
+
+var scale = 1.5;
+var canvas = null;
+var ctx = null;
+var count = 1;
+
+function exportNote() {
+  var url = dataToURL($("#pdfCache").text());
+
+  PDFJS.getDocument(url).then(function(pdfDoc_) {
+    pdfDoc = pdfDoc_;
+    // Initial/first page rendering
+    count = pdfDoc.numPages;
+    renderPage(pageNum);
+    });
+
+  pageNum = 1;
+}
+
+function renderPage(num) {
+  // Using promise to fetch the page
+  pdfDoc.getPage(num).then(function(page) {
+    var viewport = page.getViewport(scale);
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    
+//    alert("h:"+viewport.height+"\nw:"+viewport.width);
+    // Render PDF page into canvas context
+    var renderContext = {
+      canvasContext : ctx,
+      viewport : viewport
+    };
+    var renderTask = page.render(renderContext);
+
+    // Wait for rendering to finish
+    renderTask.promise.then(function() {
+        pageNum++;
+//         var image = $("#testIMG").attr("src",canvas.toDataURL("image/jpge"))
+// //        image.src = canvas.toDataURL("image/png");
+//         var tmp= JSON.stringify(image.attr("src"));
+//         console.log(tmp.length);
+//         console.log('Canvas' + (pageNum-1) + '绘制完成');
+        setTimeout(function() {
+        if(pageNum<=count){
+          renderPage(pageNum);
+        }
+      }, 2000);
+    }); 
+  });
+}
+function char2buf(str){
+  var out = new ArrayBuffer(str.length);
+  var u16a= new Uint8Array(out);
+  var strs = str.split("");
+  for(var i =0 ; i<strs.length;i++){
+      u16a[i]=strs[i].charCodeAt();
+  }
+  return u16a;
+}
+
+function dataToURL(content){
+  var blob = new Blob([content]);
+  return URL.createObjectURL(blob);
+}
+function createDownload(fileName, content){
+  var blob = new Blob([content]);
+  var link = document.createElement("a");
+  link.innerHTML = fileName;
+  link.download = fileName;
+  link.href = URL.createObjectURL(blob);
+  document.getElementsByTagName("body")[0].appendChild(link);
+}
+</script>
+<title>Insert title here</title>
+</head>
+<body>
+<canvas id="Canvas1"></canvas>
+<div id="pdfCache" style="display:none;"></div>
+</body>
+</html>

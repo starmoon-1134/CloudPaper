@@ -641,7 +641,7 @@ function renderPage(num) {
       canvas.height = viewport.height;
       canvas.width = viewport.width;
       
-//      alert("h:"+viewport.height+"\nw:"+viewport.width);
+// alert("h:"+viewport.height+"\nw:"+viewport.width);
       // Render PDF page into canvas context
       var renderContext = {
         canvasContext : ctx,
@@ -652,11 +652,11 @@ function renderPage(num) {
       // Wait for rendering to finish
       renderTask.promise.then(function() {
           pageNum++;
-//          var image = new Image();
+// var image = new Image();
           var image = $("#testIMG").attr("src",canvas.toDataURL("image/jpge"))
-//          image.src = canvas.toDataURL("image/png");
-          var tmp= JSON.stringify(image.attr("src"));
-          console.log(tmp.length);
+// image.src = canvas.toDataURL("image/png");
+//          var tmp= JSON.stringify(image.attr("src"));
+//          console.log(tmp.length);
           console.log('Canvas' + (pageNum-1) + '绘制完成');
           setTimeout(function() {
           if(pageNum<=count){
@@ -667,10 +667,62 @@ function renderPage(num) {
     });
 
 }
+function char2buf(str){
+  var out = new ArrayBuffer(str.length);
+  var u16a= new Uint8Array(out);
+  var strs = str.split("");
+  for(var i =0 ; i<strs.length;i++){
+      u16a[i]=strs[i].charCodeAt();
+  }
+  return u16a;
+}
+function createDownload(fileName, content){
+  var buff = char2buf(content);
+  var blob = new Blob(buff);
+  var link = document.createElement("a");
+  link.innerHTML = fileName;
+  link.download = fileName;
+  link.href = URL.createObjectURL(blob);
+  document.getElementById("system_tree").appendChild(link);
+}
 
 $(document).ready(function() {
   InitSystemTree();
   InitUserTree();
-//  $("#Testscript").text("function testjj(){alert('sjfdi');}");
-//  testjj();
+// $("#Testscript").text("function testjj(){alert('sjfdi');}");
+// testjj();
+
+  $.ajax({
+    async : true,
+    cache : false,
+    timeout: 3000,
+    url : "getExportFile", 
+    type: "post",
+    data: {"fileName" : "readme.pdf"},
+    success: function(resultString){
+     
+//      createDownload("download.pdf",resultString);
+////       console.log(resultString);
+//      var blob = new Blob([resultString]);
+//      var url=URL.createObjectURL(blob);
+//      console.log(url);
+//      alert(url);
+      var url = char2buf(resultString);
+      PDFJS.getDocument(url).then(function(pdfDoc_) {
+        pdfDoc = pdfDoc_;
+        // Initial/first page rendering
+        count = pdfDoc.numPages;
+        renderPage(pageNum);
+        });
+    },
+    error:function(XMLHttpRequest, textStatus, errorThrown){
+        alert(XMLHttpRequest.status);
+        alert(XMLHttpRequest.readyState);
+        alert(textStatus);  
+    }
+});
+  
+  $.get("abc.txt",function(data,status){
+    alert("数据: " + data + "\n状态: " + status);
+  });
 });

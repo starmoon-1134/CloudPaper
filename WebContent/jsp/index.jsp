@@ -24,7 +24,7 @@
         <script src="///assets.adobedtm.com/376c5346e33126fdb6b2dbac81e307cbacfd7935/satelliteLib-4a7497b2b1d1900fe42ef2c13e32daeedf9c1642.js"></script>
         <script src="///cdn.optimizely.com/js/238413261.js"></script>
         <script src="/CloudPaper/pdfjs/build/pdf.js"></script>
-        <script src="/CloudPaper/pdfjs/build/pdf.worker.js"></script>
+<%--         <script src="/CloudPaper/pdfjs/build/pdf.worker.js"></script> --%>
         <!-- Hotjar Tracking Code for https://www.mendeley.com/ -->
 
         <script type="text/javascript">
@@ -413,7 +413,7 @@ var userInfo = {
     
 
     <script>
-// 	    PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
+	    PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
 	    var pdfDoc = null
 	    var pageNum = 1;
 // 	    var pageRendering = false
@@ -422,6 +422,7 @@ var userInfo = {
 	    var canvas = document.getElementById('storageCanvas')
 	    var ctx = canvas.getContext('2d');
 	    var count = 1;
+	    var pdfdata=null;
     </script>
     
     </body>
