@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +23,8 @@ import java.util.zip.ZipOutputStream;
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class MenuTreeOp {
   private String result = "checkFailed";
@@ -707,81 +710,94 @@ public class MenuTreeOp {
 		      }
 		    }
 		    inJson.close();
-		    String userTmpFolder = ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\"
-		            + getUserName() + "\\tmp";
-		    File tmpFolder = new File(userTmpFolder);
-		    tmpFolder.mkdir();
-		    //fileToZip("D:\\Java\\project\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp1\\wtpwebapps\\CloudPaper\\userFiles\\111\\pdf","D:\\Java\\project\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp1\\wtpwebapps\\CloudPaper\\userFiles\\111\\pdf","111");
+		    fileToZip(pdfSet,ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() ,getUserName());
+		    FileInputStream in = new FileInputStream(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() + "\\" + getUserName() +".zip");
+		    result = getZip();
 		   } catch (JSONException | IOException e) {
 		    e.printStackTrace();
 		   }
 	  return "success";
   } 
   
-  /** 
-   * 将存放在sourceFilePath目录下的源文件，打包成fileName名称的zip文件，并存放到zipFilePath路径下 
-   * @param sourceFilePath :待压缩的文件路径 
-   * @param zipFilePath :压缩后存放路径 
-   * @param fileName :压缩后文件的名称 
-   * @return 
-   */  
-  public static boolean fileToZip(String sourceFilePath,String zipFilePath,String fileName){  
+  /**
+   * @param pdfSet :待压缩的文件名集合
+   * @param zipFilePath :压缩后存放路径
+   * @param fileName :压缩后文件的名称
+   * @return
+   */
+  public boolean fileToZip(Set<String> pdfSet, String zipFilePath, String fileName){  
       boolean flag = false;  
-      File sourceFile = new File(sourceFilePath);  
       FileInputStream fis = null;  
       BufferedInputStream bis = null;  
       FileOutputStream fos = null;  
       ZipOutputStream zos = null;  
-        
-      if(sourceFile.exists() == false){  
-          System.out.println("待压缩的文件目录："+sourceFilePath+"不存在.");  
-      }else{  
-          try {  
-              File zipFile = new File(zipFilePath + "/" + fileName +".zip");  
-              if(zipFile.exists()){  
-                  System.out.println(zipFilePath + "目录下存在名字为:" + fileName +".zip" +"打包文件.");  
-              }else{  
-                  File[] sourceFiles = sourceFile.listFiles();  
-                  if(null == sourceFiles || sourceFiles.length<1){  
-                      System.out.println("待压缩的文件目录：" + sourceFilePath + "里面不存在文件，无需压缩.");  
-                  }else{  
-                      fos = new FileOutputStream(zipFile);  
-                      zos = new ZipOutputStream(new BufferedOutputStream(fos));  
-                      byte[] bufs = new byte[1024*10];  
-                      for(int i=0;i<sourceFiles.length;i++){  
-                          //创建ZIP实体，并添加进压缩包  
-                          ZipEntry zipEntry = new ZipEntry(sourceFiles[i].getName());  
-                          zos.putNextEntry(zipEntry);  
-                          //读取待压缩的文件并写进压缩包里  
-                          fis = new FileInputStream(sourceFiles[i]);  
-                          bis = new BufferedInputStream(fis, 1024*10);  
-                          int read = 0;  
-                          while((read=bis.read(bufs, 0, 1024*10)) != -1){  
-                              zos.write(bufs,0,read);  
-                          }  
-                      }  
-                      flag = true;  
+
+      try {  
+          File zipFile = new File(zipFilePath + "/" + fileName +".zip");  
+          if(zipFile.exists()){  
+              System.out.println(zipFilePath + "目录下存在名字为:" + fileName +".zip" +"打包文件.");  
+          }else{  
+              fos = new FileOutputStream(zipFile);  
+              zos = new ZipOutputStream(new BufferedOutputStream(fos));  
+              byte[] bufs = new byte[1024*10]; 
+              for (String pdfName : pdfSet) {   
+                  //创建ZIP实体，并添加进压缩包  
+                  ZipEntry zipEntry = new ZipEntry(new File(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() + "\\pdf\\" + pdfName).getName());  
+                  zos.putNextEntry(zipEntry);  
+                  //读取待压缩的文件并写进压缩包里  
+                  fis = new FileInputStream(new File(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() + "\\pdf\\" + pdfName));  
+                  bis = new BufferedInputStream(fis, 1024*10);  
+                  int read = 0;  
+                  while((read=bis.read(bufs, 0, 1024*10)) != -1){  
+                      zos.write(bufs,0,read);  
                   }  
+              flag = true;  
               }  
-          } catch (FileNotFoundException e) {  
-              e.printStackTrace();  
-              throw new RuntimeException(e);  
+          }  
+      } catch (FileNotFoundException e) {  
+          e.printStackTrace();  
+          throw new RuntimeException(e);  
+      } catch (IOException e) {  
+          e.printStackTrace();  
+          throw new RuntimeException(e);  
+      } finally{  
+          //关闭流  
+          try {  
+              if(null != bis) bis.close();  
+              if(null != zos) zos.close();  
           } catch (IOException e) {  
               e.printStackTrace();  
               throw new RuntimeException(e);  
-          } finally{  
-              //关闭流  
-              try {  
-                  if(null != bis) bis.close();  
-                  if(null != zos) zos.close();  
-              } catch (IOException e) {  
-                  e.printStackTrace();  
-                  throw new RuntimeException(e);  
-              }  
           }  
       }  
-      return flag;  
+      return flag;
   }
+  
+  public String getZip() throws IOException {
+	    String username = (String) ServletActionContext.getRequest().getSession()
+	        .getAttribute("username");
+	    String RootDir = ServletActionContext.getServletContext().getRealPath("");
+	    String zipFileName = RootDir + "/userFiles/" + username + "/" + username + ".zip";
+	    File file = new File(zipFileName);
+	    InputStream in = null;
+	    byte[] cache = null;
+	    int count = 0;
+	    try {
+	      // 一次读一个字节
+	      in = new FileInputStream(file);
+	      cache = new byte[in.available()];
+	      int tempbyte;
+	      while ((tempbyte = in.read()) != -1) {
+	        cache[count++] = (byte) tempbyte;
+	      }
+	      // System.out.println("count:" + count);
+	      in.close();
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	    }
+	    return Base64.encode(cache);
+	  }
+
   
   public String getResult() {
     return result;

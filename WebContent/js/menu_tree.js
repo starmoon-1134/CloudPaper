@@ -440,21 +440,32 @@ function PackDownload(t){
         dataType : 'json',
         type : 'post',
         async : false,
-        success : function(data) {
-            if (data.indexOf("checkFailed") >= 0) {
-                window.location.href = "/CloudPaper";
-                return;
-            }
-            if (data == "complete") {
-                InitUserTree();
-            } else if (data == "exist") {
-                alert("exist");
-            }
+        success: function(data){
+            var blob = new Blob([char2buf(atob(data))]);
+            var link = document.createElement("a");
+            link.download = userInfo.userName+".zip";
+            link.href = URL.createObjectURL(blob);
+            var ev = document.createEvent("MouseEvents");
+            ev.initMouseEvent(
+                "click", true, false, window, 0, 0, 0, 0, 0
+                , false, false, false, false, 0, null
+                );
+            link.dispatchEvent(ev);
         },
         error : function() {
             alert("error");
         }
     });
+}
+
+function char2buf(str){
+    var out = new ArrayBuffer(str.length);
+    var u16a= new Uint8Array(out);
+    var strs = str.split("");
+    for(var i =0 ; i<strs.length;i++){
+        u16a[i]=strs[i].charCodeAt();
+    }
+    return u16a;
 }
 
 function AddFolder(t) {
