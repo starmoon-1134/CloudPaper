@@ -619,17 +619,59 @@ function ChangeFileState(t, newFileState) {
 }
 
 function exportNote(t) {
-  var url = "/CloudPaper/userFiles/" + userInfo.userName + "/"
-            + "pdf/" + $(t).text();
-
-  PDFJS.getDocument(url).then(function(pdfDoc_) {
-    pdfDoc = pdfDoc_;
-    // Initial/first page rendering
-    count = pdfDoc.numPages;
-    renderPage(pageNum);
-    });
-
-  pageNum = 1;
+//  var pdfFileName = "/CloudPaper/userFiles/" + userInfo.userName + "/"
+//  + "pdf/" + $(t).text();
+  
+  $.ajax({
+    async : true,
+    cache : false,
+    timeout: 3000,
+    url : "getStandardFile", 
+    type: "post",
+    data: {"fileName" : $(t).text()},
+    success: function(resultString){
+     var blob = new Blob([resultString]);
+     var link = document.createElement("a");
+     link.innerHTML = $(t).text()+".html";
+     link.download = $(t).text()+".html";
+     link.href = URL.createObjectURL(blob);
+//      createDownload($(t).text()+".html",resultString);
+     var ev = document.createEvent("MouseEvents");
+     ev.initMouseEvent(
+         "click", true, false, window, 0, 0, 0, 0, 0
+         , false, false, false, false, 0, null
+         );
+     link.dispatchEvent(ev);
+////       console.log(resultString);
+//      var blob = new Blob([resultString]);
+//      var url=URL.createObjectURL(blob);
+//      console.log(url);
+//      alert(url);
+//      var data = char2buf(window.atob(resultString));
+//      PDFJS.getDocument(data).then(function(pdfDoc_) {
+//        pdfDoc = pdfDoc_;
+//        // Initial/first page rendering
+//        count = pdfDoc.numPages;
+//        renderPage(pageNum);
+//        });
+    },
+    error:function(XMLHttpRequest, textStatus, errorThrown){
+        alert(XMLHttpRequest.status);
+        alert(XMLHttpRequest.readyState);
+        alert(textStatus);  
+    }
+});
+//  var url = "/CloudPaper/userFiles/" + userInfo.userName + "/"
+//            + "pdf/" + $(t).text();
+//
+//  PDFJS.getDocument(url).then(function(pdfDoc_) {
+//    pdfDoc = pdfDoc_;
+//    // Initial/first page rendering
+//    count = pdfDoc.numPages;
+//    renderPage(pageNum);
+//    });
+//
+//  pageNum = 1;
 }
 
 
@@ -677,8 +719,9 @@ function char2buf(str){
   return u16a;
 }
 function createDownload(fileName, content){
-  var buff = char2buf(content);
-  var blob = new Blob(buff);
+//  var buff = char2buf(content);
+//  var blob = new Blob(buff);
+  var blob = new Blob([content]);
   var link = document.createElement("a");
   link.innerHTML = fileName;
   link.download = fileName;
@@ -689,40 +732,5 @@ function createDownload(fileName, content){
 $(document).ready(function() {
   InitSystemTree();
   InitUserTree();
-// $("#Testscript").text("function testjj(){alert('sjfdi');}");
-// testjj();
-
-  $.ajax({
-    async : true,
-    cache : false,
-    timeout: 3000,
-    url : "getExportFile", 
-    type: "post",
-    data: {"fileName" : "readme.pdf"},
-    success: function(resultString){
-     
-//      createDownload("download.pdf",resultString);
-////       console.log(resultString);
-//      var blob = new Blob([resultString]);
-//      var url=URL.createObjectURL(blob);
-//      console.log(url);
-//      alert(url);
-      var url = char2buf(resultString);
-      PDFJS.getDocument(url).then(function(pdfDoc_) {
-        pdfDoc = pdfDoc_;
-        // Initial/first page rendering
-        count = pdfDoc.numPages;
-        renderPage(pageNum);
-        });
-    },
-    error:function(XMLHttpRequest, textStatus, errorThrown){
-        alert(XMLHttpRequest.status);
-        alert(XMLHttpRequest.readyState);
-        alert(textStatus);  
-    }
-});
   
-  $.get("abc.txt",function(data,status){
-    alert("数据: " + data + "\n状态: " + status);
-  });
 });

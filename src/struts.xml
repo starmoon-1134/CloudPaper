@@ -93,7 +93,7 @@
 		<result type="json" name="error"></result>
 	</action>
 	
-    <action name="getExportFile" class="CloudPaper.ExportFile" method="getpdf">
+    <action name="getStandardFile" class="CloudPaper.ExportFile" method="getStandardFile">
          <result type="json" name="success">
             <param name="root" >resultString</param>
         </result>

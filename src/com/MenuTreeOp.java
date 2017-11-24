@@ -640,7 +640,8 @@ public class MenuTreeOp {
   }
 
   public void setUserName(String userName) {
-    this.userName = userName;
+    this.userName = (String) ServletActionContext.getRequest().getSession()
+        .getAttribute("username");
   }
 
   public String getDeleteFolderName() {

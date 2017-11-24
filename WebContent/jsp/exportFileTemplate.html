@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
-<meta http-equiv="Content-Type" content="application/x-javascript; charset=UTF-8"/>
+<meta http-equiv="Content-Type" content="application/x-javascript; charset=ISO-8859-1"/>
 <script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script>
 <script src="http://mozilla.github.io/pdf.js/build/pdf.js"></script>
 <!-- <script src="http://mozilla.github.io/pdf.js/build/pdf.worker.js"></script> -->
 <script>
-PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
+// PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
+PDFJS.workerSrc = 'http://mozilla.github.io/pdf.js/build/pdf.worker.js';
 $(document).ready(function() {
   
   canvas = document.getElementById('Canvas1');
   ctx = canvas.getContext('2d');
   
-  $.ajax({
-    async : true,
-    cache : false,
-    timeout: 3000,
-    url : "getExportFile", 
-    type: "post",
-    data: {"fileName" : "readme.pdf"},
-    success: function(resultString){
-      if (resultString.indexOf("checkFailed") >= 0) {
-        window.location.href = "/CloudPaper";
-        return;
-      }
-//       console.log(resultString);
-      $("#pdfCache").text(resultString);
-      createDownload("aa.pdf",resultString);
-    },
-    error:function(XMLHttpRequest, textStatus, errorThrown){
-        alert(XMLHttpRequest.status);
-        alert(XMLHttpRequest.readyState);
-        alert(textStatus);  
-    }
-});
+//   $.ajax({
+//     async : true,
+//     cache : false,
+//     timeout: 3000,
+//     url : "getExportFile", 
+//     type: "post",
+//     data: {"fileName" : "readme.pdf"},
+//     success: function(resultString){
+//       if (resultString.indexOf("checkFailed") >= 0) {
+//         window.location.href = "/CloudPaper";
+//         return;
+//       }
+// //       console.log(resultString);
+//       $("#pdfCache").text(resultString);
+//       createDownload("aa.pdf",resultString);
+//     },
+//     error:function(XMLHttpRequest, textStatus, errorThrown){
+//         alert(XMLHttpRequest.status);
+//         alert(XMLHttpRequest.readyState);
+//         alert(textStatus);  
+//     }
+// });
   
   exportNote();
-  
+//   createDownload("aa.pdf",$("#pdfCache").text());
 });
 
 var pdfDoc = null
@@ -48,9 +49,8 @@ var ctx = null;
 var count = 1;
 
 function exportNote() {
-  var url = dataToURL($("#pdfCache").text());
-
-  PDFJS.getDocument(url).then(function(pdfDoc_) {
+  var data = char2buf(window.atob($("#pdfCache").text()));
+  PDFJS.getDocument(data).then(function(pdfDoc_) {
     pdfDoc = pdfDoc_;
     // Initial/first page rendering
     count = pdfDoc.numPages;
@@ -91,6 +91,8 @@ function renderPage(num) {
     }); 
   });
 }
+
+/*string -> Unit8Array*/
 function char2buf(str){
   var out = new ArrayBuffer(str.length);
   var u16a= new Uint8Array(out);
@@ -100,24 +102,21 @@ function char2buf(str){
   }
   return u16a;
 }
-
-function dataToURL(content){
-  var blob = new Blob([content]);
-  return URL.createObjectURL(blob);
-}
-function createDownload(fileName, content){
-  var blob = new Blob([content]);
-  var link = document.createElement("a");
-  link.innerHTML = fileName;
-  link.download = fileName;
-  link.href = URL.createObjectURL(blob);
-  document.getElementsByTagName("body")[0].appendChild(link);
-}
+// /*aa */
+// function createDownload(fileName, content){
+//   var blob = new Blob([char2buf(content)],{type:"text/plain"});
+//   var link = document.createElement("a");
+//   link.innerHTML = fileName;
+//   link.download = fileName;
+//   link.href = URL.createObjectURL(blob);
+//   document.getElementsByTagName("body")[0].appendChild(link);
+// }
 </script>
 <title>Insert title here</title>
 </head>
 <body>
 <canvas id="Canvas1"></canvas>
-<div id="pdfCache" style="display:none;"></div>
+<button onclick="exportNote()">exportNote</button>
+<div id=pdfCache style=display:none;></div>
 </body>
 </html>
