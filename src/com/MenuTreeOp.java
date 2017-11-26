@@ -687,6 +687,10 @@ public class MenuTreeOp {
   }
 
   public String packDownload() {
+	  File oldZip = new File(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() + "\\" + getUserName() + ".zip");
+	  if(oldZip.exists()) {
+		  oldZip.delete();
+	  }
 	  result = "";
       int index = getNodeFolderName().lastIndexOf("folders");
 	  String nodePath = getNodeFolderName().substring(0, index);
@@ -711,7 +715,6 @@ public class MenuTreeOp {
 		    }
 		    inJson.close();
 		    fileToZip(pdfSet,ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() ,getUserName());
-		    FileInputStream in = new FileInputStream(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\" + getUserName() + "\\" + getUserName() +".zip");
 		    result = getZip();
 		   } catch (JSONException | IOException e) {
 		    e.printStackTrace();
@@ -798,7 +801,6 @@ public class MenuTreeOp {
 	    return Base64.encode(cache);
 	  }
 
-  
   public String getResult() {
     return result;
   }
