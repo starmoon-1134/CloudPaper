@@ -230,6 +230,9 @@ function InitUserTree() {
           },
           'unRead' : function(t) {
             ChangeFileState(t, "un");
+          },
+          'showTimeLine' : function(t) {
+            ShowTimeLine(t);
           }
         }
       });
@@ -651,6 +654,11 @@ function ChangeFileState(t, newFileState) {
       alert("error");
     }
   });
+}
+
+function ShowTimeLine(t) {
+  document.getElementById('timelineoverlay').style.display = 'block';
+
 }
 
 $(document).ready(function() {

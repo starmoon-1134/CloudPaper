@@ -26,6 +26,8 @@ import org.json.JSONObject;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+import CloudPaper.logger;
+
 public class MenuTreeOp {
   private String result = "checkFailed";
   private String userName;
@@ -316,7 +318,7 @@ public class MenuTreeOp {
     return "success";
   }
 
-  public String deleteFile() {
+  public String deleteFile() throws IOException {
     result = "";
     // System.out.println(getDeleteFileName());
     // System.out.println(getDeleteFilePath());
@@ -413,11 +415,30 @@ public class MenuTreeOp {
       if (tmpFile.exists()) {
         tmpFile.delete();
       }
+      String logNameString = ServletActionContext.getServletContext().getRealPath(
+              "/userFiles/" + getUserName() + "/log") + File.separator + getDeleteFileName() + ".log";
+      // System.out.println(fileNameString);
+      File tmpLog = new File(logNameString);
+      if (tmpLog.exists()) {
+    	  tmpLog.delete();
+      }
+      String NameString = ServletActionContext.getServletContext().getRealPath(
+              "/userFiles/" + getUserName() + "/NoteDOM") + File.separator + getDeleteFileName() + ".note";
+      // System.out.println(fileNameString);
+      File tmpNote = new File(NameString);
+      if (tmpNote.exists()) {
+    	  tmpNote.delete();
+      }
+    }else {
+    	logger loggerm = new logger();
+        loggerm.setUserName(getUserName());
+        loggerm.setFileName(getDeleteFileName());
+        loggerm.addLog("从" + filePath + "分类中删除", logger.logType.deleteFromClassification);
     }
     return "success";
   }
 
-  public String renameFile() {
+  public String renameFile() throws IOException {
     result = "";
     // System.out.println(getChangeOldFolderName());
     // System.out.println(getChangeNewFolderName());
@@ -443,6 +464,47 @@ public class MenuTreeOp {
     if (oldFile.exists()) {
       oldFile.renameTo(newFile);
     }
+    
+    String oldLogName = ServletActionContext.getServletContext().getRealPath(
+            "/userFiles/" + getUserName() + "/log") + File.separator + getRenameOldFileName() + ".log";
+    String newLogName = ServletActionContext.getServletContext().getRealPath(
+            "/userFiles/" + getUserName() + "/log") + File.separator + getRenameNewFileName() + ".pdf" + ".log";
+    if(fileOrderNum!=0) {
+    	newLogName = ServletActionContext.getServletContext().getRealPath(
+                "/userFiles/" + getUserName() + "/log") + File.separator + getRenameNewFileName() + ".pdf" + "(" +
+        		+ fileOrderNum + ")" + ".log";
+    }
+    
+    File oldLog= new File(oldLogName);
+    File newLog = new File(newLogName);
+    if (oldLog.exists()) {
+    	oldLog.renameTo(newLog);
+    }
+    
+    String oldNoteName = ServletActionContext.getServletContext().getRealPath(
+            "/userFiles/" + getUserName() + "/NoteDOM") + File.separator + getRenameOldFileName() + ".note";
+    String newNoteName = ServletActionContext.getServletContext().getRealPath(
+            "/userFiles/" + getUserName() + "/NoteDOM") + File.separator + getRenameNewFileName() + ".pdf" + ".note";
+    if(fileOrderNum!=0) {
+    	newNoteName = ServletActionContext.getServletContext().getRealPath(
+                "/userFiles/" + getUserName() + "/NoteDOM") + File.separator + getRenameNewFileName() + ".pdf" + "(" +
+        		+ fileOrderNum + ")" + ".note";
+    }
+
+    File oldNote= new File(oldNoteName);
+    File newNote = new File(newNoteName);
+    if (oldNote.exists()) {
+    	oldNote.renameTo(newNote);
+    }
+    
+    String finalNewFileName = getRenameNewFileName() + ".pdf";
+    if(fileOrderNum!=0) {
+    	finalNewFileName = finalNewFileName + "(" + fileOrderNum + ")";
+    }
+    logger loggerm = new logger();
+    loggerm.setUserName(getUserName());
+    loggerm.setFileName(finalNewFileName);
+    loggerm.addLog("由" + getRenameOldFileName() + "重命名为" + finalNewFileName, logger.logType.renameFile);
 
     int index = getRenameFilePath().lastIndexOf("files");
     String filePath = getRenameFilePath().substring(0, index);
@@ -582,17 +644,29 @@ public class MenuTreeOp {
     return "success";
   }
 
-  public String changeFileState() {
+  public String changeFileState() throws IOException {
     String newFileStatePath;
     switch (getNewFileState()) {
       case "intensive":
         newFileStatePath = "精读*" + getFileName();
+        logger logger1 = new logger();
+        logger1.setUserName(getUserName());
+        logger1.setFileName(getFileName());
+        logger1.addLog("已精读", logger.logType.intensiveRead);
         break;
       case "rough":
         newFileStatePath = "粗读*" + getFileName();
+        logger logger2 = new logger();
+        logger2.setUserName(getUserName());
+        logger2.setFileName(getFileName());
+        logger2.addLog("已粗读", logger.logType.intensiveRead);
         break;
       default:
         newFileStatePath = "未读*" + getFileName();
+        logger logger3 = new logger();
+        logger3.setUserName(getUserName());
+        logger3.setFileName(getFileName());
+        logger3.addLog("已未读", logger.logType.intensiveRead);
         break;
     }
     System.out.println(newFileStatePath);
@@ -680,6 +754,10 @@ public class MenuTreeOp {
 	    outJson.flush();
 	    outJson.close();
 	    result = "complete";
+	    logger loggerm = new logger();
+	    loggerm.setUserName(getUserName());
+	    loggerm.setFileName(getFileName());
+	    loggerm.addLog("添加到" + desPath + "分类", logger.logType.appendToSystem);
 	   } catch (JSONException | IOException e) {
 	    e.printStackTrace();
 	   }

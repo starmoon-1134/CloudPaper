@@ -117,15 +117,18 @@ var userInfo = {
             filter: alpha(opacity=88);
             display:none">
     </div>
+    <div id="timelineoverlay" class="black_overlay" style="z-index:999;position: absolute;top: 0%;   
+            left: 0%;   
+            width: 100%;   
+            height: 100%;   
+            background-color: black; 
+            -moz-opacity: 0.8;   
+            opacity:.80;   
+            filter: alpha(opacity=88);
+            display:none">
+    </div>
     <iframe id="packshare" style="display:none">
     </iframe>
-        <!--[if IE 9 | (lt IE 9)]>
-            <h2 style='margin:15px; padding:15px;text-align:center'>Your current version of Internet Explorer is not compatible with the Mendeley Web Library.
-            Please use the latest version of <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Internet Explorer</a>,
-            <a href='http://www.google.co.uk/chrome/'>Google Chrome</a> or <a href='https://www.mozilla.org/en-US/firefox/new/?scene=2#download-fx'>Firefox</a>. Apologies for any inconveniences caused.</h2>
-        <!--<![endif]-->
-
-        <!--[if (gt IE 9)]><!-->
             <div id="global-feedback" class="global-feedback"></div>
 
             <header class="masthead web-library with-library-selected">
@@ -216,6 +219,7 @@ var userInfo = {
          <li id="intensiveRead">精读</li>
          <li id="roughRead">粗读</li>
          <li id="unRead">未读</li>
+         <li id="showTimeLine">时间线</li>
        </ul>
     </div>		
 	
