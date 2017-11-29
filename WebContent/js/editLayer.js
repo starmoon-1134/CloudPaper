@@ -53,7 +53,7 @@ function StartEditPre() {
                 var editBody = $(".editFrame").contents().find("body");// 添加笔记的DOM
                 editBody.html(resultString);
 
-                // 未读取出的笔记添加监听、默认都折叠、设置缩放
+                // 为读取出的笔记添加监听、默认都折叠、设置缩放
                 var NoteWraps = $(".editFrame").contents().find(".editCanvas").children();
                 var originWidth = $(".editFrame").contents().find(".editCanvas").width();
                 var curWidth = $(".pdfFrame").contents().find("#page1").width();
@@ -97,12 +97,12 @@ function StartEditPre() {
     var editCanvas = $(".editFrame").contents().find(".editCanvas");
     var editDiv = $(".editFrame").contents().find(".editDiv");
     var editMaxContainer = $(".editFrame").contents().find(".editOuterContainer");
-    // var editToolbar = $(".editFrame").contents().find(".editToolbar");
 
-    var posYpdfFrame = $(".pdfFrame").offset().top;
+// var posYpdfFrame = $(".pdfFrame").offset().top;
+    var posYpdfFrame = $(".pdfFrame").css("top");
     $(".editFrame").css({
         "height":($(".pdfFrame").height()-pdfShowToolbar.height())+"px",
-        "top":(posYpdfFrame+pdfShowToolbar.height())+"px"
+        "top":(posYpdfFrame.substring(0,posYpdfFrame.length-3)+pdfShowToolbar.height())+"px"
     })
     editCanvas.width(pdfShowFirstPage.width());
     editCanvas.height(pdfShowDiv.height());

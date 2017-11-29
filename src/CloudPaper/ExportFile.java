@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -13,7 +15,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class ExportFile {
   private String fileName = "";
-  private String resultString = null;
+  private String resultString = "checkFailed";
 
   public String getpdf() throws IOException {
     String username = (String) ServletActionContext.getRequest().getSession()
@@ -46,16 +48,46 @@ public class ExportFile {
 
   public String getStandardFile() throws IOException {
     String RootDir = ServletActionContext.getServletContext().getRealPath("");
-    String templateFileName = RootDir + "/jsp/exportFileTemplate.html";
-    // String standardFile = RootDir + "/userFiles/" + getUserName() + "/" + getFileName() +
-    // ".html";
-    String tempString = "";
+    String username = (String) ServletActionContext.getRequest().getSession()
+        .getAttribute("username");
+    String templateFileName = RootDir + "jsp\\exportFileTemplate.html";
+    String noteFileName = RootDir + "userFiles\\" + username + "\\NoteDOM\\" + getFileName()
+        + ".note";
     final String pdfCacheDiv = "<div id=pdfCache style=display:none;>";
-    // 读取template
-    File templateFile = new File(templateFileName);
+    final String noteDiv = "<div id=Note>";
+    final String title = "###Insert title here###";
+    // 读取template、Note
+    String templateString = readFile(templateFileName);
+    String noteString = readFile(noteFileName);
+    getpdf();
+    // System.out.println(templateString.length());
+    // System.out.println(noteString.length());
+    // System.out.println(getResultString().length());
+
+    // 插入pdf、note的数据
+    Pattern pdfPattern = Pattern.compile(pdfCacheDiv);
+    Pattern notePattern = Pattern.compile(noteDiv);
+    Pattern titlePattern = Pattern.compile(title);
+    Matcher pdfMatcher = pdfPattern.matcher(templateString);
+    String finalString = pdfMatcher.replaceFirst(pdfCacheDiv + getResultString());
+    Matcher noteMatcher = notePattern.matcher(finalString);
+    finalString = noteMatcher.replaceFirst(noteDiv + noteString);
+    Matcher titleMatcher = titlePattern.matcher(finalString);
+    finalString = titleMatcher.replaceFirst(getFileName());
+
+    setResultString(finalString);
+    return "success";
+  }
+
+  private String readFile(String fileName) {
+    String tempString = "";
+    File templateFile = new File(fileName);
+    if (!templateFile.exists()) {
+      return "";
+    }
     Reader reader = null;
     try {
-      System.out.println("以字符为单位读取文件内容，一次读一个字节：");
+      // System.out.println("以字符为单位读取文件内容，一次读一个字节：");
       // 一次读一个字符
       reader = new InputStreamReader(new FileInputStream(templateFile));
       int tempchar;
@@ -71,16 +103,7 @@ public class ExportFile {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-    // 插入pdf的数据
-    int insertPos = tempString.indexOf(pdfCacheDiv);
-    getpdf();
-    System.out.println(pdfCacheDiv.length());
-    String finalString = tempString.substring(0, insertPos + pdfCacheDiv.length())
-        + getResultString() + "\n" + tempString.substring(insertPos + pdfCacheDiv.length());
-
-    setResultString(finalString);
-    return "success";
+    return tempString;
   }
 
   public String getFileName() {

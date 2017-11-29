@@ -619,118 +619,42 @@ function ChangeFileState(t, newFileState) {
 }
 
 function exportNote(t) {
-//  var pdfFileName = "/CloudPaper/userFiles/" + userInfo.userName + "/"
-//  + "pdf/" + $(t).text();
-  
+
   $.ajax({
     async : true,
     cache : false,
-    timeout: 3000,
-    url : "getStandardFile", 
-    type: "post",
-    data: {"fileName" : $(t).text()},
-    success: function(resultString){
-     var blob = new Blob([resultString]);
-     var link = document.createElement("a");
-     link.innerHTML = $(t).text()+".html";
-     link.download = $(t).text()+".html";
-     link.href = URL.createObjectURL(blob);
-//      createDownload($(t).text()+".html",resultString);
-     var ev = document.createEvent("MouseEvents");
-     ev.initMouseEvent(
-         "click", true, false, window, 0, 0, 0, 0, 0
-         , false, false, false, false, 0, null
-         );
-     link.dispatchEvent(ev);
-////       console.log(resultString);
-//      var blob = new Blob([resultString]);
-//      var url=URL.createObjectURL(blob);
-//      console.log(url);
-//      alert(url);
-//      var data = char2buf(window.atob(resultString));
-//      PDFJS.getDocument(data).then(function(pdfDoc_) {
-//        pdfDoc = pdfDoc_;
-//        // Initial/first page rendering
-//        count = pdfDoc.numPages;
-//        renderPage(pageNum);
-//        });
+    // timeout: 3000,
+    url : "getStandardFile",
+    type : "post",
+    data : {
+      "fileName" : $(t).text()
     },
-    error:function(XMLHttpRequest, textStatus, errorThrown){
-        alert(XMLHttpRequest.status);
-        alert(XMLHttpRequest.readyState);
-        alert(textStatus);  
+    success : function(resultString) {
+      if (resultString.substring(0, 11) == "checkFailed") {
+        window.location.href = "/CloudPaper";
+        return;
+      }
+      var blob = new Blob([ resultString ]);
+      var link = document.createElement("a");
+      link.download = $(t).text() + ".html";
+      link.href = URL.createObjectURL(blob);
+      var ev = document.createEvent("MouseEvents");
+      ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0,
+                        false, false, false, false, 0, null);
+      link.dispatchEvent(ev);
+
+    },
+    error : function(XMLHttpRequest, textStatus, errorThrown) {
+      alert(XMLHttpRequest.status);
+      alert(XMLHttpRequest.readyState);
+      alert(textStatus);
     }
-});
-//  var url = "/CloudPaper/userFiles/" + userInfo.userName + "/"
-//            + "pdf/" + $(t).text();
-//
-//  PDFJS.getDocument(url).then(function(pdfDoc_) {
-//    pdfDoc = pdfDoc_;
-//    // Initial/first page rendering
-//    count = pdfDoc.numPages;
-//    renderPage(pageNum);
-//    });
-//
-//  pageNum = 1;
-}
+  });
 
-
-
-function renderPage(num) {
-    // Using promise to fetch the page
-    pdfDoc.getPage(num).then(function(page) {
-      var viewport = page.getViewport(scale);
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-      
-// alert("h:"+viewport.height+"\nw:"+viewport.width);
-      // Render PDF page into canvas context
-      var renderContext = {
-        canvasContext : ctx,
-        viewport : viewport
-      };
-      var renderTask = page.render(renderContext);
-
-      // Wait for rendering to finish
-      renderTask.promise.then(function() {
-          pageNum++;
-// var image = new Image();
-          var image = $("#testIMG").attr("src",canvas.toDataURL("image/jpge"))
-// image.src = canvas.toDataURL("image/png");
-//          var tmp= JSON.stringify(image.attr("src"));
-//          console.log(tmp.length);
-          console.log('Canvas' + (pageNum-1) + '绘制完成');
-          setTimeout(function() {
-          if(pageNum<=count){
-            renderPage(pageNum);
-          }
-        }, 2000);
-      }); 
-    });
-
-}
-function char2buf(str){
-  var out = new ArrayBuffer(str.length);
-  var u16a= new Uint8Array(out);
-  var strs = str.split("");
-  for(var i =0 ; i<strs.length;i++){
-      u16a[i]=strs[i].charCodeAt();
-  }
-  return u16a;
-}
-function createDownload(fileName, content){
-//  var buff = char2buf(content);
-//  var blob = new Blob(buff);
-  var blob = new Blob([content]);
-  var link = document.createElement("a");
-  link.innerHTML = fileName;
-  link.download = fileName;
-  link.href = URL.createObjectURL(blob);
-  document.getElementById("system_tree").appendChild(link);
 }
 
 $(document).ready(function() {
   InitSystemTree();
   InitUserTree();
-  
+
 });

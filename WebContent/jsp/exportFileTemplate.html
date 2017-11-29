@@ -1,73 +1,215 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
-<meta http-equiv="Content-Type" content="application/x-javascript; charset=ISO-8859-1"/>
+<meta http-equiv="Content-Type" content="application/x-javascript; charset=utf-8"/>
 <script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script>
 <script src="http://mozilla.github.io/pdf.js/build/pdf.js"></script>
-<!-- <script src="http://mozilla.github.io/pdf.js/build/pdf.worker.js"></script> -->
+<script src="http://mozilla.github.io/pdf.js/build/pdf.worker.js"></script>
+<style>
+html{
+    text-align: center;
+    width:100%;
+    margin:0 auto;
+}
+
+body{
+    width:100%;
+    margin:0 auto;
+    text-align: center;
+}
+.page{
+    border: 9px solid rgba(66, 66, 66,0.4);
+    background-clip: content-box;
+    background-color: white;
+}
+#pdfContainer{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:1;
+}
+.page{
+    margin:0 auto;
+}
+#Note{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:2;
+}
+.editOuterContainer{
+    position:relative;
+    margin:0;
+    padding:0;
+}
+.editDiv{
+    margin:0;
+    padding:0;
+    position:absolute;
+    overflow:auto;
+    width:100%;
+    text-align:center;
+}
+.editCanvas{
+    margin:0 auto;
+    padding:0;
+    position:absolute;
+    background-color:rgba(60,255,120,0.3);
+}
+.NoteWrap{
+    background-color:rgba(0,0,0,0.4);
+    width:300px;
+    height:150px;
+    position:absolute;
+    display:inline;
+    box-shadow: 5px 5px 5px #888888;
+    border:1px;
+    border-color:#333333;
+    border-radius:25px;
+}
+
+/* 鎶樺彔绗旇鍧� */
+.NoteWrapFold{
+    background-color:rgba(0,0,0,0.4);
+    width:80px;
+    height:50px;
+    position:absolute;
+    display:inline;
+    overflow:hidden;
+    box-shadow: 5px 5px 5px #888888;
+    border:1px;
+    border-color:#333333;
+    border-radius:25px;
+}
+
+
+.labelTitle{
+/*  background:#00aa55 url("../images/labelTitle.png") no-repeat center !important; */
+    background-size:30% 30%;
+    display:inline;
+    width:80px;
+    height:50px;
+    float:left;
+}
+
+.labelTitle:hover{
+    cursor:pointer;
+}
+
+.textAreaContainer{
+    width:220px;
+    height:150px;
+    display:inline;
+    float:left;
+}
+
+.labelText{
+    background-color:rgba(255,255,255,0.3);
+    width:100%;
+    height:100%;
+    font-size:26px; 
+    color:#f3340c;
+    line-height:28px;
+    resize: none;
+    border-radius: 0 25px 25px 0;
+    padding: 0;
+    
+}
+
+body{
+text-align:center;
+}
+
+</style>
 <script>
-// PDFJS.workerSrc = '/CloudPaper/pdfjs/build/pdf.worker.js';
-PDFJS.workerSrc = 'http://mozilla.github.io/pdf.js/build/pdf.worker.js';
-$(document).ready(function() {
-  
-  canvas = document.getElementById('Canvas1');
-  ctx = canvas.getContext('2d');
-  
-//   $.ajax({
-//     async : true,
-//     cache : false,
-//     timeout: 3000,
-//     url : "getExportFile", 
-//     type: "post",
-//     data: {"fileName" : "readme.pdf"},
-//     success: function(resultString){
-//       if (resultString.indexOf("checkFailed") >= 0) {
-//         window.location.href = "/CloudPaper";
-//         return;
-//       }
-// //       console.log(resultString);
-//       $("#pdfCache").text(resultString);
-//       createDownload("aa.pdf",resultString);
-//     },
-//     error:function(XMLHttpRequest, textStatus, errorThrown){
-//         alert(XMLHttpRequest.status);
-//         alert(XMLHttpRequest.readyState);
-//         alert(textStatus);  
-//     }
-// });
-  
-  exportNote();
-//   createDownload("aa.pdf",$("#pdfCache").text());
-});
 
 var pdfDoc = null
-var pageNum = 1;
-
 var scale = 1.5;
-var canvas = null;
-var ctx = null;
 var count = 1;
+var originRenderNum = 0;
 
-function exportNote() {
+
+$(document).ready(function() {
+  //加载pdf
   var data = char2buf(window.atob($("#pdfCache").text()));
   PDFJS.getDocument(data).then(function(pdfDoc_) {
     pdfDoc = pdfDoc_;
     // Initial/first page rendering
     count = pdfDoc.numPages;
-    renderPage(pageNum);
+   
+    for(var curPage=1;curPage<=count;curPage++){
+      var canvas = document.createElement("canvas");
+      var div = document.createElement("div");
+      $(div).attr("id","page"+curPage);
+      $(div).attr("class","page");
+      $(div).append(canvas);
+      $("#pdfContainer").append(div);
+      renderPage(curPage,canvas);
+    }
     });
 
-  pageNum = 1;
+  
+  
+});
+
+function setZoomForNote(){
+  if($(Note).text().length<10){
+    return;
+  }
+  
+  $("#Note").append($(".editCanvas"));
+  $("#Note").append($(".NoteScale"));
+  $(".editOuterContainer").remove();
+  
+  //笔记缩放
+  var NoteWraps = $(".editCanvas").children();
+  var originWidth = $(".editCanvas").width();
+  var curWidth = $("#page1").width();
+  var Localscale = $(".NoteScale").text();
+  Localscale = curWidth / (originWidth/Localscale);
+  $(".NoteScale").text(Localscale);
+  NoteWraps.each(function() {
+      // 1
+//       window.frames["editFrame"].addListenerForNote($(this));
+
+      // 2
+      $(this).css(
+          {
+              "zoom" : Localscale
+          });
+
+      // 3
+      if ($(this).hasClass("NoteWrap")) {
+          $(this).toggleClass("NoteWrapFold");
+          $(this).toggleClass("NoteWrap");
+      }
+  })
+
+    // 蒙板层尺寸适配
+    $(".editCanvas").css({
+      "height":$("#pdfContainer").height()+"px",
+      "width":$("#pdfContainer").width()+"px",
+      "left":"0px"
+    });
+  
+  var diffOf = document.body.clientWidth-$("#pdfContainer").width();
+  if(diffOf>0){
+    $("#pdfContainer").css("left",diffOf*0.5+"px");
+    $(".editCanvas").css("left",diffOf*0.5+"px");
+  }
+  
 }
 
-function renderPage(num) {
+function renderPage(num,canvas) {
   // Using promise to fetch the page
   pdfDoc.getPage(num).then(function(page) {
+    var ctx = canvas.getContext('2d');
     var viewport = page.getViewport(scale);
+    console.log("scale=1.5:,viewport.width="+viewport.width);
+    console.log("editCanvas.width: "+$(".editCanvas").width());
     canvas.height = viewport.height;
     canvas.width = viewport.width;
-    
-//    alert("h:"+viewport.height+"\nw:"+viewport.width);
+
     // Render PDF page into canvas context
     var renderContext = {
       canvasContext : ctx,
@@ -77,20 +219,15 @@ function renderPage(num) {
 
     // Wait for rendering to finish
     renderTask.promise.then(function() {
-        pageNum++;
-//         var image = $("#testIMG").attr("src",canvas.toDataURL("image/jpge"))
-// //        image.src = canvas.toDataURL("image/png");
-//         var tmp= JSON.stringify(image.attr("src"));
-//         console.log(tmp.length);
-//         console.log('Canvas' + (pageNum-1) + '绘制完成');
-        setTimeout(function() {
-        if(pageNum<=count){
-          renderPage(pageNum);
+        console.log('Canvas' + (num-1) + '绘制完成');
+        originRenderNum++;
+        if(originRenderNum>=count){
+          setZoomForNote();
         }
-      }, 2000);
     }); 
   });
 }
+
 
 /*string -> Unit8Array*/
 function char2buf(str){
@@ -102,21 +239,13 @@ function char2buf(str){
   }
   return u16a;
 }
-// /*aa */
-// function createDownload(fileName, content){
-//   var blob = new Blob([char2buf(content)],{type:"text/plain"});
-//   var link = document.createElement("a");
-//   link.innerHTML = fileName;
-//   link.download = fileName;
-//   link.href = URL.createObjectURL(blob);
-//   document.getElementsByTagName("body")[0].appendChild(link);
-// }
+
 </script>
-<title>Insert title here</title>
+<title>###Insert title here###</title>
 </head>
 <body>
-<canvas id="Canvas1"></canvas>
-<button onclick="exportNote()">exportNote</button>
+<div id="pdfContainer"></div>
 <div id=pdfCache style=display:none;></div>
+<div id=Note></div>
 </body>
 </html>
