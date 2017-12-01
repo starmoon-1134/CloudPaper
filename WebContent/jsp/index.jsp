@@ -96,11 +96,9 @@
 			box-sizing: border-box;
 		}
 	</style>
-	<script type="text/javascript">
-
+<script type="text/javascript">
 // var userInfo = '';
 // alert(userInfo.userName);
-
 var userInfo = {
     userName: <%="\""+ (String) session.getAttribute("username")+"\""%>,
     password: <%="\""+(String) session.getAttribute("password")+"\""%>,

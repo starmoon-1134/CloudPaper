@@ -5,6 +5,7 @@
 <script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script>
 <script src="http://mozilla.github.io/pdf.js/build/pdf.js"></script>
 <script src="http://mozilla.github.io/pdf.js/build/pdf.worker.js"></script>
+<script src="http://apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 <style>
 html{
     text-align: center;
@@ -170,7 +171,7 @@ function setZoomForNote(){
   $(".NoteScale").text(Localscale);
   NoteWraps.each(function() {
       // 1
-//       window.frames["editFrame"].addListenerForNote($(this));
+      addListenerForNote($(this));
 
       // 2
       $(this).css(
@@ -238,6 +239,28 @@ function char2buf(str){
       u16a[i]=strs[i].charCodeAt();
   }
   return u16a;
+}
+
+function addListenerForNote(wrap) {
+  // 屏蔽editCanvas的点击事件
+  wrap.mousedown(function(e) {
+    e.stopPropagation();
+  });
+
+  // 标签添加折叠响应
+  wrap.find(".labelTitle").click(function() {
+    wrap.toggleClass("NoteWrap");
+    wrap.toggleClass("NoteWrapFold");
+  });
+
+  // 删除标签块响应
+  wrap.find(".cancelBtn").click(function() {
+    wrap.children().remove();
+    wrap.detach();
+  });
+
+  // 允许拖拽
+  wrap.draggable();
 }
 
 </script>

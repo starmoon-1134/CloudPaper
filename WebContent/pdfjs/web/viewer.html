@@ -40,7 +40,13 @@ See https://github.com/adobe-type-tools/cmap-resources
 <script src="../build/pdf.js"></script>
 <script src="http://lib.sinaapp.com/js/jquery/2.0.2/jquery-2.0.2.min.js"></script>
 
-    <script src="viewer.js"></script>
+<script src="viewer.js"></script>
+<script>
+$(document).ready(function() {
+  var $editFrame = $('.editFrame', parent.document);
+  $editFrame.attr('src', $editFrame.attr('src'));
+})
+</script>
 
   </head>
 
@@ -181,7 +187,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
                 </button>
                 
-                <button id="addNote" class="toolbarButton addNote hiddenLargeView" title="启用编辑" tabindex="323" data-l10n-id="add_Note" onclick="window.parent.frames.StartEditPre()">
+<!--                 onclick="window.parent.frames.StartEditPre()" -->
+                <button id="addNote" class="toolbarButton addNote hiddenLargeView" title="启用编辑" tabindex="323" data-l10n-id="add_Note" >
                   <span data-l10n-id="add_note_label">启用编辑</span>
                 </button>
                 
