@@ -32,9 +32,9 @@
       </global-results>
 	  
 	  <action name="upload" class="com.UploadFile">
-          <result name="success">/jsp/menu_tree.jsp</result>
-      </action>
-	  
+	      <result name="success">/jsp/index.jsp</result>
+	  </action>
+
    
 </package>
 

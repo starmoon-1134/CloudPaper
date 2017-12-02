@@ -1,13 +1,13 @@
-/*ÎÄ¼þÉÏ´«¿Ø¼þ--GooUploaderÀà*/
-//Div :Òª±»°ó¶¨µÄÒÑ±»JQUERY·â×°µÄDOM¶ÔÏó£¬±ØÐëÒªÓÐÆäID
-//property  :JSON±äÁ¿£¬ProgressµÄÏêÏ¸²ÎÊýÉèÖÃ
+/*ï¿½Ä¼ï¿½ï¿½Ï´ï¿½ï¿½Ø¼ï¿½--GooUploaderï¿½ï¿½*/
+//Div :Òªï¿½ï¿½ï¿½ó¶¨µï¿½ï¿½Ñ±ï¿½JQUERYï¿½ï¿½×°ï¿½ï¿½DOMï¿½ï¿½ï¿½ó£¬±ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ID
+//property  :JSONï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Progressï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 function GooUploader(Div,property){
     this.$multiple=false;
-    if(property.multiple) this.$multiple=property.multiple;	//¿Ø¼þÊÇ·ñÖ§³ÖÅúÁ¿ÎÄ¼þÉÏ´«£¬Ä¬ÈÏÎªÖ»Ö§³ÖÉÏ´«µ¥¸ö
-	this.$div=Div;								//¿Ø¼þµÄDIVÍâ¿ò
-	this.$width=property.width||300;			//¿Ø¼þµÄ¿í¶È£¬Ä¬ÈÏÎª300
-	this.$height=property.height||36;			//¿Ø¼þµÄ¸ß¶È£¬Ä¬ÈÏÎª30
-	//äÖÈ¾this.$div
+    if(property.multiple) this.$multiple=property.multiple;	// ï¿½Ø¼ï¿½ï¿½Ç·ï¿½Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ï´ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½ÎªÖ»Ö§ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½
+	this.$div=Div;								// ï¿½Ø¼ï¿½ï¿½ï¿½DIVï¿½ï¿½ï¿½
+	this.$width=property.width||300;			// ï¿½Ø¼ï¿½ï¿½Ä¿ï¿½È£ï¿½Ä¬ï¿½ï¿½Îª300
+	this.$height=property.height||36;			// ï¿½Ø¼ï¿½ï¿½Ä¸ß¶È£ï¿½Ä¬ï¿½ï¿½Îª30
+	// ï¿½ï¿½È¾this.$div
 	this.$div.addClass("Uploader").css({width:this.$width-4+"px",height:this.$height-4+"px"});
 	this.$div.append("<div class='total_bg'><div class='oper' style='width:"+(this.$width-14)+"px;'></div>"+
 					"<div class='content' style='height:"+(this.$height>36?(this.$height-40):30)+"px;width:"+
@@ -16,16 +16,16 @@ function GooUploader(Div,property){
 	this.$div_btn=this.$div.children("div").children(".oper");
     this.$div_btn.append(this.$btn_add);
     this.$content=this.$div.children("div").children(".content");
-    this.$goon=null;//Èç¹ûËü²»Îª¿Õ£¬Ôò±íÊ¾ÒªÁ¬ÐøÉÏ´«ÍêÁÐ±íÖÐËùÓÐÎÄ¼þ¡£
-	//³õÊ¼»¯swf²å¼þ
+    this.$goon=null;// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Õ£ï¿½ï¿½ï¿½ï¿½Ê¾Òªï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+	// ï¿½ï¿½Ê¼ï¿½ï¿½swfï¿½ï¿½ï¿½
 	this.$swfUpload=new SWFUpload({
-		upload_url : property.upload_url||"",//upload_urlµÄÂ·¾¶±È±ØÐëÊÇÏà¶ÔÓÚSWF²å¼þËùÔÚµÄÂ·¾¶£¬»òÕßÊÇ¾ø¶ÔÂ·¾¶
-		flash_url : property.flash_url||"swfupload.swf",//SWF²å¼þËùÔÚÂ·¾¶
-		file_size_limit : property.file_size_limit||0,//ÎÄ¼þ´óÐ¡ÏÞÖÆ£¬µ¥Î»ÎªKB£¬0±íÊ¾´óÐ¡ÎÞÏÞÖÆ
-		file_upload_limit: property.file_upload_limit||0,//ÔÊÐíÉÏ´«µÄ×î¶àÎÄ¼þÊýÁ¿,0±íÊ¾´óÐ¡ÎÞÏÞÖÆ
-		post_params:property.post_params||null,//ÀàËÆÓÚAJAX´«ÊäÖÐËùÓÃµÄ´«²Î£¬¸ñÊ½Ò»Ñù
-		file_types:property.file_types||"*.*",//¿ÉÉÏ´«µÄÎÄ¼þÀàÐÍ£¬¡°Èç*.jpg,*.gif¡±£¬ÓÃ·ÖºÅ¸ô¿ª
-        file_types_description: property.file_types_description||"All Files",//¿ÉÉÏ´«µÄÎÄ¼þÀàÐÍÃèÊöÎÄ×Ö
+		upload_url : property.upload_url||"",// upload_urlï¿½ï¿½Â·ï¿½ï¿½ï¿½È±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½SWFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Â·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+		flash_url : property.flash_url||"swfupload.swf",// SWFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
+		file_size_limit : property.file_size_limit||0,// ï¿½Ä¼ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Î»ÎªKBï¿½ï¿½0ï¿½ï¿½Ê¾ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		file_upload_limit: property.file_upload_limit||0,// ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½,0ï¿½ï¿½Ê¾ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		post_params:property.post_params||null,// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½AJAXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ´ï¿½ï¿½Î£ï¿½ï¿½ï¿½Ê½Ò»ï¿½ï¿½
+		file_types:property.file_types||"*.*",// ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½*.jpg,*.gifï¿½ï¿½ï¿½ï¿½ï¿½Ã·ÖºÅ¸ï¿½ï¿½ï¿½
+        file_types_description: property.file_types_description||"All Files",// ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         file_queue_limit:property.file_queue_limit||0,
 		button_width: "68",
 		button_height: "20",
@@ -34,14 +34,15 @@ function GooUploader(Div,property){
         button_action : (this.$multiple? SWFUpload.BUTTON_ACTION.SELECT_FILES : SWFUpload.BUTTON_ACTION.SELECT_FILE),
         button_window_mode : SWFUpload.WINDOW_MODE.TRANSPARENT
 	});
-	if(this.$multiple){//Èç¹ûÊÇÖ§³ÖÅúÁ¿ÉÏ´«£¬ÔòÒª¶à¶¨ÒåÁíÁ½¸ö°´Å¥
+	if(this.$multiple){// ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½à¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¥
 		this.$btn_upload=$("<div class='upload_btn'><div class='left'></div><div><b class='upload'>"+(property.btn_up_text||"Upload")+"</b></div><div class='right'></div></div>");
         this.$btn_cancel=$("<div class='upload_btn' style='display:none'><div class='left'></div><div><b class='cancel'>"+(property.btn_cancel_text||"Cancel")+"</b></div><div class='right'></div></div>");
 		this.$btn_clean=$("<div class='upload_btn' style='float:right'><div class='left'></div><div><b class='clean'>"+(property.btn_clean_text||"Clean")+"</b></div><div class='right'></div></div>");
-		this.$div_btn.append(this.$btn_upload).append(this.$btn_cancel).append(this.$btn_clean);
+		this.$btn_back=$("<div class='upload_btn' style='float:right'><div class='left'></div><div><b class='clean'>"+"è¿”å›ž"+"</b></div><div class='right'></div></div>");
+		this.$div_btn.append(this.$btn_upload).append(this.$btn_cancel).append(this.$btn_clean).append(this.$btn_back);
 	}
-    //this.$maxQueueNum=property.file_queue_limit||0;//ÔÊÐíµÄÎÄ¼þ¶ÓÁÐ×î³¤³¤¶È£¬¼´ÔÊÐíÍ¬Ê±ÉÏ´«¶àÉÙ¸öÎÄ¼þÊý
-    //¸ù¾ÝÎÄ¼þÀàÐÍ£¬ÅÐ¶ÏÓ¦¸ÃÓÃÄÄÖÖÑùÊ½
+    // this.$maxQueueNum=property.file_queue_limit||0;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î³¤ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ê±ï¿½Ï´ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Í£ï¿½ï¿½Ð¶ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
     this.fixFileTypeIcon=function(type){
        var tmp = type.split(".");
        if(tmp[1])   tmp[1]=tmp[1].substring(0,3).toLowerCase();
@@ -64,22 +65,22 @@ function GooUploader(Div,property){
            default: return "oth";
        }
     };
-    //¸ú¾Ý´«ÈëµÄÎÄ¼þ×Ö½Ú´óÐ¡,×Ô¶¯×ª»»ÎªKB,MB,GBµÈµ¥Î»
+    // ï¿½ï¿½ï¿½Ý´ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ö½Ú´ï¿½Ð¡,ï¿½Ô¶ï¿½×ªï¿½ï¿½ÎªKB,MB,GBï¿½Èµï¿½Î»
     this.getFileSize=function(bytes){
-        var size=(bytes/1024).toFixed(1);//ÏÈ×ªÎªKB
+        var size=(bytes/1024).toFixed(1);// ï¿½ï¿½×ªÎªKB
         if(size>1200){
-            size=(size/1024).toFixed(1);//ÏÈ×ªÎªMB
+            size=(size/1024).toFixed(1);// ï¿½ï¿½×ªÎªMB
             if(size>1200){
-                size=(size/1024).toFixed(1);//ÏÈ×ªÎªGB
+                size=(size/1024).toFixed(1);// ï¿½ï¿½×ªÎªGB
                 return size+"g";
             }
             return size+"m";
         }
         return size+"k";
     }
-    this.$fileList=[];//±£´æÎÄ¼þÐÅÏ¢µÄÁÐ±í
+    this.$fileList=[];// ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Ð±ï¿½
     var inthis=this;
-    //»ñÈ¡ÉÏ´«ÁÐ±íÖÐµÄËùÓÐÎÄ¼þÃû£¬ÓÃ¶ººÅ¸ô¿ª
+    // ï¿½ï¿½È¡ï¿½Ï´ï¿½ï¿½Ð±ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½Å¸ï¿½ï¿½ï¿½
     this.getFileNames=function(){
         var str="";
         for(var key in this.$fileList){
@@ -93,12 +94,12 @@ function GooUploader(Div,property){
           inthis.$div_btn.css({height:"0px","padding-top":"0px"});
            inthis.$content.css("display","block");
        }
-        //var max=inthis.$fileList.length;
+        // var max=inthis.$fileList.length;
         var id=file.id;
         inthis.$fileList[id]={
             id:file.id,
             name:file.name,
-            size:inthis.getFileSize(file.size),//µ¥Î»Ä¬ÈÏÎªKB£¬Ð¡ÊýµãºóÒ»Î»
+            size:inthis.getFileSize(file.size),// ï¿½ï¿½Î»Ä¬ï¿½ï¿½ÎªKBï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Î»
             filestatus:file.filestatus
         }
        inthis.$content.append("<li id="+file.id+" style='width;"+(inthis.$content.attr("offsetWidth")-18)+"px'><b class='"+inthis.fixFileTypeIcon(file.type)+"'></b><div class='labe' title='"
@@ -140,7 +141,7 @@ function GooUploader(Div,property){
     this.$swfUpload.uploadProgress=function(file,complete,total){
         var per=Math.floor((complete/total)*100);
         inthis.$fileList[file.id].span.html(per+"%");
-        inthis.$fileList[file.id].bar.children("div").width(140*((100-per)/100));//BARÎª½ø¶ÈÌõµÄ×Ü³¤¶È
+        inthis.$fileList[file.id].bar.children("div").width(140*((100-per)/100));// BARÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü³ï¿½ï¿½ï¿½
     };
     
     if(this.$multiple){
@@ -164,21 +165,26 @@ function GooUploader(Div,property){
                 li.children(".op_del").css("display","none");
                 li.children(".op_no").click();
             }
-            else if(li.children(".op_no").css("display")=="block"){//Èç¹ûÊÇÕýÔÚÉÏ´«ÖÐµÄ
+            else if(li.children(".op_no").css("display")=="block"){// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½Ðµï¿½
                 li.children(".op_no").click();
             }
         }
       });
       this.$btn_clean.bind("click",{swfUpload:this.$swfUpload,content:this.$content,fileList:this.$fileList},function(e){
-        if(e.data.swfUpload.getStats().in_progress==0){//Èç¹ûµ±Ç°Ã»ÓÐÎÄ¼þÔÚÉÏ´«
+        if(e.data.swfUpload.getStats().in_progress==0){// ï¿½ï¿½ï¿½ï¿½ï¿½Ç°Ã»ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
             for(var key in e.data.fileList){
                 e.data.content.children("#"+key).remove();
                 e.data.fileList[key]=null;
             }
         }
       });
+      this.$btn_back.bind("click",function(e){
+        document.getElementById('overlay').style.display = 'none';
+        InitSystemTree();
+        InitUserTree();
+      });
     }
-    //°ó¶¨ÎÄ¼þÁÐ±íÖÐ£¬Ã¿Ò»ÐÐµÄ°´Å¥
+    // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ð±ï¿½ï¿½Ð£ï¿½Ã¿Ò»ï¿½ÐµÄ°ï¿½Å¥
     this.$content.bind("click",{swfUpload:this.$swfUpload,oper:this.$div_btn,multi:this.$multiple,fileList:this.$fileList},function(e){
         if(!e)	e=window.event;
         if(e.target.tagName=="B"){
@@ -188,7 +194,7 @@ function GooUploader(Div,property){
             var id=li.attr("id");
             switch(cls){
                 case "op_up":
-                    if(e.data.swfUpload.getStats().in_progress==0){//Èç¹ûµ±Ç°Ã»ÓÐÎÄ¼þÔÚÉÏ´«
+                    if(e.data.swfUpload.getStats().in_progress==0){// ï¿½ï¿½ï¿½ï¿½ï¿½Ç°Ã»ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
                     var fileList=e.data.fileList;
                     fileList[id].bar.removeClass("unbar");
                     fileList[id].bar.addClass("bar");
@@ -200,7 +206,7 @@ function GooUploader(Div,property){
                     li.children(".op_del").css("display","none");
                     li.children(".op_no").css("display","block");
                     }
-                    break;//ÉÏ´«
+                    break;// ï¿½Ï´ï¿½
                 case "op_del":
                     try{
                     e.data.swfUpload.cancelUpload(id);
@@ -211,7 +217,7 @@ function GooUploader(Div,property){
                     }
                     li.remove();
                     e.data.fileList[id]=null;
-                    break;//´ÓÁÐ±íÖÐÉ¾³ý
+                    break;// ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½É¾ï¿½ï¿½
                 case "op_ok":
                     if(!e.data.multi){
                         e.data.oper.css({height:"20px","padding-top":"5px"});
@@ -220,12 +226,12 @@ function GooUploader(Div,property){
                     e.data.swfUpload.cancelUpload(id);
                     e.data.fileList[id]=null;
                     li.remove();
-                    break;//ÉÏ´«³É¹¦
+                    break;// ï¿½Ï´ï¿½ï¿½É¹ï¿½
                 case "op_no":
                     e.data.swfUpload.cancelUpload(id);
                     tar.css("display","none");
                     li.children(".op_fail").css("display","block");
-                  break;//ÓÃ»§È¡Ïû
+                  break;// ï¿½Ã»ï¿½È¡ï¿½ï¿½
                 case "op_fail":
                     if(!e.data.multi){
                         e.data.oper.css({height:"20px","padding-top":"5px"});
@@ -233,14 +239,14 @@ function GooUploader(Div,property){
                     }
                     li.remove();
                     e.data.fileList[id]=null;
-                    break;//ÉÏ´«Ê§°Ü
+                    break;// ï¿½Ï´ï¿½Ê§ï¿½ï¿½
             }
         }
     });
     if(!this.$multiple)	this.$content.css("display","none");
 }
 
-//½«´ËÀàµÄ¹¹Ôìº¯Êý¼ÓÈëÖÁJQUERY¶ÔÏóÖÐ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½JQUERYï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 jQuery.extend({
 	createGooUploader: function(Div,property) {
 		return new GooUploader(Div,property);

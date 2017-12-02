@@ -47,6 +47,7 @@
 		<script  type="text/javascript" src="/CloudPaper/codebase/GooUploader.js"></script>
 		<script type="text/javascript" src="/CloudPaper/codebase/swfupload/swfupload.js"></script>
 		<script type="text/javascript" src="/CloudPaper/js/editLayer.js"></script>
+		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 	<style type="text/css">
 	   section{
 	       overflow:auto;
@@ -108,7 +109,9 @@ var userInfo = {
 </script>
 	
     </head>
+    
     <body>
+
     <div id="uploadFileFromURL" style="display:none;position:absolute;z-index:999;">
                                   输入pdf文件的URL: <input type="text" id="pdfFileURL">
                           <input type="hidden" id="FolderID">
@@ -121,6 +124,30 @@ var userInfo = {
         <!--<![endif]-->
 
         <!--[if (gt IE 9)]><!-->
+
+    <div id="overlay" class="black_overlay" style="z-index:999;position: absolute;top: 0%;   
+            left: 0%;   
+            width: 100%;   
+            height: 100%;   
+            background-color: black; 
+            -moz-opacity: 0.8;   
+            opacity:.80;   
+            filter: alpha(opacity=88);
+            display:none">
+    </div>
+    <div id="timelineoverlay" class="black_overlay" style="z-index:999;position: absolute;top: 0%;   
+            left: 0%;   
+            width: 100%;   
+            height: 100%;   
+            background-color: black; 
+            -moz-opacity: 0.8;   
+            opacity:.80;   
+            filter: alpha(opacity=88);
+            display:none">
+    </div>
+    <iframe id="packshare" style="display:none">
+    </iframe>
+
             <div id="global-feedback" class="global-feedback"></div>
 
             <header class="masthead web-library with-library-selected">
@@ -190,27 +217,23 @@ var userInfo = {
     </div>
     <br></br>
     <div class="menu">
-    <ul id="user_tree" class="filetree treeview-famfamfam">
-    </ul>
+    <ul id="user_tree" class="filetree treeview-famfamfam"></ul>
     </div>
+
 		<div class="contextMenu" id="folderMenu">
 		   <ul>
 		     <li id="addFolder">添加文件夹</li>
 		     <li id="deleteFolder">删除文件夹</li>
 		     <li id="renameFolder">重命名文件夹</li>
 		     <li id="uploadFile">上传文件</li>
+		     <li id="packDownload">打包下载</li>
+             <li id="packShare">打包分享</li>
 		     <li id="uploadFileFromURL">从URL添加pdf</li>
 		   </ul>
 		</div>
+
 								
-<!-- 								<div class="contextMenu" id="fileMenu"> -->
-<!-- 								   <ul> -->
-<!-- 								     <li id="deleteFile">删除文件</li> -->
-<!-- 								     <li id="renameFile">重命名文件</li> -->
-<!-- 								     <li id="exportFile">导出文件</li> -->
-<!-- 								   </ul> -->
-<!-- 								</div> -->
-<div class="contextMenu" id="fileMenu">
+	<div class="contextMenu" id="fileMenu">
        <ul>
          <li id="deleteFile">删除文件</li>
          <li id="renameFile">重命名文件</li>
@@ -218,48 +241,47 @@ var userInfo = {
          <li id="roughRead">粗读</li>
          <li id="unRead">未读</li>
          <li id="exportNote">导出</li>
+         <li id="showTimeLine">时间线</li>
        </ul>
+    </div>		
+	
+    <div class="accordion-pane" data-content="all-documents my-publications favorites folders">
+        <div class="accordion-content scrollable">
+            <section id="my-library">
+                <div id="special-folder-list">
+                </div>
+                <div id="folders" class="folders">
+                </div>
+            </section>
+        </div>
+        <div class="beforeshadow"></div>
+        <div class="aftershadow"></div>
+        <header class="accordion-trigger">
+             MY LIBRARY <i class="icon icon-caret"></i>
+        </header>
     </div>
-							
-							<div id="overlay" class="black_overlay">
-							</div>
-                            <div class="accordion-pane" data-content="all-documents my-publications favorites folders">
-                                <div class="accordion-content scrollable">
-                                    <section id="my-library">
-                                        <div id="special-folder-list">
-                                        </div>
-                                        <div id="folders" class="folders">
-                                        </div>
-                                    </section>
-                                </div>
-                                <div class="beforeshadow"></div>
-                                <div class="aftershadow"></div>
-                                <header class="accordion-trigger">
-                                     MY LIBRARY <i class="icon icon-caret"></i>
-                                </header>
-                            </div>
-                            <div class="accordion-pane" data-content="groups">
-                                <div class="accordion-content scrollable">
-                                    <section id="groups">
-                                    </section>
-                                </div>
-                                <div class="beforeshadow"></div>
-                                <div class="aftershadow"></div>
-                                <header class="accordion-trigger">
-                                     GROUPS <i class="icon icon-caret"></i>
-                                </header>
-                            </div>
-                            <div id="trash" class="accordion-pane" data-content="trash" data-maxheight="180">
-                                <div class="accordion-content scrollable">
-                                    <section></section>
-                                </div>
-                                <div class="beforeshadow"></div>
-                                <div class="aftershadow"></div>
-                                <header class="accordion-trigger">
-                                     TRASH <i class="icon icon-caret"></i>
-                                </header>
-                            </div>
-                        </div>
+    <div class="accordion-pane" data-content="groups">
+        <div class="accordion-content scrollable">
+            <section id="groups">
+            </section>
+        </div>
+        <div class="beforeshadow"></div>
+        <div class="aftershadow"></div>
+        <header class="accordion-trigger">
+             GROUPS <i class="icon icon-caret"></i>
+        </header>
+    </div>
+    <div id="trash" class="accordion-pane" data-content="trash" data-maxheight="180">
+        <div class="accordion-content scrollable">
+            <section></section>
+        </div>
+        <div class="beforeshadow"></div>
+        <div class="aftershadow"></div>
+        <header class="accordion-trigger">
+             TRASH <i class="icon icon-caret"></i>
+        </header>
+    </div>
+                  </div>
                     </nav>
                 </section>
 

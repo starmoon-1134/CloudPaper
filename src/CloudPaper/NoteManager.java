@@ -41,7 +41,7 @@ public class NoteManager {
     logger loggerm = new logger();
     loggerm.setUserName(userName);
     loggerm.setFileName(fileName);
-    loggerm.addLog("添加笔记", logType.addNote);
+    loggerm.addLog("添加笔记", logger.logType.addNote);
 
     setResultString("success");
     return "success";

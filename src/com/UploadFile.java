@@ -22,7 +22,9 @@ import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.opensymphony.xwork2.ActionSupport;  
+import com.opensymphony.xwork2.ActionSupport;
+
+import CloudPaper.*;  
   
 /** 
  * @author fish 
@@ -185,7 +187,15 @@ public class UploadFile extends ActionSupport
 				outJson.close();
 			}catch(JSONException | IOException e) {  
 	        	e.printStackTrace();
-	        }    
+	        }
+    		String finalFileName = fileName;
+    		if(fileOrderNum!=0) {
+    			finalFileName = finalFileName + "(" +fileOrderNum + ")";
+            }
+    		logger loggerm = new logger();
+    	    loggerm.setUserName(userName);
+    	    loggerm.setFileName(finalFileName);
+    	    loggerm.addLog("加入系统", logger.logType.appendToSystem);
         }
         return "success";  
     }  

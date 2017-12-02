@@ -14,14 +14,16 @@ import java.util.Date;
 
 import org.apache.struts2.ServletActionContext;
 
-enum logType {
-  upLoadFile, renameFile, addNote, addLabel, removeLabel, changeLabel
-}
+
 
 public class logger {
   String userName = null;
   String fileName = null;
   String resultString = "checkFailed";
+  public enum logType {
+	  renameFile, addNote, appendToSystem, addClassification, deleteFromClassification, 
+	  intensiveRead, roughRead, unRead
+  }
 
   public void addLog(String operate, logType type) throws IOException {
     StringBuffer oneLog = new StringBuffer(this.getFormatDate());
@@ -29,23 +31,29 @@ public class logger {
     oneLog.append(operate);
     oneLog.append(" # ");
     switch (type) {
-      case upLoadFile:
-        oneLog.append("upLoadFile");
-        break;
       case renameFile:
         oneLog.append("renameFile");
         break;
       case addNote:
         oneLog.append("addNote");
         break;
-      case addLabel:
-        oneLog.append("addLabel");
+      case appendToSystem:
+        oneLog.append("appendToSystem");
         break;
-      case removeLabel:
-        oneLog.append("removeLabel");
+      case addClassification:
+    	oneLog.append("addClassification");
         break;
-      case changeLabel:
-        oneLog.append("changeLabel");
+      case deleteFromClassification:
+        oneLog.append("deleteFromClassification");
+        break;
+      case intensiveRead:
+        oneLog.append("intensiveRead");
+        break;
+      case roughRead:
+      	oneLog.append("roughRead");
+        break;
+      case unRead:
+      	oneLog.append("unRead");
         break;
 
       default:
@@ -53,8 +61,9 @@ public class logger {
         break;
     }
 
-    String dirString = ServletActionContext.getServletContext().getRealPath("") + "userfiles\\"
+    String dirString = ServletActionContext.getServletContext().getRealPath("") + "\\userfiles\\"
         + userName + "\\" + "log\\" + fileName + ".log";
+    System.out.println(dirString);
     File logFile = new File(dirString);
     if (!logFile.exists()) {
       logFile.createNewFile();

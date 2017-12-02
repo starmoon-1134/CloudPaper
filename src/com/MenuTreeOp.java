@@ -1,9 +1,12 @@
 package com;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -13,12 +16,20 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+import CloudPaper.logger;
 
 public class MenuTreeOp {
   private String result = "checkFailed";
@@ -38,6 +49,8 @@ public class MenuTreeOp {
   private String fileName;
   private String pdfFileURL;
   private String folderID;
+  private String desFolderName;
+  private String nodeFolderName;
 
   public String initUserTree() {
     // System.out.println(getUserName());
@@ -310,7 +323,7 @@ public class MenuTreeOp {
     return "success";
   }
 
-  public String deleteFile() {
+  public String deleteFile() throws IOException {
     result = "";
     // System.out.println(getDeleteFileName());
     // System.out.println(getDeleteFilePath());
@@ -407,11 +420,31 @@ public class MenuTreeOp {
       if (tmpFile.exists()) {
         tmpFile.delete();
       }
+      String logNameString = ServletActionContext.getServletContext().getRealPath(
+          "/userFiles/" + getUserName() + "/log") + File.separator + getDeleteFileName() + ".log";
+      // System.out.println(fileNameString);
+      File tmpLog = new File(logNameString);
+      if (tmpLog.exists()) {
+        tmpLog.delete();
+      }
+      String NameString = ServletActionContext.getServletContext()
+          .getRealPath("/userFiles/" + getUserName() + "/NoteDOM") + File.separator
+          + getDeleteFileName() + ".note";
+      // System.out.println(fileNameString);
+      File tmpNote = new File(NameString);
+      if (tmpNote.exists()) {
+        tmpNote.delete();
+      }
+    } else {
+      logger loggerm = new logger();
+      loggerm.setUserName(getUserName());
+      loggerm.setFileName(getDeleteFileName());
+      loggerm.addLog("从" + filePath + "分类中删除", logger.logType.deleteFromClassification);
     }
     return "success";
   }
 
-  public String renameFile() {
+  public String renameFile() throws IOException {
     result = "";
     // System.out.println(getChangeOldFolderName());
     // System.out.println(getChangeNewFolderName());
@@ -437,6 +470,51 @@ public class MenuTreeOp {
     if (oldFile.exists()) {
       oldFile.renameTo(newFile);
     }
+
+    String oldLogName = ServletActionContext.getServletContext().getRealPath(
+        "/userFiles/" + getUserName() + "/log") + File.separator + getRenameOldFileName() + ".log";
+    String newLogName = ServletActionContext.getServletContext()
+        .getRealPath("/userFiles/" + getUserName() + "/log") + File.separator
+        + getRenameNewFileName() + ".pdf" + ".log";
+    if (fileOrderNum != 0) {
+      newLogName = ServletActionContext.getServletContext()
+          .getRealPath("/userFiles/" + getUserName() + "/log") + File.separator
+          + getRenameNewFileName() + ".pdf" + "(" + +fileOrderNum + ")" + ".log";
+    }
+
+    File oldLog = new File(oldLogName);
+    File newLog = new File(newLogName);
+    if (oldLog.exists()) {
+      oldLog.renameTo(newLog);
+    }
+
+    String oldNoteName = ServletActionContext.getServletContext()
+        .getRealPath("/userFiles/" + getUserName() + "/NoteDOM") + File.separator
+        + getRenameOldFileName() + ".note";
+    String newNoteName = ServletActionContext.getServletContext()
+        .getRealPath("/userFiles/" + getUserName() + "/NoteDOM") + File.separator
+        + getRenameNewFileName() + ".pdf" + ".note";
+    if (fileOrderNum != 0) {
+      newNoteName = ServletActionContext.getServletContext()
+          .getRealPath("/userFiles/" + getUserName() + "/NoteDOM") + File.separator
+          + getRenameNewFileName() + ".pdf" + "(" + +fileOrderNum + ")" + ".note";
+    }
+
+    File oldNote = new File(oldNoteName);
+    File newNote = new File(newNoteName);
+    if (oldNote.exists()) {
+      oldNote.renameTo(newNote);
+    }
+
+    String finalNewFileName = getRenameNewFileName() + ".pdf";
+    if (fileOrderNum != 0) {
+      finalNewFileName = finalNewFileName + "(" + fileOrderNum + ")";
+    }
+    logger loggerm = new logger();
+    loggerm.setUserName(getUserName());
+    loggerm.setFileName(finalNewFileName);
+    loggerm.addLog("由" + getRenameOldFileName() + "重命名为" + finalNewFileName,
+        logger.logType.renameFile);
 
     int index = getRenameFilePath().lastIndexOf("files");
     String filePath = getRenameFilePath().substring(0, index);
@@ -576,17 +654,29 @@ public class MenuTreeOp {
     return "success";
   }
 
-  public String changeFileState() {
+  public String changeFileState() throws IOException {
     String newFileStatePath;
     switch (getNewFileState()) {
       case "intensive":
         newFileStatePath = "精读*" + getFileName();
+        logger logger1 = new logger();
+        logger1.setUserName(getUserName());
+        logger1.setFileName(getFileName());
+        logger1.addLog("已精读", logger.logType.intensiveRead);
         break;
       case "rough":
         newFileStatePath = "粗读*" + getFileName();
+        logger logger2 = new logger();
+        logger2.setUserName(getUserName());
+        logger2.setFileName(getFileName());
+        logger2.addLog("已粗读", logger.logType.intensiveRead);
         break;
       default:
         newFileStatePath = "未读*" + getFileName();
+        logger logger3 = new logger();
+        logger3.setUserName(getUserName());
+        logger3.setFileName(getFileName());
+        logger3.addLog("已未读", logger.logType.intensiveRead);
         break;
     }
     System.out.println(newFileStatePath);
@@ -697,6 +787,181 @@ public class MenuTreeOp {
     }
     bos.close();
     return bos.toByteArray();
+  }
+
+  public String dragFile() {
+    result = "";
+    int index = getDesFolderName().lastIndexOf("folders");
+    String desPath = getDesFolderName().substring(0, index);
+    String newFilePath = desPath + "*" + getFileName();
+    try {
+      BufferedReader inJson = new BufferedReader(new FileReader(ServletActionContext
+          .getServletContext().getRealPath("/userFiles/" + getUserName() + "/config")
+          + File.separator + getUserName() + ".json"));
+      String curLine = "";
+      String dragRet = "";
+      while ((curLine = inJson.readLine()) != null) {
+        if (curLine.equals("{\"pathes\" :[")) {
+          dragRet = dragRet + curLine + "\n";
+        } else if (curLine.indexOf("\"path\"") != -1) {
+          JSONObject curJson = new JSONObject(curLine);
+          String path = curJson.getString("path");
+          if (path.equals(newFilePath)) {
+            result = "exist";
+            return "success";
+          }
+          dragRet = dragRet + curLine + "\n";
+        } else {
+          dragRet = dragRet.substring(0, dragRet.length() - 1);
+          dragRet = dragRet + ",\n";
+          JSONObject newJson = new JSONObject();
+          newJson.put("path", newFilePath);
+          dragRet = dragRet + newJson.toString() + "\n";
+          dragRet = dragRet + curLine + "\n";
+        }
+      }
+      inJson.close();
+      BufferedWriter outJson = new BufferedWriter(new FileWriter(ServletActionContext
+          .getServletContext().getRealPath("/userFiles/" + getUserName() + "/config")
+          + File.separator + getUserName() + ".json"));
+      outJson.write(dragRet);
+      outJson.flush();
+      outJson.close();
+      result = "complete";
+      logger loggerm = new logger();
+      loggerm.setUserName(getUserName());
+      loggerm.setFileName(getFileName());
+      loggerm.addLog("添加到" + desPath + "分类", logger.logType.addClassification);
+    } catch (JSONException | IOException e) {
+      e.printStackTrace();
+    }
+    return "success";
+  }
+
+  public String packDownload() {
+    File oldZip = new File(ServletActionContext.getServletContext().getRealPath("")
+        + "\\userFiles\\" + getUserName() + "\\" + getUserName() + ".zip");
+    if (oldZip.exists()) {
+      oldZip.delete();
+    }
+    result = "";
+    int index = getNodeFolderName().lastIndexOf("folders");
+    String nodePath = getNodeFolderName().substring(0, index);
+    Set<String> pdfSet = new HashSet<String>();
+    try {
+      BufferedReader inJson = new BufferedReader(new FileReader(ServletActionContext
+          .getServletContext().getRealPath("/userFiles/" + getUserName() + "/config")
+          + File.separator + getUserName() + ".json"));
+      String curLine = "";
+      while ((curLine = inJson.readLine()) != null) {
+        if (curLine.indexOf("\"path\"") != -1) {
+          JSONObject curJson = new JSONObject(curLine);
+          String path = curJson.getString("path");
+          if (path.indexOf(nodePath + "*") == 0 || path.indexOf(nodePath + ">") == 0) {
+            int lastIndex = path.lastIndexOf("*");
+            if (lastIndex > 0) {
+              String pdfName = path.substring(lastIndex + 1);
+              pdfSet.add(pdfName);
+            }
+          }
+        }
+      }
+      inJson.close();
+      fileToZip(pdfSet, ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\"
+          + getUserName(), getUserName());
+      result = getZip();
+    } catch (JSONException | IOException e) {
+      e.printStackTrace();
+    }
+    return "success";
+  }
+
+  /**
+   * @param pdfSet
+   *          :待压缩的文件名集合
+   * @param zipFilePath
+   *          :压缩后存放路径
+   * @param fileName
+   *          :压缩后文件的名称
+   * @return
+   */
+  public boolean fileToZip(Set<String> pdfSet, String zipFilePath, String fileName) {
+    boolean flag = false;
+    FileInputStream fis = null;
+    BufferedInputStream bis = null;
+    FileOutputStream fos = null;
+    ZipOutputStream zos = null;
+
+    try {
+      File zipFile = new File(zipFilePath + "/" + fileName + ".zip");
+      if (zipFile.exists()) {
+        System.out.println(zipFilePath + "目录下存在名字为:" + fileName + ".zip" + "打包文件.");
+      } else {
+        fos = new FileOutputStream(zipFile);
+        zos = new ZipOutputStream(new BufferedOutputStream(fos));
+        byte[] bufs = new byte[1024 * 10];
+        for (String pdfName : pdfSet) {
+          // 创建ZIP实体，并添加进压缩包
+          ZipEntry zipEntry = new ZipEntry(
+              new File(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\"
+                  + getUserName() + "\\pdf\\" + pdfName).getName());
+          zos.putNextEntry(zipEntry);
+          // 读取待压缩的文件并写进压缩包里
+          fis = new FileInputStream(
+              new File(ServletActionContext.getServletContext().getRealPath("") + "\\userFiles\\"
+                  + getUserName() + "\\pdf\\" + pdfName));
+          bis = new BufferedInputStream(fis, 1024 * 10);
+          int read = 0;
+          while ((read = bis.read(bufs, 0, 1024 * 10)) != -1) {
+            zos.write(bufs, 0, read);
+          }
+          flag = true;
+        }
+      }
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    } finally {
+      // 关闭流
+      try {
+        if (null != bis)
+          bis.close();
+        if (null != zos)
+          zos.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
+    }
+    return flag;
+  }
+
+  public String getZip() throws IOException {
+    String username = (String) ServletActionContext.getRequest().getSession()
+        .getAttribute("username");
+    String RootDir = ServletActionContext.getServletContext().getRealPath("");
+    String zipFileName = RootDir + "/userFiles/" + username + "/" + username + ".zip";
+    File file = new File(zipFileName);
+    InputStream in = null;
+    byte[] cache = null;
+    int count = 0;
+    try {
+      // 一次读一个字节
+      in = new FileInputStream(file);
+      cache = new byte[in.available()];
+      int tempbyte;
+      while ((tempbyte = in.read()) != -1) {
+        cache[count++] = (byte) tempbyte;
+      }
+      // System.out.println("count:" + count);
+      in.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return Base64.encode(cache);
   }
 
   public String getResult() {
@@ -849,4 +1114,21 @@ public class MenuTreeOp {
   public void setFolderID(String folderID) {
     this.folderID = folderID;
   }
+
+  public String getDesFolderName() {
+    return desFolderName;
+  }
+
+  public void setDesFolderName(String desFolderName) {
+    this.desFolderName = desFolderName;
+  }
+
+  public String getNodeFolderName() {
+    return nodeFolderName;
+  }
+
+  public void setNodeFolderName(String nodeFolderName) {
+    this.nodeFolderName = nodeFolderName;
+  }
+
 }

@@ -227,6 +227,14 @@ function InitUserTree() {
                              $("#FolderID").text(
                                                  $($(t).next())
                                                    .attr("id"));
+                           },
+                           'packDownload' : function(t) {
+                             PackDownload(t);
+                           },
+                           'packShare' : function(t) {
+                             $("#packshare")
+                               .attr("src",
+                                     "/CloudPaper/jsp/transform.jsp");
                            }
                          }
                        });
@@ -250,6 +258,9 @@ function InitUserTree() {
             },
             'exportNote' : function(t) {
               exportNote(t);
+            },
+            'showTimeLine' : function(t) {
+              ShowTimeLine(t);
             }
           }
         });
@@ -271,6 +282,25 @@ function InitUserTree() {
                         alert("请先退出编辑笔记模式");
                       }
                     });
+        $("span#usertree_file").draggable({
+          // revert: true,
+          helper : "clone",
+          start : function() {
+            // alert(this.innerText);
+          },
+          drag : function() {
+
+          },
+          stop : function() {
+            var FileName = this.innerText;
+            $("span#usertree_folder").mouseover(function() {
+              DesFolderName = $($(this).next()).attr("id");
+              $("span#usertree_folder").unbind("mouseover");
+              DragFile(DesFolderName, FileName);
+            });
+          }
+        });
+
       },
       error : function() {
         alert("menutree_initUserTree");
@@ -416,6 +446,70 @@ function InitSystemTree() {
         alert("error");
       }
     });
+}
+
+function DragFile(DesFolderName, FileName) {
+  $.ajax({
+    url : "menutree_dragFile",
+    data : {
+      "userName" : userInfo.userName,
+      "desFolderName" : DesFolderName,
+      "fileName" : FileName
+    },
+    dataType : 'json',
+    type : 'post',
+    async : false,
+    success : function(data) {
+      if (data.indexOf("checkFailed") >= 0) {
+        window.location.href = "/CloudPaper";
+        return;
+      }
+      if (data == "complete") {
+        InitUserTree();
+      } else if (data == "exist") {
+        alert("exist");
+      }
+    },
+    error : function() {
+      alert("error");
+    }
+  });
+}
+
+function PackDownload(t) {
+  $.ajax({
+    url : "menutree_packDownload",
+    data : {
+      "userName" : userInfo.userName,
+      "nodeFolderName" : $($(t).next()).attr("id")
+    },
+    dataType : 'json',
+    type : 'post',
+    async : false,
+    success : function(data) {
+      var blob = new Blob([ char2buf(atob(data)) ]);
+      var link = document.createElement("a");
+      link.download = userInfo.userName + ".zip";
+      link.href = URL.createObjectURL(blob);
+      var ev = document.createEvent("MouseEvents");
+      ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0,
+                        false, false, false, false, 0, null);
+      link.dispatchEvent(ev);
+    },
+    error : function() {
+      alert("error");
+    }
+  });
+}
+
+function char2buf(str) {
+  var out = new ArrayBuffer(str.length);
+  var u16a = new Uint8Array(out);
+  var strs = str.split("");
+  for (var i = 0; i < strs.length; i++) {
+    u16a[i] = strs[i].charCodeAt();
+  }
+  return u16a;
 }
 
 function AddFolder(t) {
@@ -681,8 +775,11 @@ function uploadFilfFromURL() {
   $("#uploadFileFromURL").css("display", "none");
 }
 
+function ShowTimeLine(t) {
+  document.getElementById('timelineoverlay').style.display = 'block';
+}
+
 $(document).ready(function() {
   InitSystemTree();
   InitUserTree();
-
 });
