@@ -2,10 +2,16 @@ package com;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,6 +36,8 @@ public class MenuTreeOp {
   private String rootFolderName;
   private String newFileState;
   private String fileName;
+  private String pdfFileURL;
+  private String folderID;
 
   public String initUserTree() {
     // System.out.println(getUserName());
@@ -627,6 +635,70 @@ public class MenuTreeOp {
     return "success";
   }
 
+  public String downloadFromURL() throws IOException {
+    userName = (String) ServletActionContext.getRequest().getSession().getAttribute("username");
+    String savePath = ServletActionContext.getServletContext().getRealPath("") + "userFiles\\"
+        + userName;
+
+    String[] tmpStrings = getPdfFileURL().split("/");
+    fileName = tmpStrings[tmpStrings.length - 1];
+    System.out.println("fileName:" + fileName);
+    tmpStrings = fileName.split("\\.");
+    String fileType = tmpStrings[tmpStrings.length - 1];
+    if (!fileType.equals("pdf")) {
+      setResult("URL error: Not pdf file!");
+      return "success";
+    }
+
+    URL url = new URL(getPdfFileURL());
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    // 设置超时间为3秒
+    conn.setConnectTimeout(3 * 1000);
+    // 防止屏蔽程序抓取而返回403错误
+    conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
+    // 得到输入流
+    InputStream inputStream;
+    try {
+      inputStream = conn.getInputStream();
+    } catch (FileNotFoundException e) {
+      setResult("invalid URL!");
+      return "success";
+    }
+
+    // 获取自己数组
+    byte[] getData = readInputStream(inputStream);
+
+    // 文件保存位置
+    File saveDir = new File(savePath);
+    if (!saveDir.exists()) {
+      saveDir.mkdir();
+    }
+    File file = new File(saveDir + File.separator + fileName);
+    FileOutputStream fos = new FileOutputStream(file);
+    fos.write(getData);
+    if (fos != null) {
+      fos.close();
+    }
+    if (inputStream != null) {
+      inputStream.close();
+    }
+
+    setResult("download success");
+    return "success";
+  }
+
+  private static byte[] readInputStream(InputStream inputStream) throws IOException {
+    byte[] buffer = new byte[1024];
+    int len = 0;
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    while ((len = inputStream.read(buffer)) != -1) {
+      bos.write(buffer, 0, len);
+    }
+    bos.close();
+    return bos.toByteArray();
+  }
+
   public String getResult() {
     return result;
   }
@@ -746,5 +818,35 @@ public class MenuTreeOp {
 
   public void setFileName(String fileName) {
     this.fileName = fileName;
+  }
+
+  /**
+   * @return pdfFileURL
+   */
+  public String getPdfFileURL() {
+    return pdfFileURL;
+  }
+
+  /**
+   * @param pdfFileURL
+   *          要设置的 pdfFileURL
+   */
+  public void setPdfFileURL(String pdfFileURL) {
+    this.pdfFileURL = pdfFileURL;
+  }
+
+  /**
+   * @return folderID
+   */
+  public String getFolderID() {
+    return folderID;
+  }
+
+  /**
+   * @param folderID
+   *          要设置的 folderID
+   */
+  public void setFolderID(String folderID) {
+    this.folderID = folderID;
   }
 }

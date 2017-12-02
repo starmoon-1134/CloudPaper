@@ -219,20 +219,14 @@ function InitUserTree() {
                                .createGooUploader($("#upload"),
                                                   upload_property);
 
-                             var back_input = document
-                               .createElement("input");
-                             $(back_input).attr("type", "button");
-                             $(back_input).attr("value", "返回");
-                             $(back_input)
-                               .click(
-                                      function() {
-                                        document
-                                          .getElementById('overlay').style.display = 'none';
-                                        InitSystemTree();
-                                        InitUserTree();
-                                      })
-                             $(back_input).appendTo("#overlay");
                              document.getElementById('overlay').style.display = 'block';
+                           },
+                           'uploadFileFromURL' : function(t) {
+                             $("#uploadFileFromURL").css("display",
+                                                         "block");
+                             $("#FolderID").text(
+                                                 $($(t).next())
+                                                   .attr("id"));
                            }
                          }
                        });
@@ -651,6 +645,40 @@ function exportNote(t) {
     }
   });
 
+}
+
+function uploadFilfFromURL() {
+  var FolderID = $("#FolderID").text();
+  $.ajax({
+    async : true,
+    cache : false,
+    // timeout: 3000,
+    url : "menutree_downloadFromURL",
+    type : "post",
+    data : {
+      "pdfFileURL" : $("#pdfFileURL").val(),
+      "folderID" : FolderID
+    },
+    success : function(resultString) {
+      alert("url success   " + resultString);
+      /*
+       * if (resultString.substring(0, 11) == "checkFailed") {
+       * window.location.href = "/CloudPaper"; return; } var blob = new Blob([
+       * resultString ]); var link = document.createElement("a"); link.download =
+       * $(t).text() + ".html"; link.href = URL.createObjectURL(blob); var ev =
+       * document.createEvent("MouseEvents"); ev.initMouseEvent("click", true,
+       * false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+       * link.dispatchEvent(ev);
+       */
+    },
+    error : function(XMLHttpRequest, textStatus, errorThrown) {
+      alert(XMLHttpRequest.status);
+      alert(XMLHttpRequest.readyState);
+      alert(textStatus);
+    }
+  });
+
+  $("#uploadFileFromURL").css("display", "none");
 }
 
 $(document).ready(function() {

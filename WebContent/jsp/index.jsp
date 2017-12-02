@@ -109,6 +109,11 @@ var userInfo = {
 	
     </head>
     <body>
+    <div id="uploadFileFromURL" style="display:none;position:absolute;z-index:999;">
+                                  输入pdf文件的URL: <input type="text" id="pdfFileURL">
+                          <input type="hidden" id="FolderID">
+          <input type="button" value="提交" onclick="uploadFilfFromURL()">
+    </div>
         <!--[if IE 9 | (lt IE 9)]>
             <h2 style='margin:15px; padding:15px;text-align:center'>Your current version of Internet Explorer is not compatible with the Mendeley Web Library.
             Please use the latest version of <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">Internet Explorer</a>,
@@ -188,14 +193,15 @@ var userInfo = {
     <ul id="user_tree" class="filetree treeview-famfamfam">
     </ul>
     </div>
-								<div class="contextMenu" id="folderMenu">
-								   <ul>
-								     <li id="addFolder">添加文件夹</li>
-								     <li id="deleteFolder">删除文件夹</li>
-								     <li id="renameFolder">重命名文件夹</li>
-								     <li id="uploadFile">上传文件</li>
-								   </ul>
-								</div>
+		<div class="contextMenu" id="folderMenu">
+		   <ul>
+		     <li id="addFolder">添加文件夹</li>
+		     <li id="deleteFolder">删除文件夹</li>
+		     <li id="renameFolder">重命名文件夹</li>
+		     <li id="uploadFile">上传文件</li>
+		     <li id="uploadFileFromURL">从URL添加pdf</li>
+		   </ul>
+		</div>
 								
 <!-- 								<div class="contextMenu" id="fileMenu"> -->
 <!-- 								   <ul> -->
