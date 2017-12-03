@@ -20,6 +20,122 @@
   text-rendering: auto;
   display: inline-block; }
 
+
+.iconClosed{
+	animation: ToClose 0.5s;
+    -webkit-animation: ToClose 0.5s; /* Safari 与 Chrome */
+	transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg); /* IE 9 */
+	-webkit-transform: rotate(-90deg); /* Safari and Chrome */
+}
+
+.iconOpened{
+	animation:  ToOpen 0.5s;
+    -webkit-animation:  ToOpen 0.5s; /* Safari 与 Chrome */
+	transform: rotate(0deg);
+    -ms-transform: rotate(0deg); /* IE 9 */
+    -webkit-transform: rotate(0deg); /* Safari and Chrome */
+}
+
+@keyframes ToOpen
+{
+    from {
+        transform: rotate(-90deg);
+	    -ms-transform: rotate(-90deg); /* IE 9 */
+	    -webkit-transform: rotate(-90deg); /* Safari and Chrome */}
+    to {
+        transform: rotate(0deg);
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Safari and Chrome */
+        }
+}
+
+@-webkit-keyframes ToOpen/* Safari and Chrome */
+{
+   from {
+        transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg); /* IE 9 */
+        -webkit-transform: rotate(-90deg); /* Safari and Chrome */}
+    to {
+        transform: rotate(0deg);
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Safari and Chrome */
+        }
+}
+
+@keyframes ToClose
+{
+    from {
+        transform: rotate(0deg);
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Safari and Chrome */}
+    to {
+        transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg); /* IE 9 */
+        -webkit-transform: rotate(-90deg); /* Safari and Chrome */
+        }
+}
+
+@-webkit-keyframes ToClose/* Safari and Chrome */
+{
+   from {
+        transform: rotate(0deg);
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Safari and Chrome */}
+    to {
+        transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg); /* IE 9 */
+        -webkit-transform: rotate(-90deg); /* Safari and Chrome */
+        }
+}
+
+.RightKeyMenu{
+	
+}
+
+span.folder{
+	cursor:pointer;
+}
+
+span.file{
+    cursor:pointer;
+}
+
+.starsOpened{
+	border-radius: 18px;
+	background:url("/CloudPaper/images/stars.jpg");
+    width:18px;
+    height:18px;
+    background-size:100% 100%;
+    position:relative;
+    margin-right:2px;
+    top:4px;
+}
+
+.starsClosed{
+	border-radius: 18px;
+	-webkit-filter:sepia(1.5);
+/* 	-webkit-filter:hue-rotate(90deg); */
+	background:url("/CloudPaper/images/stars.jpg");
+	width:18px;
+	height:18px;
+	background-size:100% 100%;
+	position:relative;
+	margin-right:2px;
+	top:4px;
+}
+
+.pdfFileIcon{
+	border-radius: 18px;
+	background:url("/CloudPaper/images/pdf.jpg");
+    width:18px;
+    height:18px;
+    background-size:100% 100%;
+    position:relative;
+    margin-right:2px;
+    top:4px;
+}
+
 /**
  * Base
  */
@@ -5083,7 +5199,7 @@ ul {
       .no-touch #library-toolbar > li button:hover {
         background: #1eb1ff; }
       #library-toolbar > li button .actionlabel {
-        width: 20px;
+        width: 45px;
         margin-right: 4px; }
       #library-toolbar > li button .icon {
         color: #fff;
@@ -7051,7 +7167,7 @@ input[type="checkbox"]:checked + label span {
   top: 0;
   bottom: 0;
   left: 0;
-  width: 208px;
+  width: 260px;
   background-color: #F6F6F6; }
   #leftcolumn-area #content-navigation {
     position: absolute;
@@ -7078,13 +7194,13 @@ input[type="checkbox"]:checked + label span {
 
 #content-navigation {
   left: 0;
-  width: 208px;
+  width: 260px;
   background: #F6F6F6;
   border-right: 1px solid #E0E0E0; }
 
 #content-centralarea {
-  left: 208px;
-  right: 336px;
+  left: 260px;
+  right: 0px;
   box-shadow: -2px 0 10px 1px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: -2px 0 10px 1px rgba(0, 0, 0, 0.1); }
 

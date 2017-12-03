@@ -38,6 +38,7 @@
           })(window,document,'//static.hotjar.com/c/hotjar-','.js?sv=');
         </script>
         <script src="http://libs.baidu.com/jquery/1.5.2/jquery.min.js"></script>
+        <script src="/CloudPaper/js/fileSection.js"></script>
 		<script type = "text/javascript" src=/CloudPaper/js/jquery.treeview.js></script>
 		<script type = "text/javascript" src=/CloudPaper/js/jquery.contextmenu.r2.js></script>
 		<script type = "text/javascript" src=/CloudPaper/js/menu_tree.js></script>
@@ -68,21 +69,26 @@
 			weight: 45px;
 		}
 		.menu {
-			margin-top: 40px;
+			margin-top: 10px;
+			text-align:left;
 		}
 		.menu span {
 			font-family: NexusSans, Arial, sans-serif;
 	    	color: gray;
-	    	font-size: 15px;
+	    	font-size: 16px;
 		}
 		.menu ul {
 			margin-left: 10px;
+			list-style:none;
 		} 
+		.menu div{
+		    display:inline;
+		}
 		#library-navigation header {
 			border-top: 1px solid #CFCFCF;
 			border-bottom: 1px solid #CFCFCF;
 			cursor: pointer;
-			position: absolute;
+/* 			position: absolute; */
 			z-index: 10;
 			top: 0;
 			left: 0;
@@ -196,97 +202,107 @@ var userInfo = {
               </div>
             </header>
 
-            <script src="//static.mendeley.com/lib-js-onboarding/loader.js" async></script>
-            <div id="container" class="container initialstate">
-                <section id="leftcolumn-area">
-                    <nav id="content-navigation">
-                        <div id="library-navigation" class="library-navigation accordion noanimation">
-                            
-                            <header >目录 <i class="icon icon-caret"></i></header>
-<!-- 							<div class="menu"> -->
-<!-- 								<ul id="tree" class="filetree treeview-famfamfam"> -->
-<!-- 								</ul> -->
-<!-- 								</div> -->
-                                <div class="menu">
-    <ul id="system_tree" class="filetree treeview-famfamfam">
-    </ul>
-    </div>
-    
-    <div id="addrootfolder" style="position:relative;float:left">
-    <button onclick="AddRootFolder()">新增分类</button>
-    </div>
-    <br></br>
-    <div class="menu">
-    <ul id="user_tree" class="filetree treeview-famfamfam"></ul>
-    </div>
+            <script src="http://static.mendeley.com/lib-js-onboarding/loader.js" async></script>
+    <div id="container" class="container initialstate">
+       <section id="leftcolumn-area">
+	       <div id="library-toolbar-container">
+		       <ul id="library-toolbar" class="toolbar">
+				    <li id="document-add-toolbar">
+				        <button title="Add document/folder" onclick="AddRootFolder()">
+				            <span class="icon icon-add"></span><span class="actionlabel hide-small"> 新增分类  </span><span class="icon icon-caret"></span>
+				        </button>
+				        </li>
+		        </ul>
+	        </div>
+           <nav id="content-navigation" style="position:relative;">
+               <div id="library-navigation" class="library-navigation accordion noanimation">
+                   
+             <header id="sysHeader">系统分类 <i class="icon icon-caret iconClosed" style="float: right;top: 8px; position: relative;"></i></header>
 
-		<div class="contextMenu" id="folderMenu">
-		   <ul>
-		     <li id="addFolder">添加文件夹</li>
-		     <li id="deleteFolder">删除文件夹</li>
-		     <li id="renameFolder">重命名文件夹</li>
-		     <li id="uploadFile">上传文件</li>
-		     <li id="packDownload">打包下载</li>
-             <li id="packShare">打包分享</li>
-		     <li id="uploadFileFromURL">从URL添加pdf</li>
-		   </ul>
-		</div>
-
-								
-	<div class="contextMenu" id="fileMenu">
-       <ul>
-         <li id="deleteFile">删除文件</li>
-         <li id="renameFile">重命名文件</li>
-         <li id="intensiveRead">精读</li>
-         <li id="roughRead">粗读</li>
-         <li id="unRead">未读</li>
-         <li id="exportNote">导出</li>
-         <li id="showTimeLine">时间线</li>
-       </ul>
-    </div>		
-	
-    <div class="accordion-pane" data-content="all-documents my-publications favorites folders">
-        <div class="accordion-content scrollable">
-            <section id="my-library">
-                <div id="special-folder-list">
-                </div>
-                <div id="folders" class="folders">
-                </div>
-            </section>
-        </div>
-        <div class="beforeshadow"></div>
-        <div class="aftershadow"></div>
-        <header class="accordion-trigger">
-             MY LIBRARY <i class="icon icon-caret"></i>
-        </header>
-    </div>
-    <div class="accordion-pane" data-content="groups">
-        <div class="accordion-content scrollable">
-            <section id="groups">
-            </section>
-        </div>
-        <div class="beforeshadow"></div>
-        <div class="aftershadow"></div>
-        <header class="accordion-trigger">
-             GROUPS <i class="icon icon-caret"></i>
-        </header>
-    </div>
-    <div id="trash" class="accordion-pane" data-content="trash" data-maxheight="180">
-        <div class="accordion-content scrollable">
-            <section></section>
-        </div>
-        <div class="beforeshadow"></div>
-        <div class="aftershadow"></div>
-        <header class="accordion-trigger">
-             TRASH <i class="icon icon-caret"></i>
-        </header>
-    </div>
+            <div class="menu" style="overflow:auto;display:none;">
+		    <ul id="system_tree" class="filetree treeview-famfamfam">
+		    </ul>
+		    </div>
+		    
+<!-- 		    <div id="addrootfolder" style="position:relative;float:left"> -->
+<!-- 		    <button onclick="AddRootFolder()">新增分类</button> -->
+<!-- 		    </div> -->
+           
+             <header id="userHeader" style="position: relative;">
+                                                自定义分类 <i class="icon icon-caret iconClosed" style="float: right;top: 8px; position: relative;"></i>
+             </header>
+  
+		    <div class="menu" style="overflow:auto;display:none;">
+		    <ul id="user_tree" class="filetree treeview-famfamfam"></ul>
+		    </div>
+		
+				<div class="contextMenu RightKeyMenu" id="folderMenu">
+				   <ul>
+				     <li id="addFolder">添加文件夹</li>
+				     <li id="deleteFolder">删除文件夹</li>
+				     <li id="renameFolder">重命名文件夹</li>
+				     <li id="uploadFile">上传文件</li>
+				     <li id="packDownload">打包下载</li>
+		             <li id="packShare">打包分享</li>
+				     <li id="uploadFileFromURL">从URL添加pdf</li>
+				   </ul>
+				</div>
+		
+										
+			<div class="contextMenu RightKeyMenu" id="fileMenu">
+		       <ul>
+		         <li id="deleteFile">删除文件</li>
+		         <li id="renameFile">重命名文件</li>
+		         <li id="intensiveRead">精读</li>
+		         <li id="roughRead">粗读</li>
+		         <li id="unRead">未读</li>
+		         <li id="exportNote">导出</li>
+		         <li id="showTimeLine">时间线</li>
+		       </ul>
+		    </div>		
+			
+<!--     <div class="accordion-pane" data-content="all-documents my-publications favorites folders"> -->
+<!--         <div class="accordion-content scrollable"> -->
+<%--             <section id="my-library"> --%>
+<!--                 <div id="special-folder-list"> -->
+<!--                 </div> -->
+<!--                 <div id="folders" class="folders"> -->
+<!--                 </div> -->
+<%--             </section> --%>
+<!--         </div> -->
+<!--         <div class="beforeshadow"></div> -->
+<!--         <div class="aftershadow"></div> -->
+<!--         <header class="accordion-trigger"> -->
+<!--              MY LIBRARY <i class="icon icon-caret"></i> -->
+<!--         </header> -->
+<!--     </div> -->
+<!--     <div class="accordion-pane" data-content="groups"> -->
+<!--         <div class="accordion-content scrollable"> -->
+<%--             <section id="groups"> --%>
+<%--             </section> --%>
+<!--         </div> -->
+<!--         <div class="beforeshadow"></div> -->
+<!--         <div class="aftershadow"></div> -->
+<!--         <header class="accordion-trigger"> -->
+<!--              GROUPS <i class="icon icon-caret"></i> -->
+<!--         </header> -->
+<!--     </div> -->
+<!--     <div id="trash" class="accordion-pane" data-content="trash" data-maxheight="180"> -->
+<!--         <div class="accordion-content scrollable"> -->
+<%--             <section></section> --%>
+<!--         </div> -->
+<!--         <div class="beforeshadow"></div> -->
+<!--         <div class="aftershadow"></div> -->
+<!--         <header class="accordion-trigger"> -->
+<!--              TRASH <i class="icon icon-caret"></i> -->
+<!--         </header> -->
+<!--     </div> -->
                   </div>
                     </nav>
                 </section>
 
                 <section id="content-centralarea">
-                	<iframe src="/CloudPaper/pdfjs/web/viewer.html?file=09.pdf" frameborder="0" class="pdfFrame" name="pdfFrame"></iframe>
+                	<iframe src="/CloudPaper/pdfjs/web/viewer.html?file=/CloudPaper/readme.pdf" frameborder="0" class="pdfFrame" name="pdfFrame"></iframe>
 					<iframe src="/CloudPaper/jsp/editContainer.jsp" frameborder="0" class="editFrame" name="editFrame"></iframe>
 					<div class="testDOMTREE"> </div>
 
@@ -353,15 +369,15 @@ var userInfo = {
 
                 </section>
 
-                <section id="content-related">
-                <canvas id="storageCanvas" sstyle="width:816px;height:1056px;"></canvas>
-                <iframe id="testIMG"></iframe>
-                    <div id="collapsehandle">
-                        <div id="collapsehandle-inner">
-                            <span class="icon icon-handle"></span>
-                        </div>
-                    </div>
-                </section>
+<%--                 <section id="content-related"> --%>
+<!--                 <canvas id="storageCanvas" sstyle="width:816px;height:1056px;"></canvas> -->
+<!--                 <iframe id="testIMG"></iframe> -->
+<!--                     <div id="collapsehandle"> -->
+<!--                         <div id="collapsehandle-inner"> -->
+<%--                             <span class="icon icon-handle"></span> --%>
+<!--                         </div> -->
+<!--                     </div> -->
+<%--                 </section> --%>
 
                 <div id="version"></div>
 

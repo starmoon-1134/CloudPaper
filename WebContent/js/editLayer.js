@@ -1,6 +1,5 @@
 $(document).ready(
                   function() {
-                    $(".getLog").click(showTimeLine);
                     $(".pdfFrame")
                       .load(
                             function() {// 等iframe加载完毕

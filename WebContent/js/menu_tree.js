@@ -779,7 +779,24 @@ function ShowTimeLine(t) {
   document.getElementById('timelineoverlay').style.display = 'block';
 }
 
+function addIconForTree() {
+  $("span.folder").each(function() {
+    var $li = $(this).parent();
+    var img = document.createElement("img");
+    $(img).addClass("starsClosed");
+    $li.prepend(img);
+  })
+
+  $("span.file").each(function() {
+    var $li = $(this).parent();
+    var img = document.createElement("img");
+    $(img).addClass("pdfFileIcon");
+    $li.prepend(img);
+  })
+}
+
 $(document).ready(function() {
   InitSystemTree();
   InitUserTree();
+  addIconForTree();
 });
