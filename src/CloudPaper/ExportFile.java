@@ -47,6 +47,7 @@ public class ExportFile {
   }
 
   public String getStandardFile() throws IOException {
+	//System.out.println("333");
     String RootDir = ServletActionContext.getServletContext().getRealPath("");
     String username = (String) ServletActionContext.getRequest().getSession()
         .getAttribute("username");
@@ -76,6 +77,7 @@ public class ExportFile {
     finalString = titleMatcher.replaceFirst(getFileName());
 
     setResultString(finalString);
+    //System.out.println(finalString);
     return "success";
   }
 

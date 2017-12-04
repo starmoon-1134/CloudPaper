@@ -21,7 +21,7 @@ public class logger {
   String fileName = null;
   String resultString = "checkFailed";
   public enum logType {
-	  renameFile, addNote, appendToSystem, addClassification, deleteFromClassification, 
+	  renameFile, addNote, modifyNote, appendToSystem, addClassification, deleteFromClassification, 
 	  intensiveRead, roughRead, unRead
   }
 

@@ -48,6 +48,7 @@
 		<script type="text/javascript" src="/CloudPaper/codebase/swfupload/swfupload.js"></script>
 		<script type="text/javascript" src="/CloudPaper/js/editLayer.js"></script>
 		<script src="//apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+		<script src="/CloudPaper/js/jtopo-0.4.8.js" type="text/javascript"></script>
 	<style type="text/css">
 	   section{
 	       overflow:auto;
@@ -114,6 +115,7 @@ var userInfo = {
 
     <div id="uploadFileFromURL" style="display:none;position:absolute;z-index:999;">
                                   输入pdf文件的URL: <input type="text" id="pdfFileURL">
+                                  输入pdf文件的命名: <input type="text" id="pdfFileName">
                           <input type="hidden" id="FolderID">
           <input type="button" value="提交" onclick="uploadFilfFromURL()">
     </div>
@@ -144,6 +146,8 @@ var userInfo = {
             opacity:.80;   
             filter: alpha(opacity=88);
             display:none">
+            <input type="button" value="返回" onclick="document.getElementById('timelineoverlay').style.display = 'none'">
+    		<canvas id="canvas" width="1000" height="1000"></canvas> 
     </div>
     <iframe id="packshare" style="display:none">
     </iframe>

@@ -30,11 +30,10 @@
                 <param name="root">resultString</param>
             </result>
       </global-results>
-	  
+
 	  <action name="upload" class="com.UploadFile">
 	      <result name="success">/jsp/index.jsp</result>
 	  </action>
-
    
 </package>
 
@@ -93,7 +92,7 @@
 		<result type="json" name="error"></result>
 	</action>
 	
-    <action name="getStandardFile" class="CloudPaper.ExportFile" method="getStandardFile">
+	<action name="getStandardFile" class="CloudPaper.ExportFile" method="getStandardFile">
          <result type="json" name="success">
             <param name="root" >resultString</param>
         </result>
@@ -101,7 +100,6 @@
             <param name="root">resultString</param>
         </result>
     </action>
-
 </package>
 
 </struts>

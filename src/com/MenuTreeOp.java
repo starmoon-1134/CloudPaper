@@ -727,13 +727,11 @@ public class MenuTreeOp {
 
   public String downloadFromURL() throws IOException {
     userName = (String) ServletActionContext.getRequest().getSession().getAttribute("username");
-    String savePath = ServletActionContext.getServletContext().getRealPath("") + "userFiles\\"
-        + userName;
 
     String[] tmpStrings = getPdfFileURL().split("/");
-    fileName = tmpStrings[tmpStrings.length - 1];
-    System.out.println("fileName:" + fileName);
-    tmpStrings = fileName.split("\\.");
+    String tmpFileName = tmpStrings[tmpStrings.length - 1];
+    System.out.println("fileName:" + tmpFileName);
+    tmpStrings = tmpFileName.split("\\.");
     String fileType = tmpStrings[tmpStrings.length - 1];
     if (!fileType.equals("pdf")) {
       setResult("URL error: Not pdf file!");
@@ -760,12 +758,15 @@ public class MenuTreeOp {
     byte[] getData = readInputStream(inputStream);
 
     // 文件保存位置
-    File saveDir = new File(savePath);
-    if (!saveDir.exists()) {
-      saveDir.mkdir();
+    int fileOrderNum=0;
+    String tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/pdf" ) + File.separator + fileName + ".pdf";
+    File tmpFile = new File(tmpSaveFileName);
+    while(tmpFile.exists()) {
+    	fileOrderNum++;
+    	tmpSaveFileName = ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/pdf" ) + File.separator + fileName + ".pdf" +"("+fileOrderNum+")";
+    	tmpFile = new File(tmpSaveFileName);
     }
-    File file = new File(saveDir + File.separator + fileName);
-    FileOutputStream fos = new FileOutputStream(file);
+    FileOutputStream fos = new FileOutputStream(tmpFile);
     fos.write(getData);
     if (fos != null) {
       fos.close();
@@ -773,7 +774,85 @@ public class MenuTreeOp {
     if (inputStream != null) {
       inputStream.close();
     }
-
+    int index = getFolderID().lastIndexOf("folders");
+	String desPath = getFolderID().substring(0, index);
+	if(fileOrderNum==0) {
+    	desPath = desPath + "*" + fileName + ".pdf";
+    }else {
+    	desPath = desPath + "*" + fileName + ".pdf" + "(" +fileOrderNum + ")";
+    }
+    try{  
+		BufferedReader inJson = new BufferedReader(new FileReader(  
+        		ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/config") 
+				+ File.separator + userName + ".json"));
+		String curLine = "";
+		String findRet="";
+		while((curLine = inJson.readLine()) != null){
+			 if(curLine.equals("{\"pathes\" :[")) {
+				 findRet = findRet+curLine+"\n";
+			 }else if(curLine.indexOf("\"path\"") != -1) {
+				 findRet = findRet+curLine+"\n";
+			 }else {
+				 findRet = findRet.substring(0, findRet.length()-1);
+				 findRet = findRet + ",\n";
+				 JSONObject newJson=new JSONObject();
+				 newJson.put("path", desPath);
+				 findRet = findRet + newJson.toString() + "\n";
+				 findRet = findRet + curLine + "\n";
+			 }
+		}
+		inJson.close();
+		BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+				 ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/config") 
+    				+ File.separator + userName + ".json"));
+		outJson.write(findRet);
+		outJson.flush();
+		outJson.close();
+	}catch(JSONException | IOException e) {  
+    	e.printStackTrace();
+    }
+	try{  
+		BufferedReader inJson = new BufferedReader(new FileReader(  
+        		ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/config") 
+				+ File.separator + "system.json"));
+		String curLine = "";
+		String findRet="";
+		while((curLine = inJson.readLine()) != null){
+			 if(curLine.equals("{\"pathes\" :[")) {
+				 findRet = findRet+curLine+"\n";
+			 }else if(curLine.indexOf("\"path\"") != -1) {
+				 findRet = findRet+curLine+"\n";
+			 }else {
+				 findRet = findRet.substring(0, findRet.length()-1);
+				 findRet = findRet + ",\n";
+				 JSONObject newJson=new JSONObject();
+				 String tmpPath = "未读*" + fileName + ".pdf";
+				 if(fileOrderNum!=0) {
+					 tmpPath = tmpPath + "(" + fileOrderNum + ")";
+				 }
+				 newJson.put("path", tmpPath);
+				 findRet = findRet + newJson.toString() + "\n";
+				 findRet = findRet + curLine + "\n";
+			 }
+		}
+		inJson.close();
+		BufferedWriter outJson = new BufferedWriter(new FileWriter(  
+				 ServletActionContext.getServletContext().getRealPath("/userFiles/" + userName + "/config") 
+    				+ File.separator + "system.json"));
+		outJson.write(findRet);
+		outJson.flush();
+		outJson.close();
+	}catch(JSONException | IOException e) {  
+    	e.printStackTrace();
+    }
+	String finalFileName = fileName + ".pdf";
+	if(fileOrderNum!=0) {
+		finalFileName = finalFileName + "(" +fileOrderNum + ")";
+    }
+	logger loggerm = new logger();
+    loggerm.setUserName(userName);
+    loggerm.setFileName(finalFileName);
+    loggerm.addLog("加入系统", logger.logType.appendToSystem);
     setResult("download success");
     return "success";
   }
@@ -964,6 +1043,27 @@ public class MenuTreeOp {
     return Base64.encode(cache);
   }
 
+  public String showTimeLine() {
+	  userName = (String) ServletActionContext.getRequest().getSession().getAttribute("username");
+	  result = "";
+	  try {
+	      BufferedReader inLog = new BufferedReader(new FileReader(ServletActionContext
+	          .getServletContext().getRealPath("/userFiles/" + getUserName() + "/log")
+	          + File.separator + getFileName() + ".log"));
+	      String curLine = "";
+	      while ((curLine = inLog.readLine()) != null) {
+	        //System.out.println(curLine);
+	    	  result = result + curLine + "###";
+	      }
+	      int index = result.lastIndexOf("###");
+	      result = result.substring(0,index);
+	      inLog.close();
+	    } catch (JSONException | IOException e) {
+	      e.printStackTrace();
+	    }
+	  return "success";
+  }
+  
   public String getResult() {
     return result;
   }
