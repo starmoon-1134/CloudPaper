@@ -738,6 +738,20 @@ function ShowTimeLine(t) {
       "fileName" : $(t).text()
     },
     success : function(resultString) {
+      $("#timelineoverlay").empty();
+      var newcanvas = document.createElement("canvas");
+      $(newcanvas).attr("id", "canvas");
+      $(newcanvas).attr("width", "1000");
+      $(newcanvas).attr("height", "1000");
+      $(newcanvas).appendTo("#timelineoverlay");
+      var backbutton = document.createElement("input");
+      $(backbutton).attr("type", "button");
+      $(backbutton).attr("value", "返回");
+      $(backbutton).click(function() {
+        document.getElementById('timelineoverlay').style.display = 'none'
+      })
+      $("#timelineoverlay").prepend(backbutton);
+
       var logs = resultString.split("###");
 
       var canvas = document.getElementById('canvas');
@@ -747,13 +761,21 @@ function ShowTimeLine(t) {
       var firstDetail = logs[0].split(" # ");
       var firstNode;
       var nextNode;
+      // var node = new JTopo.Node("1111");
+      // node.setLocation(100, 500);
+      // node.setImage("../img/1.png");
+      // scene.add(node);
       for (var i = 0; i < logs.length; i++) {
         var detail = logs[i].split(" # ");
-        nextNode = new JTopo.CircleNode(detail[0] + "\n" + detail[1]);
+        nextNode = new JTopo.Node(detail[0] + "\n" + detail[1]);
         nextNode.setLocation(100, i * 100);
+        nextNode.setImage("../img/" + "1" + ".png");
         scene.add(nextNode);
         if (i != 0) {
-          scene.add(new JTopo.Link(firstNode, nextNode));
+          var link = new JTopo.Link(firstNode, nextNode);
+          link.arrowsRadius = 15;
+          link.strokeColor = '0,200,255';
+          scene.add(link);
         }
         firstNode = nextNode;
       }
