@@ -624,7 +624,7 @@ public class MenuTreeOp {
         } else if (curLine.indexOf("\"path\"") != -1) {
           JSONObject curJson = new JSONObject(curLine);
           String path = curJson.getString("path");
-          if (path.indexOf(getRootFolderName()) == 0) {
+          if (path.indexOf(getRootFolderName() + ">") == 0 || path.indexOf(getRootFolderName() + "*") == 0 || path.equals(getRootFolderName())) {
             result = "exist";
             return "success";
           }
@@ -669,14 +669,14 @@ public class MenuTreeOp {
         logger logger2 = new logger();
         logger2.setUserName(getUserName());
         logger2.setFileName(getFileName());
-        logger2.addLog("已粗读", logger.logType.intensiveRead);
+        logger2.addLog("已粗读", logger.logType.roughRead);
         break;
       default:
         newFileStatePath = "未读*" + getFileName();
         logger logger3 = new logger();
         logger3.setUserName(getUserName());
         logger3.setFileName(getFileName());
-        logger3.addLog("已未读", logger.logType.intensiveRead);
+        logger3.addLog("已未读", logger.logType.unRead);
         break;
     }
     System.out.println(newFileStatePath);

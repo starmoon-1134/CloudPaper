@@ -30,7 +30,7 @@ public class NoteManager {
 
     FileOutputStream foutputStream = new FileOutputStream(fileToSave);
     PrintWriter fout = new PrintWriter(
-        new BufferedWriter(new OutputStreamWriter(foutputStream, "utf-8")));
+        new BufferedWriter(new OutputStreamWriter(foutputStream)));//utf-8
     fout.write(mDOMString);
     fout.flush();
     fout.close();
@@ -61,7 +61,7 @@ public class NoteManager {
     BufferedReader bufread;
     String read;
     StringBuffer tmpBuffer = new StringBuffer();
-    bufread = new BufferedReader(new InputStreamReader(new FileInputStream(fileToLoad), "utf-8"));
+    bufread = new BufferedReader(new InputStreamReader(new FileInputStream(fileToLoad)));//utf-8
     while ((read = bufread.readLine()) != null) {
       tmpBuffer.append(read);
     }

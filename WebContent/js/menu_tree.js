@@ -739,10 +739,12 @@ function ShowTimeLine(t) {
     },
     success : function(resultString) {
       $("#timelineoverlay").empty();
+      var width = $("#timelineoverlay").width();
+      var height = $("#timelineoverlay").height();
       var newcanvas = document.createElement("canvas");
       $(newcanvas).attr("id", "canvas");
-      $(newcanvas).attr("width", "1000");
-      $(newcanvas).attr("height", "1000");
+      $(newcanvas).attr("width", width);
+      $(newcanvas).attr("height", height);
       $(newcanvas).appendTo("#timelineoverlay");
       var backbutton = document.createElement("input");
       $(backbutton).attr("type", "button");
@@ -761,20 +763,17 @@ function ShowTimeLine(t) {
       var firstDetail = logs[0].split(" # ");
       var firstNode;
       var nextNode;
-      // var node = new JTopo.Node("1111");
-      // node.setLocation(100, 500);
-      // node.setImage("../img/1.png");
-      // scene.add(node);
       for (var i = 0; i < logs.length; i++) {
         var detail = logs[i].split(" # ");
-        nextNode = new JTopo.Node(detail[0] + "\n" + detail[1]);
-        nextNode.setLocation(100, i * 100);
-        nextNode.setImage("../img/" + "1" + ".png");
+        nextNode = new JTopo.Node(detail[0] + "    " + detail[1]);
+        nextNode.setLocation(500, 100 * i);
+        nextNode.setImage("../img/" + detail[2] + ".png");
+        nextNode.textPosition = "Middle_Right";
         scene.add(nextNode);
         if (i != 0) {
           var link = new JTopo.Link(firstNode, nextNode);
-          link.arrowsRadius = 15;
-          link.strokeColor = '0,200,255';
+          link.arrowsRadius = 10;
+          link.strokeColor = '43, 71, 167';
           scene.add(link);
         }
         firstNode = nextNode;
